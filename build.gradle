@@ -3,32 +3,33 @@ apply plugin: "idea"
 
 repositories {
 	jcenter()
-	maven {
-		credentials {
-			username 'username'
-			password 'password'
-		}
-		url "http://my.repository.url"
-	}
+	maven {	url "http://my.repository.url"}
+	maven {	url "http://maven.restlet.com"}
 }
 
 dependencies {
 	compile fileTree(dir: 'libs', include: ['*.jar'])
 	compile 'com.intellij:openapi:7.0.3'
 	compile 'com.miglayout:miglayout-swing:4.2'
+
+	compile 'org.restlet.jse:org.restlet:2.2.2'
+	//	compile 'org.restlet.jse:org.restlet.ext.jackson:2.2.2'
 }
 
 defaultTasks 'makeJar'
 
+
+jar {
+	baseName = 'gs-gradle'
+	version = '0.1.0'
+}
+
 idea.project.ipr {
-	beforeMerged {project -> project.modulePaths.clear()
-	}
+	beforeMerged {project -> project.modulePaths.clear()}
 }
 
 idea.module.iml {
-	withXml {
-		it.node.@type = "PLUGIN_MODULE"
-	}
+	withXml {it.node.@type = "PLUGIN_MODULE"}
 }
 
 task setup {
@@ -39,25 +40,25 @@ task setup {
 			from '.'
 			into '.idea/'
 			include '*.ipr'
-			rename {"modules.xml"}
-		}
+			rename {"modules.xml"}}
 		project.delete "${project.name}.ipr"
 	}
 }
 
-jar {
-	baseName = 'gs-gradle'
-	version = '0.1.0'
+task copyDependencies(type: Copy) {
+	from configurations.compile
+	into 'build/dependencies'
 }
+
 
 task makeJar(type: Jar, dependsOn: classes) {
 	outputs.upToDateWhen {false}
 	dependsOn setup
-	//	from sourceSets.main.allSource
+	dependsOn copyDependencies
+
+	from zipTree('./build/dependencies/org.restlet-2.2.2.jar')
 	from sourceSets.main.output
 
-	//	from './build/classes/main'
-	//	from './build/resources/main'
 	doLast {
 		copy {
 			from './build/libs'

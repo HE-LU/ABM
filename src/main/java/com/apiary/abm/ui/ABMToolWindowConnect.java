@@ -7,6 +7,9 @@ import com.intellij.ui.content.ContentFactory;
 
 import net.miginfocom.swing.MigLayout;
 
+import org.restlet.representation.Representation;
+import org.restlet.resource.ClientResource;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -113,20 +116,18 @@ public class ABMToolWindowConnect extends JFrame
 					{
 						nameText.setText("<html><center>file exist: " + readFile(inputFilePath, StandardCharsets.UTF_8) + "</center></html>");
 
-						//						Form form = new Form();
-						//						form.add("licenseID", readFile(inputFilePath, StandardCharsets.UTF_8));
+						ClientResource resource = new ClientResource("https://api.apiblueprint.org/parser");
 
-
-						//						ClientResource resource = new ClientResource("https://api.apiblueprint.org/parser");
-						//
-						//						String response = "";
-						//						Representation r = resource.post(readFile(inputFilePath, StandardCharsets.UTF_8));
-						//						if (resource.getStatus().isSuccess()) {
-						//							if (resource.getStatus().getCode() == 200){
-						//								response = r.getText();
-						//								nameText.setText("<html><center>file exist: "+response+ "</center></html>");
-						//							}
-						//						}
+						String response = "";
+						Representation r = resource.post(readFile(inputFilePath, StandardCharsets.UTF_8));
+						if(resource.getStatus().isSuccess())
+						{
+							if(resource.getStatus().getCode()==200)
+							{
+								response = r.getText();
+								nameText.setText("<html><center>" + response + "</center></html>");
+							}
+						}
 
 
 					}
