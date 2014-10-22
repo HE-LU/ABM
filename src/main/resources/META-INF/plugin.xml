@@ -1,0 +1,33 @@
+<idea-plugin version="2">
+	<id>abm</id>
+	<name>Apiary Blueprint Manager</name>
+	<version>1.0</version>
+	<vendor email="tuxilero@gmail.com" url="http://tuxilero.blogspot.com">Tuxilero</vendor>
+
+	<description>
+		<![CDATA[
+            Manager of generated classes from Apiary Blueprint
+        ]]>
+	</description>
+
+	<change-notes><![CDATA[
+      No changes.<br>
+    ]]>
+	</change-notes>
+
+	<idea-version since-build="131"/>
+
+	<extensions defaultExtensionNs="com.intellij">
+		<toolWindow id="Apiary Blueprint Manager" secondary="false" icon="/drawable/icon.png" anchor="right" factoryClass="com.apiary.abm.ui.ABMToolWindow" />
+	</extensions>
+
+	<application-components>
+	</application-components>
+
+	<project-components>
+	</project-components>
+
+	<actions>
+	</actions>
+
+</idea-plugin>

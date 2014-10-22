@@ -1,0 +1,79 @@
+apply plugin: "java"
+apply plugin: "idea"
+
+repositories {
+	jcenter()
+	maven {
+		credentials {
+			username 'username'
+			password 'password'
+		}
+		url "http://my.repository.url"
+	}
+}
+
+dependencies {
+	compile fileTree(dir: 'libs', include: ['*.jar'])
+	compile 'com.miglayout:miglayout-swing:4.2'
+}
+
+defaultTasks 'makeJar'
+
+idea.project.ipr {
+	beforeMerged {project -> project.modulePaths.clear()
+	}
+}
+
+idea.module.iml {
+	withXml {
+		it.node.@type = "PLUGIN_MODULE"
+	}
+}
+
+task setup {
+	description = "crete .idea based project structure"
+	dependsOn ideaModule, ideaProject
+	doLast {
+		copy {
+			from '.'
+			into '.idea/'
+			include '*.ipr'
+			rename {"modules.xml"}
+		}
+		project.delete "${project.name}.ipr"
+	}
+}
+
+jar {
+	baseName = 'gs-gradle'
+	version = '0.1.0'
+}
+
+task makeJar(type: Jar, dependsOn: classes) {
+	outputs.upToDateWhen {false}
+	dependsOn setup
+	//	from sourceSets.main.allSource
+	from sourceSets.main.output
+
+	//	from './build/classes/main'
+	//	from './build/resources/main'
+	doLast {
+		copy {
+			from './build/libs'
+			into './'
+			include '*.jar'
+			rename {"ABM.jar"}
+		}
+		copy {
+			from './build/libs'
+			into './../.IdeaIC13/system/plugins-sandbox/plugins'
+			include '*.jar'
+			rename {"ABM.jar"}
+		}
+		delete "./build/libs/ABM.jar"
+	}
+}
+
+task wrapper(type: Wrapper) {
+	gradleVersion = '1.8'
+}
