@@ -1,6 +1,6 @@
 # built application files
-*.apk
-*.ap_
+ABM.jar
+gradle-wrapper.jar
 
 # files for the dex VM
 *.dex
@@ -44,6 +44,3 @@ out/
 
 # Mac
 .DS_Store
-
-# JAR
-*.jar
