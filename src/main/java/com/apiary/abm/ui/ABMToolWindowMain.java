@@ -26,7 +26,5 @@ public class ABMToolWindowMain extends JFrame
 		ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
 		Content content = contentFactory.createContent(myToolWindowContent, "", false);
 		mToolWindow.getContentManager().addContent(content);
-
-
 	}
 }

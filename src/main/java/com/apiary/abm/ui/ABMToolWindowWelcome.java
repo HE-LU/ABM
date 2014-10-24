@@ -97,7 +97,7 @@ public class ABMToolWindowWelcome extends JFrame
 		{
 			final JLabel buttonConnect = new JLabel();
 
-			InputStream tmp = JBackgroundPanel.class.getClassLoader().getResourceAsStream("drawable/button_connect.png");
+			InputStream tmp = JBackgroundPanel.class.getClassLoader().getResourceAsStream("drawable/button_welcome.png");
 			BufferedImage tmpImage = ImageIO.read(tmp);
 			Image buttonConnectImage = tmpImage.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
 			buttonConnect.setIcon(new ImageIcon(buttonConnectImage));
@@ -107,8 +107,7 @@ public class ABMToolWindowWelcome extends JFrame
 			{
 				public void mouseClicked(MouseEvent e)
 				{
-					// Open connect screen
-					ABMToolWindowConnect connect = new ABMToolWindowConnect(mToolWindow);
+					new ABMToolWindowConnect(mToolWindow);
 				}
 
 
@@ -116,7 +115,7 @@ public class ABMToolWindowWelcome extends JFrame
 				{
 					try
 					{
-						InputStream tmp = JBackgroundPanel.class.getClassLoader().getResourceAsStream("drawable/button_connect_pressed.png");
+						InputStream tmp = JBackgroundPanel.class.getClassLoader().getResourceAsStream("drawable/button_welcome_pressed.png");
 						BufferedImage tmpImage = ImageIO.read(tmp);
 						Image buttonConnectImage = tmpImage.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
 						buttonConnect.setIcon(new ImageIcon(buttonConnectImage));
@@ -132,7 +131,7 @@ public class ABMToolWindowWelcome extends JFrame
 				{
 					try
 					{
-						InputStream tmp = JBackgroundPanel.class.getClassLoader().getResourceAsStream("drawable/button_connect.png");
+						InputStream tmp = JBackgroundPanel.class.getClassLoader().getResourceAsStream("drawable/button_welcome.png");
 						BufferedImage tmpImage = ImageIO.read(tmp);
 						Image buttonConnectImage = tmpImage.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
 						buttonConnect.setIcon(new ImageIcon(buttonConnectImage));
