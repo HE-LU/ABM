@@ -1,5 +1,12 @@
 package com.apiary.abm.utility;
 
+import com.apiary.abm.entity.ABMEntity;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import org.restlet.representation.Representation;
+import org.restlet.resource.ClientResource;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -48,5 +55,39 @@ public class Utils
 		bufferedReader.close();
 
 		return file.getAbsolutePath();
+	}
+
+
+	public static ABMEntity getJsonObject()
+	{
+		Preferences preferences = new Preferences();
+
+		Gson gson = new GsonBuilder().create();
+		ABMEntity out = gson.fromJson(preferences.getApiaryBlueprintJson(), ABMEntity.class);
+
+		return out;
+	}
+
+
+	public static void parseJsonFromBlueprint()
+	{
+		try
+		{
+			Preferences preferences = new Preferences();
+			ClientResource resource = new ClientResource("https://api.apiblueprint.org/parser");
+
+			Representation r = resource.post(preferences.getApiaryBlueprintRaw());
+			if(resource.getStatus().isSuccess())
+			{
+				if(resource.getStatus().getCode()==200)
+				{
+					preferences.setApiaryBlueprintJson(r.getText());
+				}
+			}
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
 }
