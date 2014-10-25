@@ -18,7 +18,7 @@
 	<idea-version since-build="131"/>
 
 	<extensions defaultExtensionNs="com.intellij">
-		<toolWindow id="Apiary Blueprint Manager" secondary="false" icon="/drawable/icon.png" anchor="right" factoryClass="com.apiary.abm.ui.ABMToolWindow" />
+		<toolWindow id="Apiary Blueprint Manager" secondary="false" icon="/drawable/img_icon.png" anchor="right" factoryClass="com.apiary.abm.ui.ABMToolWindow" />
 	</extensions>
 
 	<application-components>

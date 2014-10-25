@@ -1,29 +1,37 @@
-
 package com.apiary.abm.entity;
 
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+
 public class ResourceGroupsEntity
 {
 
 	@SerializedName("description")
-   	private String mDescription;
+	private String mDescription;
 
 	@SerializedName("name")
-   	private String mName;
+	private String mName;
 
 	@SerializedName("resources")
-   	private List mResources;
+	private List mResources;
 
- 	public String getDescription(){
+
+	public String getDescription()
+	{
 		return this.mDescription;
 	}
- 	public String getName(){
+
+
+	public String getName()
+	{
 		return this.mName;
 	}
- 	public List getResources(){
+
+
+	public List getResources()
+	{
 		return this.mResources;
 	}
 }

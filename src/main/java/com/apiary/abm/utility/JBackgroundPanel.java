@@ -1,9 +1,9 @@
 package com.apiary.abm.utility;
 
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
@@ -11,36 +11,23 @@ import javax.swing.JPanel;
 
 public class JBackgroundPanel extends JPanel
 {
-	private boolean mRepeat;
+	private JBackgroundPanelType mType;
 	private BufferedImage mImg;
 
 
-	public JBackgroundPanel(boolean repeat)
+	public enum JBackgroundPanelType
 	{
-		mRepeat = repeat;
-
-		// load the background image
-		try
-		{
-			InputStream tmp = JBackgroundPanel.class.getClassLoader().getResourceAsStream("drawable/pattern-1.png");
-			mImg = ImageIO.read(tmp);
-		}
-		catch(IOException e)
-		{
-			e.printStackTrace();
-		}
+		BACKGROUND, BACKGROUND_REPEAT, PANEL, NINE_PATCH
 	}
 
 
-	public JBackgroundPanel(String name, boolean repeat)
+	public JBackgroundPanel(String name, JBackgroundPanelType type)
 	{
-		mRepeat = repeat;
+		mType = type;
 
-		// load the background image
 		try
 		{
-			InputStream tmp = JBackgroundPanel.class.getClassLoader().getResourceAsStream("drawable/" + name);
-			mImg = ImageIO.read(tmp);
+			mImg = ImageIO.read(JBackgroundPanel.class.getClassLoader().getResourceAsStream("drawable/" + name));
 		}
 		catch(IOException e)
 		{
@@ -50,25 +37,32 @@ public class JBackgroundPanel extends JPanel
 
 
 	@Override
-	protected void paintComponent(Graphics g)
+	protected void paintComponent(Graphics graphics)
 	{
-		super.paintComponent(g);
+		super.paintComponent(graphics);
 
-		// paint the background image and repeat image
-		if(mRepeat)
+		switch(mType)
 		{
-			for(int i = 0; i<getWidth(); i = i + mImg.getWidth())
-			{
-				for(int j = 0; j<getHeight(); j = j + mImg.getHeight())
+			case BACKGROUND:
+				graphics.drawImage(mImg, 0, 0, getWidth(), getHeight(), this);
+				break;
+			case BACKGROUND_REPEAT:
+				for(int i = 0; i<getWidth(); i = i + mImg.getWidth())
 				{
-					g.drawImage(mImg, i, j, mImg.getWidth(), mImg.getHeight(), this);
+					for(int j = 0; j<getHeight(); j = j + mImg.getHeight())
+					{
+						graphics.drawImage(mImg, i, j, mImg.getWidth(), mImg.getHeight(), this);
+					}
 				}
-			}
-		}
-		// paint the background image and stretch image
-		else
-		{
-			g.drawImage(mImg, 0, 0, getWidth(), getHeight(), this);
+				break;
+			case PANEL:
+				graphics.drawImage(mImg, 0, 0, getWidth(), getHeight(), this);
+				break;
+			case NINE_PATCH:
+				NinePatch patch = NinePatch.load(mImg, true, false);
+				Graphics2D graphics2D = (Graphics2D) graphics;
+				patch.draw(graphics2D, 0, 0, getWidth(), getHeight());
+				break;
 		}
 	}
 }

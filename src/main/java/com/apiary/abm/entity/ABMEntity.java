@@ -17,7 +17,7 @@ public class ABMEntity
 	private String mError;
 
 	@SerializedName("warnings")
-	private List mWarnings;
+	private List mWarnings; // TODO
 
 
 	public String getVersion()

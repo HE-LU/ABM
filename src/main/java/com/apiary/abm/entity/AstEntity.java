@@ -1,40 +1,54 @@
-
 package com.apiary.abm.entity;
 
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+
 public class AstEntity
 {
 	@SerializedName("_version")
-   	private String mVersion;
+	private String mVersion;
 
 	@SerializedName("description")
-   	private String mDescription;
+	private String mDescription;
 
 	@SerializedName("metadata")
-   	private List mMetadata;
+	private List mMetadata;
 
 	@SerializedName("name")
-   	private String mName;
+	private String mName;
 
 	@SerializedName("resourceGroups")
-   	private List mResourceGroups;
+	private List mResourceGroups;
 
- 	public String getVersion(){
+
+	public String getVersion()
+	{
 		return this.mVersion;
 	}
- 	public String getDescription(){
+
+
+	public String getDescription()
+	{
 		return this.mDescription;
 	}
- 	public List getMetadata(){
+
+
+	public List getMetadata()
+	{
 		return this.mMetadata;
 	}
- 	public String getName(){
+
+
+	public String getName()
+	{
 		return this.mName;
 	}
- 	public List getResourceGroups(){
+
+
+	public List getResourceGroups()
+	{
 		return this.mResourceGroups;
 	}
 }

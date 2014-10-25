@@ -22,14 +22,14 @@ import java.nio.file.Paths;
 
 public class Utils
 {
-	public static String getStringFromFile(String path, Charset encoding) throws IOException
+	public static String readFileAsString(String path, Charset encoding) throws IOException
 	{
 		byte[] encoded = Files.readAllBytes(Paths.get(path));
 		return new String(encoded, encoding);
 	}
 
 
-	public static String getWebFile(String inputUrl) throws IOException
+	public static String saveWebFileToTmp(String inputUrl) throws IOException
 	{
 		// get URL content
 		URL url = new URL(inputUrl);
@@ -39,7 +39,7 @@ public class Utils
 		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
 		// save to tmp file
-		File file = File.createTempFile("tmp_input", ".tmp");
+		File file = File.createTempFile("tmp_abm_web_file", ".tmp");
 
 		// use FileWriter to write file
 		FileWriter fileWriter = new FileWriter(file.getAbsoluteFile());
@@ -63,9 +63,7 @@ public class Utils
 		Preferences preferences = new Preferences();
 
 		Gson gson = new GsonBuilder().create();
-		ABMEntity out = gson.fromJson(preferences.getApiaryBlueprintJson(), ABMEntity.class);
-
-		return out;
+		return gson.fromJson(preferences.getApiaryBlueprintJson(), ABMEntity.class);
 	}
 
 

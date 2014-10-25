@@ -38,7 +38,7 @@ public class ABMToolWindowWelcome extends JFrame
 		ResourceBundle messages = ResourceBundle.getBundle("values/strings");
 
 		// create UI
-		JBackgroundPanel myToolWindowContent = new JBackgroundPanel(true);
+		JBackgroundPanel myToolWindowContent = new JBackgroundPanel("img_background.png", JBackgroundPanel.JBackgroundPanelType.BACKGROUND_REPEAT);
 		ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
 		Content content = contentFactory.createContent(myToolWindowContent, "", false);
 		mToolWindow.getContentManager().addContent(content);
@@ -47,15 +47,20 @@ public class ABMToolWindowWelcome extends JFrame
 		// insets TOP LEFT BOTTOM RIGHT
 		myToolWindowContent.setLayout(new MigLayout("insets 0, flowy, fillx, filly", "[fill, grow, center]", "[fill,top][fill][fill,bottom]"));
 
-		JBackgroundPanel topPanel = new JBackgroundPanel("box_top.png", false);
+		JBackgroundPanel topPanel = new JBackgroundPanel("img_box_top.png", JBackgroundPanel.JBackgroundPanelType.PANEL);
 		JPanel middlePanel = new JPanel();
-		JBackgroundPanel bottomPanel = new JBackgroundPanel("box_bottom.png", false);
+		JBackgroundPanel bottomPanel = new JBackgroundPanel("img_box_bottom.png", JBackgroundPanel.JBackgroundPanelType.PANEL);
 
 		topPanel.setMinimumSize(new Dimension(0, 125));
 		bottomPanel.setMinimumSize(new Dimension(0, 125));
 
 		topPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 125));
 		bottomPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 125));
+
+		// add elements
+		topPanel.setLayout(new MigLayout("insets 0 55 20 55, flowy, fillx, filly", "[fill, grow]", "[fill]"));
+		middlePanel.setLayout(new MigLayout("insets 0, flowy, fillx, filly", "[fill, grow]", "[fill][fill]"));
+		bottomPanel.setLayout(new MigLayout("insets 25 0 0 0, flowy, fillx, filly", "[grow, center]", "[center, top]"));
 
 		topPanel.setOpaque(false);
 		middlePanel.setOpaque(false);
@@ -65,42 +70,35 @@ public class ABMToolWindowWelcome extends JFrame
 		myToolWindowContent.add(middlePanel);
 		myToolWindowContent.add(bottomPanel);
 
-
-		// add elements
-		topPanel.setLayout(new MigLayout("insets 10 0 0 0, flowy, fillx, filly", "[grow, center]", "[center, top]"));
-		middlePanel.setLayout(new MigLayout("insets 0, flowy, fillx, filly", "[fill, grow]", "[fill][fill]"));
-		bottomPanel.setLayout(new MigLayout("insets 25 50 0 50, flowy, fillx, filly", "[fill, grow]", "[fill]"));
-
 		// name
-		JLabel nameText = new JLabel("<html><center>" + messages.getString("wellcome_name") + "</center></html>");
+		JLabel nameText = new JLabel("<html><center>" + messages.getString("welcome_name") + "</center></html>");
 		nameText.setForeground(Color.WHITE);
-		nameText.setFont(new Font("Serif", Font.BOLD, 32));
+		nameText.setFont(new Font("Ariel", Font.BOLD, 32));
 		nameText.setHorizontalAlignment(SwingConstants.CENTER);
 		middlePanel.add(nameText);
 
 		// version
-		JLabel versionText = new JLabel("<html><center>" + messages.getString("wellcome_version") + "</center></html>");
+		JLabel versionText = new JLabel("<html><center>" + messages.getString("welcome_version") + "</center></html>");
 		versionText.setForeground(Color.WHITE);
-		versionText.setFont(new Font("Serif", Font.BOLD, 24));
+		versionText.setFont(new Font("Ariel", Font.BOLD, 24));
 		versionText.setHorizontalAlignment(SwingConstants.CENTER);
 		middlePanel.add(versionText);
 
 		// informations
-		JLabel infoText = new JLabel("<html><center>" + messages.getString("wellcome_information") + "</center></html>");
+		JLabel infoText = new JLabel("<html><center>" + messages.getString("welcome_information") + "</center></html>");
 		infoText.setForeground(Color.WHITE);
-		infoText.setFont(new Font("Serif", Font.BOLD, 18));
+		infoText.setFont(new Font("Ariel", Font.BOLD, 18));
 		infoText.setHorizontalAlignment(SwingConstants.CENTER);
-		bottomPanel.add(infoText);
+		topPanel.add(infoText);
 
 		// connect button
 		try
 		{
 			final JLabel buttonConnect = new JLabel();
+			BufferedImage tmpImage = ImageIO.read(JBackgroundPanel.class.getClassLoader().getResourceAsStream("drawable/img_button_welcome.png"));
 
-			InputStream tmp = JBackgroundPanel.class.getClassLoader().getResourceAsStream("drawable/button_welcome.png");
-			BufferedImage tmpImage = ImageIO.read(tmp);
-			Image buttonConnectImage = tmpImage.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
-			buttonConnect.setIcon(new ImageIcon(buttonConnectImage));
+			Image image = tmpImage.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+			buttonConnect.setIcon(new ImageIcon(image));
 			buttonConnect.setOpaque(false);
 
 			buttonConnect.addMouseListener(new MouseAdapter()
@@ -115,7 +113,7 @@ public class ABMToolWindowWelcome extends JFrame
 				{
 					try
 					{
-						InputStream tmp = JBackgroundPanel.class.getClassLoader().getResourceAsStream("drawable/button_welcome_pressed.png");
+						InputStream tmp = JBackgroundPanel.class.getClassLoader().getResourceAsStream("drawable/img_button_welcome_pressed.png");
 						BufferedImage tmpImage = ImageIO.read(tmp);
 						Image buttonConnectImage = tmpImage.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
 						buttonConnect.setIcon(new ImageIcon(buttonConnectImage));
@@ -131,7 +129,7 @@ public class ABMToolWindowWelcome extends JFrame
 				{
 					try
 					{
-						InputStream tmp = JBackgroundPanel.class.getClassLoader().getResourceAsStream("drawable/button_welcome.png");
+						InputStream tmp = JBackgroundPanel.class.getClassLoader().getResourceAsStream("drawable/img_button_welcome.png");
 						BufferedImage tmpImage = ImageIO.read(tmp);
 						Image buttonConnectImage = tmpImage.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
 						buttonConnect.setIcon(new ImageIcon(buttonConnectImage));
@@ -143,7 +141,7 @@ public class ABMToolWindowWelcome extends JFrame
 				}
 			});
 
-			topPanel.add(buttonConnect);
+			bottomPanel.add(buttonConnect);
 		}
 		catch(IOException e)
 		{

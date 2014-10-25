@@ -26,6 +26,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 
@@ -41,7 +42,7 @@ public class ABMToolWindowConnect extends JFrame
 		ResourceBundle messages = ResourceBundle.getBundle("values/strings");
 
 		// create UI
-		final JBackgroundPanel myToolWindowContent = new JBackgroundPanel(true);
+		final JBackgroundPanel myToolWindowContent = new JBackgroundPanel("img_background.png", JBackgroundPanel.JBackgroundPanelType.BACKGROUND_REPEAT);
 		ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
 		Content content = contentFactory.createContent(myToolWindowContent, "", false);
 		mToolWindow.getContentManager().addContent(content);
@@ -50,15 +51,20 @@ public class ABMToolWindowConnect extends JFrame
 		// insets TOP LEFT BOTTOM RIGHT
 		myToolWindowContent.setLayout(new MigLayout("insets 0, flowy, fillx, filly", "[fill, grow, center]", "[fill,top][fill][fill,bottom]"));
 
-		JBackgroundPanel topPanel = new JBackgroundPanel("box_top.png", false);
+		JBackgroundPanel topPanel = new JBackgroundPanel("img_box_top.png", JBackgroundPanel.JBackgroundPanelType.PANEL);
 		JPanel middlePanel = new JPanel();
-		JBackgroundPanel bottomPanel = new JBackgroundPanel("box_bottom.png", false);
+		JBackgroundPanel bottomPanel = new JBackgroundPanel("img_box_bottom.png", JBackgroundPanel.JBackgroundPanelType.PANEL);
 
 		topPanel.setMinimumSize(new Dimension(0, 125));
 		bottomPanel.setMinimumSize(new Dimension(0, 125));
 
 		topPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 125));
 		bottomPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 125));
+
+		// add elements
+		topPanel.setLayout(new MigLayout("insets 0 55 20 55, flowy, fillx, filly", "[fill, grow]", "[fill]"));
+		middlePanel.setLayout(new MigLayout("insets 0, flowy, fillx, filly", "[grow, center]", "[]"));
+		bottomPanel.setLayout(new MigLayout("insets 25 0 0 0, flowy, fillx, filly", "[grow, center]", "[center, top]"));
 
 		topPanel.setOpaque(false);
 		middlePanel.setOpaque(false);
@@ -68,30 +74,40 @@ public class ABMToolWindowConnect extends JFrame
 		myToolWindowContent.add(middlePanel);
 		myToolWindowContent.add(bottomPanel);
 
+		// Connect label
+		JLabel infoText = new JLabel("<html><center>" + messages.getString("connect_header") + "</center></html>");
+		infoText.setForeground(Color.WHITE);
+		infoText.setFont(new Font("Ariel", Font.BOLD, 40));
+		infoText.setHorizontalAlignment(SwingConstants.CENTER);
+		topPanel.add(infoText);
 
-		// add elements
-		topPanel.setLayout(new MigLayout("insets 10 0 0 0, flowy, fillx, filly", "[grow, center]", "[center, top]"));
-		middlePanel.setLayout(new MigLayout("insets 0, flowy, fillx, filly", "[fill, grow]", "[fill][fill]"));
-		bottomPanel.setLayout(new MigLayout("insets 25 50 0 50, flowy, fillx, filly", "[fill, grow]", "[fill]"));
+		// Label + EditText
+		JBackgroundPanel middleContentPanel = new JBackgroundPanel("img_background_panel.9.png", JBackgroundPanel.JBackgroundPanelType.NINE_PATCH);
+		middleContentPanel.setLayout(new MigLayout("insets 12 12 18 19, flowy, fillx, filly", "[fill, grow]", "[][]"));
+		middleContentPanel.setOpaque(false);
+		middleContentPanel.setMaximumSize(new Dimension(500, Integer.MAX_VALUE));
 
+		JLabel text = new JLabel("<html><center>" + messages.getString("connect_message") + "</center></html>");
+		text.setForeground(Color.WHITE);
+		text.setFont(new Font("Ariel", Font.BOLD, 18));
+		text.setHorizontalAlignment(SwingConstants.CENTER);
+		middleContentPanel.add(text);
 
-		// name
-		final JLabel nameText = new JLabel("<html><center>" + messages.getString("wellcome_name") + "</center></html>");
-		nameText.setForeground(Color.WHITE);
-		nameText.setFont(new Font("Serif", Font.BOLD, 16));
-		nameText.setHorizontalAlignment(SwingConstants.CENTER);
-		middlePanel.add(nameText);
+		final JTextField textField = new JTextField();
+		textField.setText("http://127.0.0.1:8080/share/input.blueprint");
+		middleContentPanel.add(textField);
+
+		middlePanel.add(middleContentPanel);
 
 
 		// connect button
 		try
 		{
 			final JLabel buttonConnect = new JLabel();
+			BufferedImage tmpImage = ImageIO.read(JBackgroundPanel.class.getClassLoader().getResourceAsStream("drawable/img_button_connect.png"));
 
-			InputStream tmp = JBackgroundPanel.class.getClassLoader().getResourceAsStream("drawable/button_connect.png");
-			BufferedImage tmpImage = ImageIO.read(tmp);
-			Image buttonConnectImage = tmpImage.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
-			buttonConnect.setIcon(new ImageIcon(buttonConnectImage));
+			Image image = tmpImage.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
+			buttonConnect.setIcon(new ImageIcon(image));
 			buttonConnect.setOpaque(false);
 
 			buttonConnect.addMouseListener(new MouseAdapter()
@@ -100,10 +116,10 @@ public class ABMToolWindowConnect extends JFrame
 				{
 					try
 					{
-						String inputFilePath = Utils.getWebFile("http://127.0.0.1:8080/share/input.blueprint");
+						String inputFilePath = Utils.saveWebFileToTmp(textField.getText());
 
 						Preferences preferences = new Preferences();
-						preferences.setApiaryBlueprintRaw(Utils.getStringFromFile(inputFilePath, StandardCharsets.UTF_8));
+						preferences.setApiaryBlueprintRaw(Utils.readFileAsString(inputFilePath, StandardCharsets.UTF_8));
 
 						new ABMToolWindowMain(mToolWindow);
 					}
@@ -118,7 +134,7 @@ public class ABMToolWindowConnect extends JFrame
 				{
 					try
 					{
-						InputStream tmp = JBackgroundPanel.class.getClassLoader().getResourceAsStream("drawable/button_connect_pressed.png");
+						InputStream tmp = JBackgroundPanel.class.getClassLoader().getResourceAsStream("drawable/img_button_connect_pressed.png");
 						BufferedImage tmpImage = ImageIO.read(tmp);
 						Image buttonConnectImage = tmpImage.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
 						buttonConnect.setIcon(new ImageIcon(buttonConnectImage));
@@ -134,7 +150,7 @@ public class ABMToolWindowConnect extends JFrame
 				{
 					try
 					{
-						InputStream tmp = JBackgroundPanel.class.getClassLoader().getResourceAsStream("drawable/button_connect.png");
+						InputStream tmp = JBackgroundPanel.class.getClassLoader().getResourceAsStream("drawable/img_button_connect.png");
 						BufferedImage tmpImage = ImageIO.read(tmp);
 						Image buttonConnectImage = tmpImage.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
 						buttonConnect.setIcon(new ImageIcon(buttonConnectImage));
@@ -146,7 +162,7 @@ public class ABMToolWindowConnect extends JFrame
 				}
 			});
 
-			topPanel.add(buttonConnect);
+			bottomPanel.add(buttonConnect);
 		}
 		catch(IOException e)
 		{
