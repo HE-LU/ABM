@@ -6,11 +6,11 @@ import com.apiary.abm.ui.ABMToolWindow;
 
 public class Preferences
 {
-	private java.util.prefs.Preferences mPreferences;
-
 	public static final String PREF_PLUGIN_INITIALIZED = "pref_plugin_initialized";
+	public static final String PREF_APIARY_BLUEPRINT_URL = "pref_apiary_blueprint_url";
 	public static final String PREF_APIARY_BLUEPRINT_RAW = "pref_apiary_blueprint_raw";
 	public static final String PREF_APIARY_BLUEPRINT_JSON = "pref_apiary_blueprint_json";
+	private java.util.prefs.Preferences mPreferences;
 
 
 	public Preferences()
@@ -23,6 +23,12 @@ public class Preferences
 	public boolean getPluginInitialized()
 	{
 		return mPreferences.getBoolean(PREF_PLUGIN_INITIALIZED, false);
+	}
+
+
+	public String getApiaryBlueprintUrl()
+	{
+		return new String(mPreferences.getByteArray(PREF_APIARY_BLUEPRINT_URL, null));
 	}
 
 
@@ -42,6 +48,12 @@ public class Preferences
 	public void setPluginInitialized(boolean input)
 	{
 		mPreferences.putBoolean(PREF_PLUGIN_INITIALIZED, input);
+	}
+
+
+	public void setApiaryBlueprintUrl(String input)
+	{
+		mPreferences.putByteArray(PREF_APIARY_BLUEPRINT_URL, input.getBytes());
 	}
 
 

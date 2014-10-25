@@ -20,13 +20,13 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 
@@ -51,18 +51,18 @@ public class ABMToolWindowMain extends JFrame
 		JPanel middlePanel = new JPanel();
 		JBackgroundPanel bottomPanel = new JBackgroundPanel("img_box_bottom.png", JBackgroundPanel.JBackgroundPanelType.PANEL);
 
-		topPanel.setMinimumSize(new Dimension(0, 125));
+		topPanel.setMinimumSize(new Dimension(0, 130));
 		middlePanel.setMinimumSize(new Dimension(0, 100));
-		bottomPanel.setMinimumSize(new Dimension(0, 125));
+		bottomPanel.setMinimumSize(new Dimension(0, 130));
 
-		topPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 125));
+		topPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 130));
 		middlePanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
-		bottomPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 125));
+		bottomPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 130));
 
 		// add elements
 		topPanel.setLayout(new MigLayout("insets 5 0 0 0, flowy, fillx, filly", "[grow, center]", "[center, top]"));
 		middlePanel.setLayout(new MigLayout("insets 0 20 0 20, flowy, fillx, filly", "[fill, grow]", "[fill]"));
-		bottomPanel.setLayout(new MigLayout("insets 25 0 0 0, flowy, fillx, filly", "[grow, center]", "[center, top]"));
+		bottomPanel.setLayout(new MigLayout("insets 30 0 0 0, flowy, fillx, filly", "[grow, center]", "[center, top]"));
 
 		topPanel.setOpaque(false);
 		middlePanel.setOpaque(false);
@@ -95,7 +95,7 @@ public class ABMToolWindowMain extends JFrame
 		ABMEntity object = Utils.getJsonObject();
 
 		// tree structure
-		JBackgroundPanel middleTreePanel = new JBackgroundPanel("img_background_panel.9.png", JBackgroundPanel.JBackgroundPanelType.NINE_PATCH);
+		final JBackgroundPanel middleTreePanel = new JBackgroundPanel("img_background_panel.9.png", JBackgroundPanel.JBackgroundPanelType.NINE_PATCH);
 		middleTreePanel.setLayout(new MigLayout("insets 12 12 18 19, flowy, fillx, filly", "[fill, grow]", "[fill]"));
 		middleTreePanel.setOpaque(false);
 
@@ -117,60 +117,79 @@ public class ABMToolWindowMain extends JFrame
 		middlePanel.add(middleTreePanel);
 
 		// Button refresh
-		try
+		final JLabel buttonRefresh = new JLabel();
+		buttonRefresh.setOpaque(false);
+		buttonRefresh.setText("<html><img src='" + JBackgroundPanel.class.getClassLoader().getResource("drawable/img_button_reload.png") + "' width='90' height='90' /></html>");
+
+		buttonRefresh.addMouseListener(new MouseAdapter()
 		{
-			final JLabel buttonConnect = new JLabel();
-			BufferedImage tmpImage = ImageIO.read(JBackgroundPanel.class.getClassLoader().getResourceAsStream("drawable/img_button_refresh.png"));
+			private boolean reloading;
 
-			Image image = tmpImage.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
-			buttonConnect.setIcon(new ImageIcon(image));
-			buttonConnect.setOpaque(false);
 
-			buttonConnect.addMouseListener(new MouseAdapter()
+			public void mouseClicked(MouseEvent e)
 			{
-				public void mouseClicked(MouseEvent e)
+				if(reloading) return;
+
+				buttonRefresh.setText("<html><img src='" + JBackgroundPanel.class.getClassLoader().getResource("drawable/animation_reload.gif") + "' width='90' height='90' /></html>");
+				reloading = true;
+
+				Thread t = new Thread(new Runnable()
 				{
-				}
-
-
-				public void mousePressed(MouseEvent e)
-				{
-					try
+					public void run()
 					{
-						InputStream tmp = JBackgroundPanel.class.getClassLoader().getResourceAsStream("drawable/img_button_refresh_pressed.png");
-						BufferedImage tmpImage = ImageIO.read(tmp);
-						Image buttonConnectImage = tmpImage.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
-						buttonConnect.setIcon(new ImageIcon(buttonConnectImage));
+						// parse json from raw blueprint
+						Utils.parseJsonFromBlueprint();
+
+						// convert json string into object
+						ABMEntity object = Utils.getJsonObject();
+
+						Tree tree = new Tree(initExampleTreeStructure(object));
+						tree.setRootVisible(false);
+						tree.setOpaque(false);
+						tree.setCellRenderer(new ABMTreeCellRenderer());
+
+						final JBScrollPane pane = new JBScrollPane(tree);
+						pane.setBorder(null);
+						pane.setOpaque(false);
+
+						pane.getViewport().setBorder(null);
+						pane.getViewport().setOpaque(false);
+
+						reloading = false;
+
+						SwingUtilities.invokeLater(new Runnable()
+						{
+							public void run()
+							{
+								middleTreePanel.removeAll();
+								middleTreePanel.add(pane);
+
+								buttonRefresh.setText("<html><img src='" + JBackgroundPanel.class.getClassLoader().getResource("drawable/img_button_reload.png") + "' width='90' height='90' /></html>");
+							}
+						});
 					}
-					catch(IOException e1)
-					{
-						e1.printStackTrace();
-					}
-				}
+				});
+				t.start();
+			}
 
 
-				public void mouseReleased(MouseEvent e)
-				{
-					try
-					{
-						InputStream tmp = JBackgroundPanel.class.getClassLoader().getResourceAsStream("drawable/img_button_refresh.png");
-						BufferedImage tmpImage = ImageIO.read(tmp);
-						Image buttonConnectImage = tmpImage.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
-						buttonConnect.setIcon(new ImageIcon(buttonConnectImage));
-					}
-					catch(IOException e1)
-					{
-						e1.printStackTrace();
-					}
-				}
-			});
+			public void mousePressed(MouseEvent e)
+			{
+				if(reloading) return;
 
-			bottomPanel.add(buttonConnect);
-		}
-		catch(IOException e)
-		{
-			e.printStackTrace();
-		}
+				buttonRefresh.setText("<html><img src='" + JBackgroundPanel.class.getClassLoader().getResource("drawable/img_button_reload_pressed.png") + "' width='90' height='90' /></html>");
+			}
+
+
+			public void mouseReleased(MouseEvent e)
+			{
+				if(reloading) return;
+
+				buttonRefresh.setText("<html><img src='" + JBackgroundPanel.class.getClassLoader().getResource("drawable/img_button_reload.png") + "' width='90' height='90' /></html>");
+			}
+
+		});
+		bottomPanel.add(buttonRefresh);
 	}
 
 
@@ -184,7 +203,17 @@ public class ABMToolWindowMain extends JFrame
 	{
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.ROOT, "Root object", ""));
 
+		DefaultMutableTreeNode category = null;
 		DefaultMutableTreeNode item = null;
+
+		category = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.ERROR_ROOT, "Errors", "3"));
+		root.add(category);
+
+		category = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.WARNING_ROOT, "Warnings", "2"));
+		root.add(category);
+
+		category = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.MISSING_ROOT, "Not implemented", "2"));
+		root.add(category);
 
 
 		return root;
@@ -198,7 +227,7 @@ public class ABMToolWindowMain extends JFrame
 		DefaultMutableTreeNode category = null;
 		DefaultMutableTreeNode book = null;
 
-		category = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.ERROR_ROOT, "Errors", ""));
+		category = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.ERROR_ROOT, "Errors", "3"));
 		top.add(category);
 
 		//original Tutorial
@@ -215,7 +244,7 @@ public class ABMToolWindowMain extends JFrame
 
 		//...add more books for programmers...
 
-		category = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.WARNING_ROOT, "Warnings", ""));
+		category = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.WARNING_ROOT, "Warnings", "2"));
 		top.add(category);
 
 		//VM
@@ -226,7 +255,7 @@ public class ABMToolWindowMain extends JFrame
 		book = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.WARNING, "File: date.java", "Bad argument type Date"));
 		category.add(book);
 
-		category = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.MISSING_ROOT, "Not implemented", ""));
+		category = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.MISSING_ROOT, "Not implemented", "2"));
 		top.add(category);
 
 		//VM

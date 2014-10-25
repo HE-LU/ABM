@@ -36,28 +36,31 @@ public class ABMTreeCellRenderer extends JLabel implements TreeCellRenderer
 			case ERROR_ROOT:
 				setFont(new Font("Arial", Font.BOLD, 18));
 				setForeground(Color.RED);
+				setText(entity.getName() + " (" + entity.getValue()+")");
 				break;
 			case WARNING_ROOT:
 				setFont(new Font("Arial", Font.BOLD, 18));
 				setForeground(Color.ORANGE);
+				setText(entity.getName() + " (" + entity.getValue()+")");
 				break;
 			case MISSING_ROOT:
 				setFont(new Font("Arial", Font.BOLD, 18));
 				setForeground(Color.GREEN);
+				setText(entity.getName() + " (" + entity.getValue()+")");
 				break;
 			case ERROR:
 				setForeground(new Color(255, 200, 200));
+				setText(entity.getName() + ": " + entity.getValue());
 				break;
 			case WARNING:
 				setForeground(new Color(255, 245, 200));
+				setText(entity.getName() + ": " + entity.getValue());
 				break;
 			case MISSING:
 				setForeground(new Color(200, 255, 200));
+				setText(entity.getName() + ": " + entity.getValue());
 				break;
 		}
-
-		if(entity.getValue()==null || entity.getValue().equals("")) setText(entity.getName());
-		else setText(entity.getName() + ": " + entity.getValue());
 
 		return this;
 	}

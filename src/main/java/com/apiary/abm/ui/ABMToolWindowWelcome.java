@@ -10,16 +10,10 @@ import net.miginfocom.swing.MigLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ResourceBundle;
 
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -51,16 +45,16 @@ public class ABMToolWindowWelcome extends JFrame
 		JPanel middlePanel = new JPanel();
 		JBackgroundPanel bottomPanel = new JBackgroundPanel("img_box_bottom.png", JBackgroundPanel.JBackgroundPanelType.PANEL);
 
-		topPanel.setMinimumSize(new Dimension(0, 125));
-		bottomPanel.setMinimumSize(new Dimension(0, 125));
+		topPanel.setMinimumSize(new Dimension(0, 130));
+		bottomPanel.setMinimumSize(new Dimension(0, 130));
 
-		topPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 125));
-		bottomPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 125));
+		topPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 130));
+		bottomPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 130));
 
 		// add elements
 		topPanel.setLayout(new MigLayout("insets 0 55 20 55, flowy, fillx, filly", "[fill, grow]", "[fill]"));
 		middlePanel.setLayout(new MigLayout("insets 0, flowy, fillx, filly", "[fill, grow]", "[fill][fill]"));
-		bottomPanel.setLayout(new MigLayout("insets 25 0 0 0, flowy, fillx, filly", "[grow, center]", "[center, top]"));
+		bottomPanel.setLayout(new MigLayout("insets 30 0 0 0, flowy, fillx, filly", "[grow, center]", "[center, top]"));
 
 		topPanel.setOpaque(false);
 		middlePanel.setOpaque(false);
@@ -84,7 +78,7 @@ public class ABMToolWindowWelcome extends JFrame
 		versionText.setHorizontalAlignment(SwingConstants.CENTER);
 		middlePanel.add(versionText);
 
-		// informations
+		// information
 		JLabel infoText = new JLabel("<html><center>" + messages.getString("welcome_information") + "</center></html>");
 		infoText.setForeground(Color.WHITE);
 		infoText.setFont(new Font("Ariel", Font.BOLD, 18));
@@ -92,62 +86,30 @@ public class ABMToolWindowWelcome extends JFrame
 		topPanel.add(infoText);
 
 		// connect button
-		try
+		final JLabel button = new JLabel();
+		button.setOpaque(false);
+		button.setText("<html><img src='" + JBackgroundPanel.class.getClassLoader().getResource("drawable/img_button_start.png") + "' width='90' height='90' /></html>");
+
+		button.addMouseListener(new MouseAdapter()
 		{
-			final JLabel buttonConnect = new JLabel();
-			BufferedImage tmpImage = ImageIO.read(JBackgroundPanel.class.getClassLoader().getResourceAsStream("drawable/img_button_welcome.png"));
-
-			Image image = tmpImage.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
-			buttonConnect.setIcon(new ImageIcon(image));
-			buttonConnect.setOpaque(false);
-
-			buttonConnect.addMouseListener(new MouseAdapter()
+			public void mouseClicked(MouseEvent e)
 			{
-				public void mouseClicked(MouseEvent e)
-				{
-					new ABMToolWindowConnect(mToolWindow);
-				}
+				new ABMToolWindowConnect(mToolWindow);
+			}
 
 
-				public void mousePressed(MouseEvent e)
-				{
-					try
-					{
-						InputStream tmp = JBackgroundPanel.class.getClassLoader().getResourceAsStream("drawable/img_button_welcome_pressed.png");
-						BufferedImage tmpImage = ImageIO.read(tmp);
-						Image buttonConnectImage = tmpImage.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
-						buttonConnect.setIcon(new ImageIcon(buttonConnectImage));
-					}
-					catch(IOException e1)
-					{
-						e1.printStackTrace();
-					}
-				}
+			public void mousePressed(MouseEvent e)
+			{
+				button.setText("<html><img src='" + JBackgroundPanel.class.getClassLoader().getResource("drawable/img_button_start_pressed.png") + "' width='90' height='90' /></html>");
+			}
 
 
-				public void mouseReleased(MouseEvent e)
-				{
-					try
-					{
-						InputStream tmp = JBackgroundPanel.class.getClassLoader().getResourceAsStream("drawable/img_button_welcome.png");
-						BufferedImage tmpImage = ImageIO.read(tmp);
-						Image buttonConnectImage = tmpImage.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
-						buttonConnect.setIcon(new ImageIcon(buttonConnectImage));
-					}
-					catch(IOException e1)
-					{
-						e1.printStackTrace();
-					}
-				}
-			});
+			public void mouseReleased(MouseEvent e)
+			{
+				button.setText("<html><img src='" + JBackgroundPanel.class.getClassLoader().getResource("drawable/img_button_start.png") + "' width='90' height='90' /></html>");
+			}
+		});
 
-			bottomPanel.add(buttonConnect);
-		}
-		catch(IOException e)
-		{
-			e.printStackTrace();
-		}
-
-
+		bottomPanel.add(button);
 	}
 }
