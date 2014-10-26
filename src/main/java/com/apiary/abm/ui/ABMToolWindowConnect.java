@@ -90,7 +90,8 @@ public class ABMToolWindowConnect extends JFrame
 		middleContentPanel.add(labelMessage);
 
 		final JTextField textField = new JTextField();
-		textField.setText("http://127.0.0.1:8080/share/input.blueprint");
+//		textField.setText("http://127.0.0.1:8080/share/input.blueprint");
+		textField.setText("http://127.0.0.1:8080/share/my.blueprint");
 		middleContentPanel.add(textField);
 
 		middlePanel.add(middleContentPanel);
@@ -133,7 +134,7 @@ public class ABMToolWindowConnect extends JFrame
 
 							Preferences preferences = new Preferences();
 							preferences.setApiaryBlueprintUrl(textField.getText());
-							preferences.setApiaryBlueprintRaw(tmp);
+//							preferences.setApiaryBlueprintRaw(tmp);
 
 							SwingUtilities.invokeLater(new Runnable()
 							{

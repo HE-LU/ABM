@@ -1,16 +1,31 @@
 package com.apiary.abm.ui;
 
 import com.apiary.abm.entity.ABMEntity;
+import com.apiary.abm.entity.ActionsEntity;
 import com.apiary.abm.entity.NodeTypeEnum;
+import com.apiary.abm.entity.ResourceGroupsEntity;
+import com.apiary.abm.entity.ResourcesEntity;
 import com.apiary.abm.entity.TreeNodeEntity;
 import com.apiary.abm.renderer.ABMTreeCellRenderer;
 import com.apiary.abm.utility.JBackgroundPanel;
 import com.apiary.abm.utility.Utils;
+import com.intellij.ide.projectView.ViewSettings;
+import com.intellij.ide.projectView.impl.nodes.PackageUtil;
+import com.intellij.ide.projectView.impl.nodes.ProjectViewDirectoryHelper;
+import com.intellij.ide.util.treeView.AbstractTreeNode;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.ProjectRootManager;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.psi.JavaDirectoryService;
+import com.intellij.psi.PsiDirectory;
+import com.intellij.psi.PsiManager;
+import com.intellij.psi.PsiPackage;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import com.intellij.ui.treeStructure.Tree;
+import com.intellij.util.containers.ContainerUtil;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -20,6 +35,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -88,11 +108,11 @@ public class ABMToolWindowMain extends JFrame
 			e.printStackTrace();
 		}
 
-		// parse json from raw blueprint
-		Utils.parseJsonFromBlueprint();
 
-		// convert json string into object
-		ABMEntity object = Utils.getJsonObject();
+		// refresh and analyze blueprint
+		ABMEntity object = refreshBlueprint();
+//		analyzeBlueprint(object);
+
 
 		// tree structure
 		final JBackgroundPanel middleTreePanel = new JBackgroundPanel("img_background_panel.9.png", JBackgroundPanel.JBackgroundPanelType.NINE_PATCH);
@@ -100,7 +120,8 @@ public class ABMToolWindowMain extends JFrame
 		middleTreePanel.setOpaque(false);
 
 
-		Tree tree = new Tree(initExampleTreeStructure(object));
+//		Tree tree = new Tree(initExampleTreeStructure(object));
+		Tree tree = new Tree(initTreeStructure(analyzeBlueprint(object)));
 		tree.setRootVisible(false);
 		tree.setOpaque(false);
 		tree.setCellRenderer(new ABMTreeCellRenderer());
@@ -137,11 +158,9 @@ public class ABMToolWindowMain extends JFrame
 				{
 					public void run()
 					{
-						// parse json from raw blueprint
-						Utils.parseJsonFromBlueprint();
+						ABMEntity object = refreshBlueprint();
 
-						// convert json string into object
-						ABMEntity object = Utils.getJsonObject();
+						analyzeBlueprint(object);
 
 						Tree tree = new Tree(initExampleTreeStructure(object));
 						tree.setRootVisible(false);
@@ -193,33 +212,111 @@ public class ABMToolWindowMain extends JFrame
 	}
 
 
+	private List<TreeNodeEntity> analyzeBlueprint(ABMEntity object)
+	{
+		if(object==null || object.getError()!=null) return null;
+		System.out.println("Object OK!");
+
+		List<TreeNodeEntity> outputList = new ArrayList<TreeNodeEntity>();
+		for(ResourceGroupsEntity resourceGroupsEntity : object.getAst().getResourceGroups())
+		{
+			for(ResourcesEntity resourcesEntity : resourceGroupsEntity.getResources())
+			{
+				for(ActionsEntity actionsEntity : resourcesEntity.getActions())
+				{
+					TreeNodeEntity entity = new TreeNodeEntity();
+					entity.setName(actionsEntity.getName().replace(" ",""));
+					entity.setUri(resourcesEntity.getUriTemplate());
+					entity.setMethod(actionsEntity.getMethod());
+
+					if(entity.getMethod().equals("GET"))
+						entity.setNodeType(NodeTypeEnum.ERROR);
+					else if(entity.getMethod().equals("POST"))
+						entity.setNodeType(NodeTypeEnum.WARNING);
+					else
+						entity.setNodeType(NodeTypeEnum.MISSING);
+
+					outputList.add(entity);
+				}
+			}
+		}
+		return outputList;
+	}
+
+
+	private DefaultMutableTreeNode initTreeStructure(List<TreeNodeEntity> nodeList)
+	{
+		DefaultMutableTreeNode root = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.ROOT, "Root object", ""));
+
+		DefaultMutableTreeNode categoryError = null;
+		DefaultMutableTreeNode categoryWarning = null;
+		DefaultMutableTreeNode categoryMissing = null;
+		DefaultMutableTreeNode item = null;
+
+		categoryError = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.ERROR_ROOT, "Errors", "3"));
+		root.add(categoryError);
+
+		categoryWarning = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.WARNING_ROOT, "Warnings", "2"));
+		root.add(categoryWarning);
+
+		categoryMissing = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.MISSING_ROOT, "Not implemented", "2"));
+		root.add(categoryMissing);
+
+		for(TreeNodeEntity entity: nodeList)
+		{
+			if(entity.getMethod().equals("GET"))
+			{
+				item = new DefaultMutableTreeNode(entity);
+				categoryError.add(item);
+			}
+			else if(entity.getMethod().equals("POST"))
+			{
+				item = new DefaultMutableTreeNode(entity);
+				categoryWarning.add(item);
+			}
+			else
+			{
+				item = new DefaultMutableTreeNode(entity);
+				categoryMissing.add(item);
+			}
+
+		}
+
+		return root;
+	}
+
+
+	// Utility
+	private ABMEntity refreshBlueprint()
+	{
+		ABMEntity object = null;
+		try
+		{
+			com.apiary.abm.utility.Preferences preferences = new com.apiary.abm.utility.Preferences();
+			String inputFilePath = Utils.saveWebFileToTmp(preferences.getApiaryBlueprintUrl());
+			String tmp = Utils.readFileAsString(inputFilePath, StandardCharsets.UTF_8);
+
+			// parse json from raw blueprint
+			String tmp_string = Utils.parseJsonFromBlueprint(tmp);
+
+			// convert json string into object
+			object = Utils.getJsonObject(tmp_string);
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+		}
+		return object;
+	}
+
+
 	private TreeNodeEntity createTreeNodeItem(NodeTypeEnum type, String name, String value)
 	{
 		return new TreeNodeEntity(type, name, value);
 	}
 
 
-	private DefaultMutableTreeNode initTreeStructure(ABMEntity object)
-	{
-		DefaultMutableTreeNode root = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.ROOT, "Root object", ""));
-
-		DefaultMutableTreeNode category = null;
-		DefaultMutableTreeNode item = null;
-
-		category = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.ERROR_ROOT, "Errors", "3"));
-		root.add(category);
-
-		category = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.WARNING_ROOT, "Warnings", "2"));
-		root.add(category);
-
-		category = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.MISSING_ROOT, "Not implemented", "2"));
-		root.add(category);
-
-
-		return root;
-	}
-
-
+	// Not used
 	private DefaultMutableTreeNode initExampleTreeStructure(ABMEntity object)
 	{
 		DefaultMutableTreeNode top = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.ROOT, "Root", "1"));
@@ -268,4 +365,107 @@ public class ABMToolWindowMain extends JFrame
 
 		return top;
 	}
+
+
+	public class ProjectViewSettings implements ViewSettings
+	{
+		@Override
+		public boolean isShowMembers()
+		{
+			return false;
+		}
+
+
+		@Override
+		public boolean isStructureView()
+		{
+			return false;
+		}
+
+
+		@Override
+		public boolean isShowModules()
+		{
+			return false;
+		}
+
+
+		@Override
+		public boolean isFlattenPackages()
+		{
+			return false;
+		}
+
+
+		@Override
+		public boolean isAbbreviatePackageNames()
+		{
+			return false;
+		}
+
+
+		@Override
+		public boolean isHideEmptyMiddlePackages()
+		{
+			return false;
+		}
+
+
+		@Override
+		public boolean isShowLibraryContents()
+		{
+			return false;
+		}
+	}
+
+
+	private List<PsiPackage> getPackages()
+	{
+		//		Project myProject = presenterConfigModel.getProject();
+		Project myProject = ABMToolWindow.getProject();
+
+		ProjectViewSettings viewSettings = new ProjectViewSettings();
+
+		final List<VirtualFile> sourceRoots = new ArrayList<VirtualFile>();
+		final ProjectRootManager projectRootManager = ProjectRootManager.getInstance(myProject);
+		ContainerUtil.addAll(sourceRoots, projectRootManager.getContentSourceRoots());
+
+		final PsiManager psiManager = PsiManager.getInstance(myProject);
+		final List<AbstractTreeNode> children = new ArrayList<AbstractTreeNode>();
+		final Set<PsiPackage> topLevelPackages = new HashSet<PsiPackage>();
+
+		for(final VirtualFile root : sourceRoots)
+		{
+			final PsiDirectory directory = psiManager.findDirectory(root);
+			if(directory==null)
+			{
+				continue;
+			}
+			final PsiPackage directoryPackage = JavaDirectoryService.getInstance().getPackage(directory);
+			if(directoryPackage==null || PackageUtil.isPackageDefault(directoryPackage))
+			{
+				// add subpackages
+				final PsiDirectory[] subdirectories = directory.getSubdirectories();
+				for(PsiDirectory subdirectory : subdirectories)
+				{
+					final PsiPackage aPackage = JavaDirectoryService.getInstance().getPackage(subdirectory);
+					if(aPackage!=null && !PackageUtil.isPackageDefault(aPackage))
+					{
+						topLevelPackages.add(aPackage);
+					}
+				}
+				// add non-dir items
+				children.addAll(ProjectViewDirectoryHelper.getInstance(myProject).getDirectoryChildren(directory, viewSettings, false));
+			}
+			else
+			{
+				// this is the case when a source root has package prefix assigned
+				topLevelPackages.add(directoryPackage);
+			}
+		}
+
+		return new ArrayList<PsiPackage>(topLevelPackages);
+	}
+
+
 }

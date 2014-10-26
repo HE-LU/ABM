@@ -2,7 +2,7 @@ package com.apiary.abm.entity;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
+import java.util.ArrayList;
 
 
 public class ResourceGroupsEntity
@@ -15,7 +15,7 @@ public class ResourceGroupsEntity
 	private String mName;
 
 	@SerializedName("resources")
-	private List mResources;
+	private ArrayList<ResourcesEntity> mResources;
 
 
 	public String getDescription()
@@ -30,7 +30,7 @@ public class ResourceGroupsEntity
 	}
 
 
-	public List getResources()
+	public ArrayList<ResourcesEntity> getResources()
 	{
 		return this.mResources;
 	}

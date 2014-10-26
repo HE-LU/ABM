@@ -4,8 +4,14 @@ public class TreeNodeEntity
 {
 	private NodeTypeEnum mNodeType;
 	private String mName;
+	private String mUri;
+	private String mMethod;
 	private String mValue;
 
+
+	public TreeNodeEntity()
+	{
+	}
 
 	public TreeNodeEntity(NodeTypeEnum mNodeType, String mName, String mValue)
 	{
@@ -48,5 +54,29 @@ public class TreeNodeEntity
 	public void setValue(String mValue)
 	{
 		this.mValue = mValue;
+	}
+
+
+	public String getUri()
+	{
+		return mUri;
+	}
+
+
+	public void setUri(String mUri)
+	{
+		this.mUri = mUri;
+	}
+
+
+	public String getMethod()
+	{
+		return mMethod;
+	}
+
+
+	public void setMethod(String mMethod)
+	{
+		this.mMethod = mMethod;
 	}
 }

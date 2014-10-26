@@ -48,7 +48,7 @@ public class Utils
 		String inputLine;
 		while((inputLine = bufferedReader.readLine())!=null)
 		{
-			bufferedWriter.write(inputLine);
+			bufferedWriter.write(inputLine + "\n");
 		}
 
 		bufferedWriter.close();
@@ -58,28 +58,25 @@ public class Utils
 	}
 
 
-	public static ABMEntity getJsonObject()
+	public static ABMEntity getJsonObject(String jsonBlueprint)
 	{
-		Preferences preferences = new Preferences();
-
 		Gson gson = new GsonBuilder().create();
-		return gson.fromJson(preferences.getApiaryBlueprintJson(), ABMEntity.class);
+		return gson.fromJson(jsonBlueprint, ABMEntity.class);
 	}
 
 
-	public static void parseJsonFromBlueprint()
+	public static String parseJsonFromBlueprint(String blueprint)
 	{
 		try
 		{
-			Preferences preferences = new Preferences();
 			ClientResource resource = new ClientResource("https://api.apiblueprint.org/parser");
 
-			Representation r = resource.post(preferences.getApiaryBlueprintRaw());
+			Representation r = resource.post(blueprint);
 			if(resource.getStatus().isSuccess())
 			{
 				if(resource.getStatus().getCode()==200)
 				{
-					preferences.setApiaryBlueprintJson(r.getText());
+					return r.getText();
 				}
 			}
 		}
@@ -87,5 +84,6 @@ public class Utils
 		{
 			e.printStackTrace();
 		}
+		return null;
 	}
 }

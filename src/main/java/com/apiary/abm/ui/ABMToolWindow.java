@@ -10,6 +10,8 @@ import javax.swing.JFrame;
 
 public class ABMToolWindow extends JFrame implements ToolWindowFactory
 {
+	public static Project sProject;
+
 	public ABMToolWindow()
 	{
 	}
@@ -18,6 +20,8 @@ public class ABMToolWindow extends JFrame implements ToolWindowFactory
 	@Override
 	public void createToolWindowContent(Project project, ToolWindow toolWindow)
 	{
+		sProject = project;
+
 		Preferences preferences = new Preferences();
 		if(preferences.getPluginInitialized())
 		{
@@ -27,5 +31,10 @@ public class ABMToolWindow extends JFrame implements ToolWindowFactory
 		{
 			new ABMToolWindowWelcome(toolWindow);
 		}
+	}
+
+	public static Project getProject()
+	{
+		return sProject;
 	}
 }

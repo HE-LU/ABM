@@ -2,7 +2,7 @@ package com.apiary.abm.entity;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
+import java.util.ArrayList;
 
 
 public class AstEntity
@@ -14,13 +14,13 @@ public class AstEntity
 	private String mDescription;
 
 	@SerializedName("metadata")
-	private List mMetadata;
+	private ArrayList<MetadataEntity> mMetadata;
 
 	@SerializedName("name")
 	private String mName;
 
 	@SerializedName("resourceGroups")
-	private List mResourceGroups;
+	private ArrayList<ResourceGroupsEntity> mResourceGroups;
 
 
 	public String getVersion()
@@ -35,7 +35,7 @@ public class AstEntity
 	}
 
 
-	public List getMetadata()
+	public ArrayList<MetadataEntity> getMetadata()
 	{
 		return this.mMetadata;
 	}
@@ -47,7 +47,7 @@ public class AstEntity
 	}
 
 
-	public List getResourceGroups()
+	public ArrayList<ResourceGroupsEntity> getResourceGroups()
 	{
 		return this.mResourceGroups;
 	}

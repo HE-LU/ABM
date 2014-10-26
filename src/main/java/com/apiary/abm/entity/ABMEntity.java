@@ -2,7 +2,7 @@ package com.apiary.abm.entity;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
+import java.util.ArrayList;
 
 
 public class ABMEntity
@@ -17,7 +17,7 @@ public class ABMEntity
 	private String mError;
 
 	@SerializedName("warnings")
-	private List mWarnings; // TODO
+	private ArrayList<WarningsEntity> mWarnings;
 
 
 	public String getVersion()
@@ -38,7 +38,7 @@ public class ABMEntity
 	}
 
 
-	public List getWarnings()
+	public ArrayList<WarningsEntity> getWarnings()
 	{
 		return this.mWarnings;
 	}

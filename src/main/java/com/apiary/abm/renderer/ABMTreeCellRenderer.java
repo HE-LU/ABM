@@ -50,15 +50,15 @@ public class ABMTreeCellRenderer extends JLabel implements TreeCellRenderer
 				break;
 			case ERROR:
 				setForeground(new Color(255, 200, 200));
-				setText(entity.getName() + ": " + entity.getValue());
+				setText("File: "+entity.getName()+".java, Method: "+entity.getMethod()+", URI: "+entity.getUri());
 				break;
 			case WARNING:
 				setForeground(new Color(255, 245, 200));
-				setText(entity.getName() + ": " + entity.getValue());
+				setText("File: "+entity.getName()+".java, Method: "+entity.getMethod()+", URI: "+entity.getUri());
 				break;
 			case MISSING:
 				setForeground(new Color(200, 255, 200));
-				setText(entity.getName() + ": " + entity.getValue());
+				setText("File: "+entity.getName()+".java, Method: "+entity.getMethod()+", URI: "+entity.getUri());
 				break;
 		}
 

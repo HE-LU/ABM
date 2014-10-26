@@ -2,6 +2,7 @@ package com.apiary.abm.entity;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -9,7 +10,7 @@ public class ResourcesEntity
 {
 
 	@SerializedName("actions")
-	private List mActions;
+	private ArrayList<ActionsEntity> mActions;
 
 	@SerializedName("description")
 	private String mDescription;
@@ -21,13 +22,13 @@ public class ResourcesEntity
 	private String mName;
 
 	@SerializedName("parameters")
-	private List mParameters;
+	private List<ParametersEntity> mParameters;
 
 	@SerializedName("uriTemplate")
 	private String mUriTemplate;
 
 
-	public List getActions()
+	public ArrayList<ActionsEntity> getActions()
 	{
 		return this.mActions;
 	}
@@ -51,7 +52,7 @@ public class ResourcesEntity
 	}
 
 
-	public List getParameters()
+	public List<ParametersEntity> getParameters()
 	{
 		return this.mParameters;
 	}

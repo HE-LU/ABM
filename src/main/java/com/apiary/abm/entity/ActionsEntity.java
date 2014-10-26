@@ -11,7 +11,7 @@ public class ActionsEntity
 	private String mDescription;
 
 	@SerializedName("examples")
-	private List mExamples;
+	private List<ExamplesEntity> mExamples;
 
 	@SerializedName("method")
 	private String mMethod;
@@ -20,7 +20,7 @@ public class ActionsEntity
 	private String mName;
 
 	@SerializedName("parameters")
-	private List mParameters;
+	private List<ParametersEntity> mParameters;
 
 
 	public String getDescription()
@@ -29,7 +29,7 @@ public class ActionsEntity
 	}
 
 
-	public List getExamples()
+	public List<ExamplesEntity> getExamples()
 	{
 		return this.mExamples;
 	}
@@ -47,7 +47,7 @@ public class ActionsEntity
 	}
 
 
-	public List getParameters()
+	public List<ParametersEntity> getParameters()
 	{
 		return this.mParameters;
 	}
