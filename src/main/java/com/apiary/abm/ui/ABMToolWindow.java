@@ -10,7 +10,8 @@ import javax.swing.JFrame;
 
 public class ABMToolWindow extends JFrame implements ToolWindowFactory
 {
-	public static Project sProject;
+	private static Project sProject;
+
 
 	public ABMToolWindow()
 	{
@@ -32,6 +33,7 @@ public class ABMToolWindow extends JFrame implements ToolWindowFactory
 			new ABMToolWindowWelcome(toolWindow);
 		}
 	}
+
 
 	public static Project getProject()
 	{

@@ -7,8 +7,8 @@ import com.apiary.abm.entity.ResourceGroupsEntity;
 import com.apiary.abm.entity.ResourcesEntity;
 import com.apiary.abm.entity.TreeNodeEntity;
 import com.apiary.abm.renderer.ABMTreeCellRenderer;
-import com.apiary.abm.utility.JBackgroundPanel;
 import com.apiary.abm.utility.Utils;
+import com.apiary.abm.view.JBackgroundPanel;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.projectView.impl.nodes.PackageUtil;
 import com.intellij.ide.projectView.impl.nodes.ProjectViewDirectoryHelper;
@@ -52,15 +52,27 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 public class ABMToolWindowMain extends JFrame
 {
+	private ToolWindow mToolWindow;
+
+
 	public ABMToolWindowMain(ToolWindow toolWindow)
 	{
-		toolWindow.getContentManager().removeAllContents(true);
+		mToolWindow = toolWindow;
+		mToolWindow.getContentManager().removeAllContents(true);
+
+		initLayout();
+	}
+
+
+	private void initLayout()
+	{
+		mToolWindow.getContentManager().removeAllContents(true);
 
 		// create UI
 		JBackgroundPanel myToolWindowContent = new JBackgroundPanel("img_background.png", JBackgroundPanel.JBackgroundPanelType.BACKGROUND_REPEAT);
 		ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
 		Content content = contentFactory.createContent(myToolWindowContent, "", false);
-		toolWindow.getContentManager().addContent(content);
+		mToolWindow.getContentManager().addContent(content);
 
 		// MIGLAYOUT ( params, columns, rows)
 		// insets TOP LEFT BOTTOM RIGHT
@@ -71,13 +83,13 @@ public class ABMToolWindowMain extends JFrame
 		JPanel middlePanel = new JPanel();
 		JBackgroundPanel bottomPanel = new JBackgroundPanel("img_box_bottom.png", JBackgroundPanel.JBackgroundPanelType.PANEL);
 
-		topPanel.setMinimumSize(new Dimension(0, 130));
-		middlePanel.setMinimumSize(new Dimension(0, 100));
-		bottomPanel.setMinimumSize(new Dimension(0, 130));
+		topPanel.setMinimumSize(new Dimension(0, Utils.reDimension(20)));
+		middlePanel.setMinimumSize(new Dimension(0, Utils.reDimension(20)));
+		bottomPanel.setMinimumSize(new Dimension(0, Utils.reDimension(20)));
 
-		topPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 130));
+		topPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Utils.reDimension(20)));
 		middlePanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
-		bottomPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 130));
+		bottomPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Utils.reDimension(20)));
 
 		// add elements
 		topPanel.setLayout(new MigLayout("insets 5 0 0 0, flowy, fillx, filly", "[grow, center]", "[center, top]"));
@@ -111,7 +123,7 @@ public class ABMToolWindowMain extends JFrame
 
 		// refresh and analyze blueprint
 		ABMEntity object = refreshBlueprint();
-//		analyzeBlueprint(object);
+		//		analyzeBlueprint(object);
 
 
 		// tree structure
@@ -120,7 +132,7 @@ public class ABMToolWindowMain extends JFrame
 		middleTreePanel.setOpaque(false);
 
 
-//		Tree tree = new Tree(initExampleTreeStructure(object));
+		//		Tree tree = new Tree(initExampleTreeStructure(object));
 		Tree tree = new Tree(initTreeStructure(analyzeBlueprint(object)));
 		tree.setRootVisible(false);
 		tree.setOpaque(false);
@@ -225,16 +237,13 @@ public class ABMToolWindowMain extends JFrame
 				for(ActionsEntity actionsEntity : resourcesEntity.getActions())
 				{
 					TreeNodeEntity entity = new TreeNodeEntity();
-					entity.setName(actionsEntity.getName().replace(" ",""));
+					entity.setName(actionsEntity.getName().replace(" ", ""));
 					entity.setUri(resourcesEntity.getUriTemplate());
 					entity.setMethod(actionsEntity.getMethod());
 
-					if(entity.getMethod().equals("GET"))
-						entity.setNodeType(NodeTypeEnum.ERROR);
-					else if(entity.getMethod().equals("POST"))
-						entity.setNodeType(NodeTypeEnum.WARNING);
-					else
-						entity.setNodeType(NodeTypeEnum.MISSING);
+					if(entity.getMethod().equals("GET")) entity.setNodeType(NodeTypeEnum.ERROR);
+					else if(entity.getMethod().equals("POST")) entity.setNodeType(NodeTypeEnum.WARNING);
+					else entity.setNodeType(NodeTypeEnum.MISSING);
 
 					outputList.add(entity);
 				}
@@ -262,7 +271,7 @@ public class ABMToolWindowMain extends JFrame
 		categoryMissing = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.MISSING_ROOT, "Not implemented", "2"));
 		root.add(categoryMissing);
 
-		for(TreeNodeEntity entity: nodeList)
+		for(TreeNodeEntity entity : nodeList)
 		{
 			if(entity.getMethod().equals("GET"))
 			{

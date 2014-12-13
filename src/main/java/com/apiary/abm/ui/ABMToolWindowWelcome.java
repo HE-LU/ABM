@@ -1,6 +1,8 @@
 package com.apiary.abm.ui;
 
-import com.apiary.abm.utility.JBackgroundPanel;
+import com.apiary.abm.utility.Utils;
+import com.apiary.abm.view.ImageButton;
+import com.apiary.abm.view.JBackgroundPanel;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
@@ -10,10 +12,15 @@ import net.miginfocom.swing.MigLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ResourceBundle;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -29,6 +36,13 @@ public class ABMToolWindowWelcome extends JFrame
 	{
 		mToolWindow = toolWindow;
 		mToolWindow.getContentManager().removeAllContents(true);
+
+		initLayout();
+	}
+
+
+	private void initLayout()
+	{
 		ResourceBundle messages = ResourceBundle.getBundle("values/strings");
 
 		// create UI
@@ -45,16 +59,16 @@ public class ABMToolWindowWelcome extends JFrame
 		JPanel middlePanel = new JPanel();
 		JBackgroundPanel bottomPanel = new JBackgroundPanel("img_box_bottom.png", JBackgroundPanel.JBackgroundPanelType.PANEL);
 
-		topPanel.setMinimumSize(new Dimension(0, 130));
-		bottomPanel.setMinimumSize(new Dimension(0, 130));
+		topPanel.setMinimumSize(new Dimension(0, Utils.reDimension(90)));
+		bottomPanel.setMinimumSize(new Dimension(0, Utils.reDimension(90)));
 
-		topPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 130));
-		bottomPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 130));
+		topPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Utils.reDimension(90)));
+		bottomPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Utils.reDimension(90)));
 
 		// add elements
-		topPanel.setLayout(new MigLayout("insets 0 55 20 55, flowy, fillx, filly", "[fill, grow]", "[fill]"));
+		topPanel.setLayout(new MigLayout("insets 0 " + Utils.reDimension(20) + " " + Utils.reDimension(20) + " " + Utils.reDimension(20) + ", flowy, fillx, filly", "[fill, grow]", "[fill]"));
 		middlePanel.setLayout(new MigLayout("insets 0, flowy, fillx, filly", "[fill, grow]", "[fill][fill]"));
-		bottomPanel.setLayout(new MigLayout("insets 30 0 0 0, flowy, fillx, filly", "[grow, center]", "[center, top]"));
+		bottomPanel.setLayout(new MigLayout("insets " + Utils.reDimension(18) + " 0 0 0, flowy, fillx, filly", "[grow, center]", "[center, top]"));
 
 		topPanel.setOpaque(false);
 		middlePanel.setOpaque(false);
@@ -65,30 +79,40 @@ public class ABMToolWindowWelcome extends JFrame
 		myToolWindowContent.add(bottomPanel);
 
 		// name
-		JLabel nameText = new JLabel("<html><center>" + messages.getString("welcome_name") + "</center></html>");
+		JLabel infoText = new JLabel("<html><center>" + messages.getString("welcome_name") + "</center></html>");
+		infoText.setForeground(Color.WHITE);
+		infoText.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_LARGE)));
+		infoText.setHorizontalAlignment(SwingConstants.CENTER);
+		topPanel.add(infoText);
+
+		// name
+		JLabel nameText = new JLabel("<html><center>" + messages.getString("welcome_information") + "</center></html>");
 		nameText.setForeground(Color.WHITE);
-		nameText.setFont(new Font("Ariel", Font.BOLD, 32));
+		nameText.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM)));
 		nameText.setHorizontalAlignment(SwingConstants.CENTER);
 		middlePanel.add(nameText);
 
 		// version
 		JLabel versionText = new JLabel("<html><center>" + messages.getString("welcome_version") + "</center></html>");
 		versionText.setForeground(Color.WHITE);
-		versionText.setFont(new Font("Ariel", Font.BOLD, 24));
+		versionText.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_SMALL)));
 		versionText.setHorizontalAlignment(SwingConstants.CENTER);
 		middlePanel.add(versionText);
 
-		// information
-		JLabel infoText = new JLabel("<html><center>" + messages.getString("welcome_information") + "</center></html>");
-		infoText.setForeground(Color.WHITE);
-		infoText.setFont(new Font("Ariel", Font.BOLD, 18));
-		infoText.setHorizontalAlignment(SwingConstants.CENTER);
-		topPanel.add(infoText);
-
 		// connect button
-		final JLabel button = new JLabel();
-		button.setOpaque(false);
-		button.setText("<html><img src='" + JBackgroundPanel.class.getClassLoader().getResource("drawable/img_button_start.png") + "' width='90' height='90' /></html>");
+		final ImageButton button = new ImageButton();
+
+		try
+		{
+			BufferedImage img = ImageIO.read(JBackgroundPanel.class.getClassLoader().getResource("drawable/img_button_start.png"));
+			button.setImage(img);
+			button.setSize(Utils.reDimension(70), Utils.reDimension(70));
+
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
 
 		button.addMouseListener(new MouseAdapter()
 		{
@@ -100,13 +124,31 @@ public class ABMToolWindowWelcome extends JFrame
 
 			public void mousePressed(MouseEvent e)
 			{
-				button.setText("<html><img src='" + JBackgroundPanel.class.getClassLoader().getResource("drawable/img_button_start_pressed.png") + "' width='90' height='90' /></html>");
+				try
+				{
+					BufferedImage img = ImageIO.read(JBackgroundPanel.class.getClassLoader().getResource("drawable/img_button_start_pressed.png"));
+					button.setImage(img);
+					button.setSize(Utils.reDimension(70), Utils.reDimension(70));
+				}
+				catch(IOException e1)
+				{
+					e1.printStackTrace();
+				}
 			}
 
 
 			public void mouseReleased(MouseEvent e)
 			{
-				button.setText("<html><img src='" + JBackgroundPanel.class.getClassLoader().getResource("drawable/img_button_start.png") + "' width='90' height='90' /></html>");
+				try
+				{
+					BufferedImage img = ImageIO.read(JBackgroundPanel.class.getClassLoader().getResource("drawable/img_button_start.png"));
+					button.setImage(img);
+					button.setSize(Utils.reDimension(70), Utils.reDimension(70));
+				}
+				catch(IOException e2)
+				{
+					e2.printStackTrace();
+				}
 			}
 		});
 

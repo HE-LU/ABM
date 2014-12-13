@@ -1,17 +1,18 @@
 <idea-plugin version="2">
-	<id>abm</id>
+	<id>com.apiary.abm</id>
 	<name>Apiary Blueprint Manager</name>
-	<version>1.0</version>
+	<version>0.1</version>
 	<vendor email="tuxilero@gmail.com" url="http://tuxilero.blogspot.com">Tuxilero</vendor>
 
 	<description>
 		<![CDATA[
-            Manager of generated classes from Apiary Blueprint
+            Management of generated classes from Apiary Blueprint
         ]]>
 	</description>
 
 	<change-notes><![CDATA[
       No changes.<br>
+      1.0 - you wish...<br>
     ]]>
 	</change-notes>
 

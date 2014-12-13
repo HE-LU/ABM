@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder;
 import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 
+import java.awt.Toolkit;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -22,6 +23,11 @@ import java.nio.file.Paths;
 
 public class Utils
 {
+	final public static int FONT_SMALL = 12;
+	final public static int FONT_MEDIUM = 15;
+	final public static int FONT_LARGE = 24;
+	final public static int FONT_XLARGE = 30;
+
 	public static String readFileAsString(String path, Charset encoding) throws IOException
 	{
 		byte[] encoded = Files.readAllBytes(Paths.get(path));
@@ -85,5 +91,43 @@ public class Utils
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+
+	public static int getFontSizeLarge()
+	{
+		return (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight() / 27;
+	}
+
+
+	public static int getFontSizeMedium()
+	{
+		return (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight() / 65;
+	}
+
+
+	public static int getFontSizeSmall()
+	{
+		return (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight() / 80;
+	}
+
+
+	public static int getFontSizePanelHeader()
+	{
+		return (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight() / 44;
+	}
+
+
+	public static int fontSize(int size)
+	{
+		double screen = Toolkit.getDefaultToolkit().getScreenResolution();
+		return (int) (size * (screen / 96f));
+	}
+
+
+	public static int reDimension(int dimension)
+	{
+		double screen = Toolkit.getDefaultToolkit().getScreenResolution();
+		return (int) (dimension * (screen / 96f));
 	}
 }

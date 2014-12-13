@@ -13,6 +13,7 @@ public class TreeNodeEntity
 	{
 	}
 
+
 	public TreeNodeEntity(NodeTypeEnum mNodeType, String mName, String mValue)
 	{
 		this.mNodeType = mNodeType;
