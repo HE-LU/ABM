@@ -4,9 +4,6 @@ import com.apiary.abm.entity.ABMEntity;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import org.restlet.representation.Representation;
-import org.restlet.resource.ClientResource;
-
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -78,23 +75,23 @@ public class Utils
 
 	public static String parseJsonFromBlueprint(String blueprint)
 	{
-		try
-		{
-			ClientResource resource = new ClientResource("https://api.apiblueprint.org/parser");
-
-			Representation r = resource.post(blueprint);
-			if(resource.getStatus().isSuccess())
-			{
-				if(resource.getStatus().getCode()==200)
-				{
-					return r.getText();
-				}
-			}
-		}
-		catch(IOException e)
-		{
-			e.printStackTrace();
-		}
+		//		try
+		//		{
+		//			ClientResource resource = new ClientResource("https://api.apiblueprint.org/parser");
+		//
+		//			Representation r = resource.post(blueprint);
+		//			if(resource.getStatus().isSuccess())
+		//			{
+		//				if(resource.getStatus().getCode()==200)
+		//				{
+		//					return r.getText();
+		//				}
+		//			}
+		//		}
+		//		catch(IOException e)
+		//		{
+		//			e.printStackTrace();
+		//		}
 		return null;
 	}
 

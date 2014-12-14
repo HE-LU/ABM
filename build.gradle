@@ -4,7 +4,6 @@ apply plugin: "idea"
 repositories {
 	jcenter()
 	maven {	url "http://my.repository.url"}
-	maven {	url "http://maven.restlet.com"}
 }
 
 dependencies {
@@ -13,7 +12,11 @@ dependencies {
 
 	compile 'com.miglayout:miglayout-swing:4.2'
 	compile 'org.swinglabs:swingx:1.6.1'
-	compile 'org.restlet.jse:org.restlet:2.2.2'
+	compile 'com.mashape.unirest:unirest-java:1.3.27'
+	compile 'org.apache.httpcomponents:httpclient:4.3.6'
+	compile 'org.apache.httpcomponents:httpasyncclient:4.0.2'
+	compile 'org.apache.httpcomponents:httpmime:4.3.6'
+	compile 'org.apache.httpcomponents:httpcore-nio:4.3.3'
 	compile 'com.google.code.gson:gson:1.7.2'
 }
 
@@ -57,7 +60,12 @@ task makeJar(type: Jar, dependsOn: classes) {
 	dependsOn setup
 	dependsOn copyDependencies
 
-	from zipTree('./build/dependencies/org.restlet-2.2.2.jar')
+	from zipTree('./build/dependencies/unirest-java-1.3.27.jar')
+	from zipTree('./build/dependencies/httpcore-nio-4.3.3.jar')
+	from zipTree('./build/dependencies/httpclient-4.3.6.jar')
+	from zipTree('./build/dependencies/httpmime-4.3.6.jar')
+	from zipTree('./build/dependencies/httpcore-4.3.3.jar')
+	from zipTree('./build/dependencies/httpasyncclient-4.0.2.jar')
 	from sourceSets.main.output
 
 	doLast {

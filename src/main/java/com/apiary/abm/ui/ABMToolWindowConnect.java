@@ -1,6 +1,7 @@
 package com.apiary.abm.ui;
 
 import com.apiary.abm.utility.Log;
+import com.apiary.abm.utility.Network;
 import com.apiary.abm.utility.Utils;
 import com.apiary.abm.view.ImageButton;
 import com.apiary.abm.view.JBackgroundPanel;
@@ -33,6 +34,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 
 public class ABMToolWindowConnect extends JFrame
@@ -103,90 +105,6 @@ public class ABMToolWindowConnect extends JFrame
 		topPanel.add(infoText);
 
 		// init middle panel
-		initMiddlePanel(middlePanel);
-
-		// connect button
-		final ImageButton button = new ImageButton();
-		button.setImage("drawable/img_button_connect.png");
-		button.setSize(Utils.reDimension(70), Utils.reDimension(70));
-
-		button.addMouseListener(new MouseAdapter()
-		{
-			private boolean connecting;
-
-
-			public void mouseClicked(MouseEvent e)
-			{
-				if(connecting) return;
-				button.setImage("drawable/animation_connect.gif");
-				button.setSize(Utils.reDimension(70), Utils.reDimension(70));
-				connecting = true;
-
-				// TODO
-				//				Thread t = new Thread(new Runnable()
-				//				{
-				//					public void run()
-				//					{
-				//						try
-				//						{
-				//							String inputFilePath = Utils.saveWebFileToTmp(textField.getText());
-				//							String tmp = Utils.readFileAsString(inputFilePath, StandardCharsets.UTF_8);
-				//
-				//							Preferences preferences = new Preferences();
-				//							preferences.setApiaryBlueprintUrl(textField.getText());
-				//							//							preferences.setApiaryBlueprintRaw(tmp);
-				//
-				//							SwingUtilities.invokeLater(new Runnable()
-				//							{
-				//								public void run()
-				//								{
-				//									new ABMToolWindowMain(mToolWindow);
-				//								}
-				//							});
-				//						}
-				//						catch(IOException e)
-				//						{
-				//							e.printStackTrace();
-				//							reloading = false;
-				//							SwingUtilities.invokeLater(new Runnable()
-				//							{
-				//								public void run()
-				//								{
-				//									labelError.setVisible(true);
-				//									button.setText("<html><img src='" + JBackgroundPanel.class.getClassLoader().getResource("drawable/img_button_connect.png") + "' width='90' height='90' /></html>");
-				//
-				//								}
-				//							});
-				//						}
-				//					}
-				//				});
-				//				t.start();
-			}
-
-
-			public void mousePressed(MouseEvent e)
-			{
-				if(connecting) return;
-				button.setImage("drawable/img_button_connect_pressed.png");
-				button.setSize(Utils.reDimension(70), Utils.reDimension(70));
-			}
-
-
-			public void mouseReleased(MouseEvent e)
-			{
-				if(connecting) return;
-				button.setImage("drawable/img_button_connect.png");
-				button.setSize(Utils.reDimension(70), Utils.reDimension(70));
-			}
-		});
-
-		bottomPanel.add(button);
-	}
-
-
-	private void initMiddlePanel(JPanel rootPanel)
-	{
-		final ResourceBundle messages = ResourceBundle.getBundle("values/strings");
 
 		// Chose Type
 		final JBackgroundPanel typePanel = new JBackgroundPanel("drawable/img_background_panel.9.png", JBackgroundPanel.JBackgroundPanelType.NINE_PATCH);
@@ -221,15 +139,15 @@ public class ABMToolWindowConnect extends JFrame
 		radBtnLocal.setOpaque(false);
 
 		// Group the radio buttons.
-		final ButtonGroup group = new ButtonGroup();
-		group.add(radBtnApiaryDoc);
-		group.add(radBtnWebUrl);
-		group.add(radBtnLocal);
+		final ButtonGroup buttonGroup = new ButtonGroup();
+		buttonGroup.add(radBtnApiaryDoc);
+		buttonGroup.add(radBtnWebUrl);
+		buttonGroup.add(radBtnLocal);
 		typePanel.add(labelType);
 		typePanel.add(radBtnApiaryDoc);
 		typePanel.add(radBtnWebUrl);
 		typePanel.add(radBtnLocal);
-		rootPanel.add(typePanel);
+		middlePanel.add(typePanel);
 
 
 		// Content
@@ -254,7 +172,7 @@ public class ABMToolWindowConnect extends JFrame
 		labelDocumentationUrl.setHorizontalAlignment(SwingConstants.CENTER);
 
 		final JTextField textFieldDocumentationUrl = new JTextField();
-		textFieldDocumentationUrl.setText("http://docs.tuxilero.apiary.io/"); // FIXME
+		textFieldDocumentationUrl.setText("tuxilero"); // FIXME
 
 		final JLabel labelDocumentationToken = new JLabel("<html><center>" + messages.getString("connect_message_documentation_token") + "</center></html>");
 		labelDocumentationToken.setForeground(Color.WHITE);
@@ -312,7 +230,7 @@ public class ABMToolWindowConnect extends JFrame
 		cardLocalFile.add(buttonLocalBrowse, "cell 1 1");
 		cards.add(cardLocalFile, CARD_LOCAL_FILE);
 		contentPanel.add(cards);
-		rootPanel.add(contentPanel);
+		middlePanel.add(contentPanel);
 
 		// error label
 		final JLabel labelError = new JLabel();
@@ -321,7 +239,7 @@ public class ABMToolWindowConnect extends JFrame
 		labelError.setHorizontalAlignment(SwingConstants.CENTER);
 		labelError.setText("<html><center>" + messages.getString("connect_message_error") + "</html></center>");
 		labelError.setVisible(false);
-		rootPanel.add(labelError);
+		middlePanel.add(labelError);
 
 
 		//Register a listener for the radio buttons.
@@ -372,5 +290,90 @@ public class ABMToolWindowConnect extends JFrame
 				}
 			}
 		});
+
+		// connect button
+		final ImageButton button = new ImageButton();
+		button.setImage("drawable/img_button_connect.png");
+		button.setSize(Utils.reDimension(70), Utils.reDimension(70));
+
+		button.addMouseListener(new MouseAdapter()
+		{
+			private boolean connecting;
+
+
+			public void mouseClicked(MouseEvent e)
+			{
+				if(connecting) return;
+				button.setImage("drawable/animation_connect.gif");
+				button.setSize(Utils.reDimension(70), Utils.reDimension(70));
+				connecting = true;
+
+				Thread t = new Thread(new Runnable()
+				{
+					public void run()
+					{
+						boolean error = true;
+						if(radBtnApiaryDoc.isSelected())
+						{
+							Network.requestBlueprintFromApiary(textFieldDocumentationUrl.getText(), textFieldDocumentationToken.getText());
+						}
+						else if(radBtnWebUrl.isSelected())
+						{
+							Network.requestBlueprintFromURL(textFieldWebUrl.getText());
+
+
+							//	String inputFilePath = Utils.saveWebFileToTmp(textFieldWebUrl.getText());
+							//	String tmp = Utils.readFileAsString(inputFilePath, StandardCharsets.UTF_8);
+
+							//	Preferences preferences = new Preferences();
+							//	preferences.setApiaryBlueprintUrl(textFieldWebUrl.getText());
+							//	preferences.setApiaryBlueprintRaw(tmp);
+						}
+
+						if(error)
+						{
+							connecting = false;
+							SwingUtilities.invokeLater(new Runnable()
+							{
+								public void run()
+								{
+									labelError.setVisible(true);
+									button.setImage("drawable/img_button_connect.png");
+								}
+							});
+						}
+						else
+						{
+							SwingUtilities.invokeLater(new Runnable()
+							{
+								public void run()
+								{
+									new ABMToolWindowMain(mToolWindow);
+								}
+							});
+						}
+					}
+				});
+				t.start();
+			}
+
+
+			public void mousePressed(MouseEvent e)
+			{
+				if(connecting) return;
+				button.setImage("drawable/img_button_connect_pressed.png");
+				button.setSize(Utils.reDimension(70), Utils.reDimension(70));
+			}
+
+
+			public void mouseReleased(MouseEvent e)
+			{
+				if(connecting) return;
+				button.setImage("drawable/img_button_connect.png");
+				button.setSize(Utils.reDimension(70), Utils.reDimension(70));
+			}
+		});
+
+		bottomPanel.add(button);
 	}
 }
