@@ -161,11 +161,10 @@ public class GraphicsUtilities
 			BufferedImage bufferedImage = decoder.getFrame(i);
 
 			//scale image at max dimension value MAX_IMAGE_DIMENSION both on height
-			//and width, edit this part of cod as you need
+			//and width, edit this part of code as you need
 			int width = bufferedImage.getWidth();
 			int height = bufferedImage.getHeight();
 			float scaleFactor = 1;
-			//			int MAX_IMAGE_DIMENSION = 50;
 			if(width>toWidth || height>toHeight)
 			{
 				if(width>height)
@@ -187,6 +186,7 @@ public class GraphicsUtilities
 				bufferedImage = toBufferedImage(image);
 			}
 			encoder.addFrame(bufferedImage);
+
 			//change delay frame for those that have 0
 			if(decoder.getDelay(i)==0)
 			{

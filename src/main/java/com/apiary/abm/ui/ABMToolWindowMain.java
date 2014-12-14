@@ -227,7 +227,6 @@ public class ABMToolWindowMain extends JFrame
 	private List<TreeNodeEntity> analyzeBlueprint(ABMEntity object)
 	{
 		if(object==null || object.getError()!=null) return null;
-		System.out.println("Object OK!");
 
 		List<TreeNodeEntity> outputList = new ArrayList<TreeNodeEntity>();
 		for(ResourceGroupsEntity resourceGroupsEntity : object.getAst().getResourceGroups())

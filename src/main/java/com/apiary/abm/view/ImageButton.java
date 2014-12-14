@@ -1,5 +1,6 @@
 package com.apiary.abm.view;
 
+import com.apiary.abm.utility.Log;
 import com.apiary.abm.utility.Utils;
 import com.apiary.abm.utility.images.GraphicsUtilities;
 
@@ -14,6 +15,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
@@ -21,7 +25,7 @@ import javax.swing.JButton;
 public class ImageButton extends JButton
 {
 	private String mImage;
-	private boolean mGif = false;
+	private boolean mAnimatedGif = false;
 
 
 	public ImageButton()
@@ -79,8 +83,31 @@ public class ImageButton extends JButton
 	{
 		try
 		{
+			Log.d("Set Image!");
 			mImage = image;
-			mGif = Files.probeContentType(Paths.get(mImage)).equals("image/gif");
+			mAnimatedGif = Files.probeContentType(Paths.get(mImage)).equals("image/gif");
+			if(mAnimatedGif)
+			{
+				Log.d("It is a gif!");
+				ImageReader is = ImageIO.getImageReadersBySuffix("GIF").next();
+				ImageInputStream iis = null;
+				try
+				{
+					iis = ImageIO.createImageInputStream(Utils.getResourceInputStream(mImage));
+					is.setInput(iis);
+					int images = is.getNumImages(true);
+					if(images<=1) mAnimatedGif = false;
+					else Log.d("And it is animated gif!");
+				}
+				catch(IOException e)
+				{
+					e.printStackTrace();
+				}
+				finally
+				{
+					if(iis!=null) iis.close();
+				}
+			}
 		}
 		catch(IOException e)
 		{
@@ -93,7 +120,7 @@ public class ImageButton extends JButton
 	{
 		try
 		{
-			if(mGif) return resizeGifImage(width, height);
+			if(mAnimatedGif) return resizeGifImage(width, height);
 
 			BufferedImage bi = new BufferedImage(width, height, BufferedImage.TRANSLUCENT);
 			Graphics2D g2d = bi.createGraphics();

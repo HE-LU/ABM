@@ -125,13 +125,10 @@ public class ABMToolWindowConnect extends JFrame
 
 			public void mouseClicked(MouseEvent e)
 			{
-				//				if(connecting) return;
+				if(connecting) return;
 
 				button.setImage("drawable/animation_connect.gif");
 				button.setSize(Utils.reDimension(70), Utils.reDimension(70));
-
-
-				//				button.setText("<html><img src='" + JBackgroundPanel.class.getClassLoader().getResource("drawable/animation_connect.gif") + "' width='" + Utils.reDimension(20) + "' height='" + Utils.reDimension(20) + "' /></html>");
 				connecting = true;
 
 				//				Thread t = new Thread(new Runnable()
