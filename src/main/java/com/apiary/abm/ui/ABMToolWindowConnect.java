@@ -1,5 +1,6 @@
 package com.apiary.abm.ui;
 
+import com.apiary.abm.utility.Log;
 import com.apiary.abm.utility.Utils;
 import com.apiary.abm.view.ImageButton;
 import com.apiary.abm.view.JBackgroundPanel;
@@ -19,12 +20,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ResourceBundle;
 
-import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -112,6 +114,7 @@ public class ABMToolWindowConnect extends JFrame
 		{
 			private boolean connecting;
 
+
 			public void mouseClicked(MouseEvent e)
 			{
 				if(connecting) return;
@@ -187,7 +190,7 @@ public class ABMToolWindowConnect extends JFrame
 
 		// Chose Type
 		final JBackgroundPanel typePanel = new JBackgroundPanel("drawable/img_background_panel.9.png", JBackgroundPanel.JBackgroundPanelType.NINE_PATCH);
-		typePanel.setLayout(new MigLayout("insets "+ Utils.reDimension(12) +" "+ Utils.reDimension(12) +" "+ Utils.reDimension(18) +" "+ Utils.reDimension(19) +", flowy, fillx, filly", "[fill, grow]", "[][][][]"));
+		typePanel.setLayout(new MigLayout("insets " + Utils.reDimension(12) + " " + Utils.reDimension(12) + " " + Utils.reDimension(18) + " " + Utils.reDimension(19) + ", flowy, fillx, filly", "[fill, grow]", "[][][][]"));
 		typePanel.setOpaque(false);
 		typePanel.setMaximumSize(new Dimension(Utils.reDimension(600), Integer.MAX_VALUE));
 
@@ -196,36 +199,36 @@ public class ABMToolWindowConnect extends JFrame
 		labelType.setForeground(Color.WHITE);
 		labelType.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM)));
 		labelType.setHorizontalAlignment(SwingConstants.CENTER);
-		typePanel.add(labelType);
 
 		// Create the radio buttons.
-		final JRadioButton btnApiaryDoc = new JRadioButton(messages.getString("connect_radio_documentation"));
-		btnApiaryDoc.setActionCommand(messages.getString("connect_radio_documentation"));
-		btnApiaryDoc.setMargin(new Insets(0, 0, 0, 0));
-		btnApiaryDoc.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_SMALL)));
-		btnApiaryDoc.setOpaque(false);
-		btnApiaryDoc.setSelected(true);
+		final JRadioButton radBtnApiaryDoc = new JRadioButton(messages.getString("connect_radio_documentation"));
+		radBtnApiaryDoc.setActionCommand(messages.getString("connect_radio_documentation"));
+		radBtnApiaryDoc.setMargin(new Insets(0, 0, 0, 0));
+		radBtnApiaryDoc.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_SMALL)));
+		radBtnApiaryDoc.setOpaque(false);
+		radBtnApiaryDoc.setSelected(true);
 
-		final JRadioButton btnWebUrl = new JRadioButton(messages.getString("connect_radio_web_url"));
-		btnWebUrl.setActionCommand(messages.getString("connect_radio_web_url"));
-		btnWebUrl.setMargin(new Insets(0, 0, 0, 0));
-		btnWebUrl.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_SMALL)));
-		btnWebUrl.setOpaque(false);
+		final JRadioButton radBtnWebUrl = new JRadioButton(messages.getString("connect_radio_web_url"));
+		radBtnWebUrl.setActionCommand(messages.getString("connect_radio_web_url"));
+		radBtnWebUrl.setMargin(new Insets(0, 0, 0, 0));
+		radBtnWebUrl.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_SMALL)));
+		radBtnWebUrl.setOpaque(false);
 
-		final JRadioButton btnLocal = new JRadioButton(messages.getString("connect_radio_local_file"));
-		btnLocal.setActionCommand(messages.getString("connect_radio_local_file"));
-		btnLocal.setMargin(new Insets(0, 0, 0, 0));
-		btnLocal.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_SMALL)));
-		btnLocal.setOpaque(false);
+		final JRadioButton radBtnLocal = new JRadioButton(messages.getString("connect_radio_local_file"));
+		radBtnLocal.setActionCommand(messages.getString("connect_radio_local_file"));
+		radBtnLocal.setMargin(new Insets(0, 0, 0, 0));
+		radBtnLocal.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_SMALL)));
+		radBtnLocal.setOpaque(false);
 
 		// Group the radio buttons.
 		final ButtonGroup group = new ButtonGroup();
-		group.add(btnApiaryDoc);
-		group.add(btnWebUrl);
-		group.add(btnLocal);
-		typePanel.add(btnApiaryDoc);
-		typePanel.add(btnWebUrl);
-		typePanel.add(btnLocal);
+		group.add(radBtnApiaryDoc);
+		group.add(radBtnWebUrl);
+		group.add(radBtnLocal);
+		typePanel.add(labelType);
+		typePanel.add(radBtnApiaryDoc);
+		typePanel.add(radBtnWebUrl);
+		typePanel.add(radBtnLocal);
 		rootPanel.add(typePanel);
 
 
@@ -241,7 +244,7 @@ public class ABMToolWindowConnect extends JFrame
 
 		// Card content documentation
 		final JPanel cardDocumentation = new JPanel();
-		cardDocumentation.setLayout(new MigLayout("insets "+ Utils.reDimension(12) +" "+ Utils.reDimension(12) +" "+ Utils.reDimension(18) +" "+ Utils.reDimension(19) +", flowy, fillx, filly", "[fill, grow]", "[][][][]"));
+		cardDocumentation.setLayout(new MigLayout("insets " + Utils.reDimension(12) + " " + Utils.reDimension(12) + " " + Utils.reDimension(18) + " " + Utils.reDimension(19) + ", flowy, fillx, filly", "[fill, grow]", "[][][][]"));
 		cardDocumentation.setOpaque(false);
 		cardDocumentation.setMaximumSize(new Dimension(Utils.reDimension(600), Integer.MAX_VALUE));
 
@@ -249,28 +252,28 @@ public class ABMToolWindowConnect extends JFrame
 		labelDocumentationUrl.setForeground(Color.WHITE);
 		labelDocumentationUrl.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM)));
 		labelDocumentationUrl.setHorizontalAlignment(SwingConstants.CENTER);
-		cardDocumentation.add(labelDocumentationUrl);
 
 		final JTextField textFieldDocumentationUrl = new JTextField();
 		textFieldDocumentationUrl.setText("http://docs.tuxilero.apiary.io/"); // FIXME
-		cardDocumentation.add(textFieldDocumentationUrl);
 
 		final JLabel labelDocumentationToken = new JLabel("<html><center>" + messages.getString("connect_message_documentation_token") + "</center></html>");
 		labelDocumentationToken.setForeground(Color.WHITE);
 		labelDocumentationToken.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM)));
 		labelDocumentationToken.setHorizontalAlignment(SwingConstants.CENTER);
-		cardDocumentation.add(labelDocumentationToken, "gap 0 0 "+Utils.reDimension(5)+" 0");
 
 		final JTextField textFieldDocumentationToken = new JTextField();
 		textFieldDocumentationToken.setText("824b074bb727d3242fd960f8c5c4cfa9"); // FIXME
-		cardDocumentation.add(textFieldDocumentationToken);
 
+		cardDocumentation.add(labelDocumentationUrl);
+		cardDocumentation.add(textFieldDocumentationUrl);
+		cardDocumentation.add(labelDocumentationToken, "gap 0 0 " + Utils.reDimension(5) + " 0");
+		cardDocumentation.add(textFieldDocumentationToken);
 		cards.add(cardDocumentation, CARD_DOCUMENTATION);
 
 
 		// Card content web url
 		final JPanel cardWebUrl = new JPanel();
-		cardWebUrl.setLayout(new MigLayout("insets "+ Utils.reDimension(12) +" "+ Utils.reDimension(12) +" "+ Utils.reDimension(18) +" "+ Utils.reDimension(19) +", flowy, fillx, filly", "[fill, grow]", "[][]"));
+		cardWebUrl.setLayout(new MigLayout("insets " + Utils.reDimension(12) + " " + Utils.reDimension(12) + " " + Utils.reDimension(18) + " " + Utils.reDimension(19) + ", flowy, fillx, filly", "[fill, grow]", "[][]"));
 		cardWebUrl.setOpaque(false);
 		cardWebUrl.setMaximumSize(new Dimension(Utils.reDimension(600), Integer.MAX_VALUE));
 
@@ -278,18 +281,18 @@ public class ABMToolWindowConnect extends JFrame
 		labelWebUrlMessage.setForeground(Color.WHITE);
 		labelWebUrlMessage.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM)));
 		labelWebUrlMessage.setHorizontalAlignment(SwingConstants.CENTER);
-		cardWebUrl.add(labelWebUrlMessage);
 
 		final JTextField textFieldWebUrl = new JTextField();
 		textFieldWebUrl.setText("http://127.0.0.1:8080/share/my.blueprint"); // FIXME
-		cardWebUrl.add(textFieldWebUrl);
 
+		cardWebUrl.add(labelWebUrlMessage);
+		cardWebUrl.add(textFieldWebUrl);
 		cards.add(cardWebUrl, CARD_WEB_URL);
 
 
 		// Card content local file
 		final JPanel cardLocalFile = new JPanel();
-		cardLocalFile.setLayout(new MigLayout("insets "+ Utils.reDimension(12) +" "+ Utils.reDimension(12) +" "+ Utils.reDimension(18) +" "+ Utils.reDimension(19) +", flowy, fillx, filly", "[fill, grow]", "[]"));
+		cardLocalFile.setLayout(new MigLayout("insets " + Utils.reDimension(12) + " " + Utils.reDimension(12) + " " + Utils.reDimension(18) + " " + Utils.reDimension(19) + ", flowy, fillx, filly", "[fill, grow][]", "[][]"));
 		cardLocalFile.setOpaque(false);
 		cardLocalFile.setMaximumSize(new Dimension(Utils.reDimension(600), Integer.MAX_VALUE));
 
@@ -297,17 +300,19 @@ public class ABMToolWindowConnect extends JFrame
 		labelLocalMessage.setForeground(Color.WHITE);
 		labelLocalMessage.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM)));
 		labelLocalMessage.setHorizontalAlignment(SwingConstants.CENTER);
-		cardLocalFile.add(labelLocalMessage);
 
-		// TODO local file
+		final JTextField textFieldLocalPath = new JTextField();
+		textFieldLocalPath.setText("/home/tuxilero/input.abm");
 
+		final JButton buttonLocalBrowse = new JButton("Browse...");
+		buttonLocalBrowse.setOpaque(false);
 
-
+		cardLocalFile.add(labelLocalMessage, "span 2");
+		cardLocalFile.add(textFieldLocalPath, "cell 0 1");
+		cardLocalFile.add(buttonLocalBrowse, "cell 1 1");
 		cards.add(cardLocalFile, CARD_LOCAL_FILE);
-
 		contentPanel.add(cards);
 		rootPanel.add(contentPanel);
-
 
 		// error label
 		final JLabel labelError = new JLabel();
@@ -320,7 +325,7 @@ public class ABMToolWindowConnect extends JFrame
 
 
 		//Register a listener for the radio buttons.
-		btnApiaryDoc.addActionListener(new ActionListener()
+		radBtnApiaryDoc.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(ActionEvent e)
@@ -330,7 +335,7 @@ public class ABMToolWindowConnect extends JFrame
 				pack();
 			}
 		});
-		btnWebUrl.addActionListener(new ActionListener()
+		radBtnWebUrl.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(ActionEvent e)
@@ -340,7 +345,7 @@ public class ABMToolWindowConnect extends JFrame
 				pack();
 			}
 		});
-		btnLocal.addActionListener(new ActionListener()
+		radBtnLocal.addActionListener(new ActionListener()
 		{
 			@Override
 			public void actionPerformed(ActionEvent e)
@@ -348,6 +353,23 @@ public class ABMToolWindowConnect extends JFrame
 				CardLayout layout = (CardLayout) (cards.getLayout());
 				layout.show(cards, CARD_LOCAL_FILE);
 				pack();
+			}
+		});
+		buttonLocalBrowse.addMouseListener(new MouseAdapter()
+		{
+			public void mouseClicked(MouseEvent e)
+			{
+				JFileChooser fileChooser = new JFileChooser();
+				File lastFile = new File(textFieldLocalPath.getText());
+				if(lastFile!=null && lastFile.exists()) fileChooser.setCurrentDirectory(lastFile);
+				else fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+				int result = fileChooser.showOpenDialog(ABMToolWindowConnect.this);
+				if(result==JFileChooser.APPROVE_OPTION)
+				{
+					File selectedFile = fileChooser.getSelectedFile();
+					Log.d("Selected file: " + selectedFile.getAbsolutePath());
+					textFieldLocalPath.setText(selectedFile.getAbsolutePath());
+				}
 			}
 		});
 	}
