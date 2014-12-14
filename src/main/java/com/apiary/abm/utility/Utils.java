@@ -129,6 +129,8 @@ public class Utils
 
 	public static BufferedImage getResourceIBufferedImage(String filePath) throws IOException
 	{
-		return ImageIO.read(Utils.class.getClassLoader().getResourceAsStream(filePath));
+		if(Utils.class.getClassLoader().getResourceAsStream(filePath)!=null)
+			return ImageIO.read(Utils.class.getClassLoader().getResourceAsStream(filePath));
+		return null;
 	}
 }

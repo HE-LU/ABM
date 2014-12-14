@@ -1,5 +1,6 @@
 package com.apiary.abm.view;
 
+import com.apiary.abm.utility.Utils;
 import com.apiary.abm.utility.images.NinePatch;
 
 import java.awt.Graphics;
@@ -7,7 +8,6 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 
@@ -29,7 +29,7 @@ public class JBackgroundPanel extends JPanel
 
 		try
 		{
-			mImg = ImageIO.read(JBackgroundPanel.class.getClassLoader().getResourceAsStream("drawable/" + name));
+			mImg = Utils.getResourceIBufferedImage(name);
 		}
 		catch(IOException e)
 		{

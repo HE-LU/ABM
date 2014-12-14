@@ -4,6 +4,7 @@ import com.apiary.abm.utility.Utils;
 import com.apiary.abm.view.ImageButton;
 import com.apiary.abm.view.JBackgroundPanel;
 import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 
@@ -16,6 +17,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ResourceBundle;
 
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -38,21 +40,22 @@ public class ABMToolWindowWelcome extends JFrame
 
 	private void initLayout()
 	{
-		ResourceBundle messages = ResourceBundle.getBundle("values/strings");
+		final ResourceBundle messages = ResourceBundle.getBundle("values/strings");
 
 		// create UI
-		JBackgroundPanel myToolWindowContent = new JBackgroundPanel("img_background.png", JBackgroundPanel.JBackgroundPanelType.BACKGROUND_REPEAT);
-		ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
-		Content content = contentFactory.createContent(myToolWindowContent, "", false);
+		final JBackgroundPanel myToolWindowContent = new JBackgroundPanel("drawable/img_background.png", JBackgroundPanel.JBackgroundPanelType.BACKGROUND_REPEAT);
+		final ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
+		final Content content = contentFactory.createContent(myToolWindowContent, "", false);
 		mToolWindow.getContentManager().addContent(content);
 
 		// MIGLAYOUT ( params, columns, rows)
 		// insets TOP LEFT BOTTOM RIGHT
 		myToolWindowContent.setLayout(new MigLayout("insets 0, flowy, fillx, filly", "[fill, grow, center]", "[fill,top][fill, grow][fill,bottom]"));
 
-		JBackgroundPanel topPanel = new JBackgroundPanel("img_box_top.png", JBackgroundPanel.JBackgroundPanelType.PANEL);
-		JPanel middlePanel = new JPanel();
-		JBackgroundPanel bottomPanel = new JBackgroundPanel("img_box_bottom.png", JBackgroundPanel.JBackgroundPanelType.PANEL);
+		final JBackgroundPanel topPanel = new JBackgroundPanel("drawable/img_box_top.png", JBackgroundPanel.JBackgroundPanelType.PANEL);
+		final JPanel middlePanel = new JPanel();
+		final JBScrollPane middleScrollPanel = new JBScrollPane(middlePanel, JBScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JBScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		final JBackgroundPanel bottomPanel = new JBackgroundPanel("drawable/img_box_bottom.png", JBackgroundPanel.JBackgroundPanelType.PANEL);
 
 		topPanel.setMinimumSize(new Dimension(0, Utils.reDimension(90)));
 		bottomPanel.setMinimumSize(new Dimension(0, Utils.reDimension(90)));
@@ -62,33 +65,37 @@ public class ABMToolWindowWelcome extends JFrame
 
 		// add elements
 		topPanel.setLayout(new MigLayout("insets 0 " + Utils.reDimension(20) + " " + Utils.reDimension(20) + " " + Utils.reDimension(20) + ", flowy, fillx, filly", "[fill, grow]", "[fill]"));
-		middlePanel.setLayout(new MigLayout("insets 0 " + Utils.reDimension(15) + " 0 " + Utils.reDimension(15) + ", flowy, fillx, filly", "[fill, grow]", "[fill][fill]"));
+		middlePanel.setLayout(new MigLayout("insets 0 " + Utils.reDimension(15) + " 0 " + Utils.reDimension(15) + ", flowy, fillx, filly", "[grow, center]", "[][]"));
 		bottomPanel.setLayout(new MigLayout("insets " + Utils.reDimension(18) + " 0 0 0, flowy, fillx, filly", "[grow, center]", "[center, top]"));
 
 		topPanel.setOpaque(false);
 		middlePanel.setOpaque(false);
+		middleScrollPanel.setOpaque(false);
+		middleScrollPanel.getViewport().setOpaque(false);
+		middleScrollPanel.setBorder(BorderFactory.createEmptyBorder());
+		middleScrollPanel.getVerticalScrollBar().setUnitIncrement(15);
 		bottomPanel.setOpaque(false);
 
 		myToolWindowContent.add(topPanel);
-		myToolWindowContent.add(middlePanel);
+		myToolWindowContent.add(middleScrollPanel);
 		myToolWindowContent.add(bottomPanel);
 
 		// name
-		JLabel infoText = new JLabel("<html><center>" + messages.getString("welcome_name") + "</center></html>");
+		final JLabel infoText = new JLabel("<html><center>" + messages.getString("welcome_name") + "</center></html>");
 		infoText.setForeground(Color.WHITE);
 		infoText.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_LARGE)));
 		infoText.setHorizontalAlignment(SwingConstants.CENTER);
 		topPanel.add(infoText);
 
 		// name
-		JLabel nameText = new JLabel("<html><center>" + messages.getString("welcome_information") + "</center></html>");
+		final JLabel nameText = new JLabel("<html><center>" + messages.getString("welcome_information") + "</center></html>");
 		nameText.setForeground(Color.WHITE);
 		nameText.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM)));
 		nameText.setHorizontalAlignment(SwingConstants.CENTER);
 		middlePanel.add(nameText);
 
 		// version
-		JLabel versionText = new JLabel("<html><center>" + messages.getString("welcome_version") + "</center></html>");
+		final JLabel versionText = new JLabel("<html><center>" + messages.getString("welcome_version") + "</center></html>");
 		versionText.setForeground(Color.WHITE);
 		versionText.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_SMALL)));
 		versionText.setHorizontalAlignment(SwingConstants.CENTER);
