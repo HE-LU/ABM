@@ -1,11 +1,18 @@
 package com.apiary.abm.view;
 
+import com.apiary.abm.utility.Utils;
+import com.apiary.abm.utility.images.GraphicsUtilities;
+
 import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.RenderingHints;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -13,7 +20,8 @@ import javax.swing.JButton;
 
 public class ImageButton extends JButton
 {
-	private BufferedImage mImage;
+	private String mImage;
+	private boolean mGif = false;
 
 
 	public ImageButton()
@@ -38,7 +46,7 @@ public class ImageButton extends JButton
 			{
 				if(getWidth()!=0 && getHeight()!=0 && mImage!=null)
 				{
-					ImageIcon icon = new ImageIcon(resize(mImage, getWidth(), getHeight()));
+					ImageIcon icon = resizeImage(getWidth(), getHeight());
 					setIcon(icon);
 				}
 			}
@@ -62,26 +70,58 @@ public class ImageButton extends JButton
 	public void setSize(int width, int height)
 	{
 		super.setSize(width, height);
-		ImageIcon icon = new ImageIcon(resize(mImage, width, height));
+		ImageIcon icon = resizeImage(width, height);
 		setIcon(icon);
 	}
 
 
-	public void setImage(BufferedImage image)
+	public void setImage(String image)
 	{
-		mImage = image;
-		ImageIcon icon = new ImageIcon(mImage);
-		setIcon(icon);
+		try
+		{
+			mImage = image;
+			mGif = Files.probeContentType(Paths.get(mImage)).equals("image/gif");
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 
-	public static BufferedImage resize(BufferedImage image, int width, int height)
+	private ImageIcon resizeImage(int width, int height)
 	{
-		BufferedImage bi = new BufferedImage(width, height, BufferedImage.TRANSLUCENT);
-		Graphics2D g2d = bi.createGraphics();
-		g2d.addRenderingHints(new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY));
-		g2d.drawImage(image, 0, 0, width, height, null);
-		g2d.dispose();
-		return bi;
+		try
+		{
+			if(mGif) return resizeGifImage(width, height);
+
+			BufferedImage bi = new BufferedImage(width, height, BufferedImage.TRANSLUCENT);
+			Graphics2D g2d = bi.createGraphics();
+			g2d.addRenderingHints(new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY));
+			g2d.drawImage(Utils.getResourceIBufferedImage(mImage), 0, 0, width, height, null);
+			g2d.dispose();
+			return new ImageIcon(bi);
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+
+	public ImageIcon resizeGifImage(int width, int height)
+	{
+		try
+		{
+			File temp = File.createTempFile("temp_file", "tmp_abm_image.tmp");
+			GraphicsUtilities.convertGifFile(mImage, temp, width, height);
+			return new ImageIcon(temp.getAbsolutePath());
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

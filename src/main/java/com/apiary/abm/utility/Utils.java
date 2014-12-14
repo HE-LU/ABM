@@ -8,17 +8,21 @@ import org.restlet.representation.Representation;
 import org.restlet.resource.ClientResource;
 
 import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+
+import javax.imageio.ImageIO;
 
 
 public class Utils
@@ -27,6 +31,7 @@ public class Utils
 	final public static int FONT_MEDIUM = 15;
 	final public static int FONT_LARGE = 24;
 	final public static int FONT_XLARGE = 30;
+
 
 	public static String readFileAsString(String path, Charset encoding) throws IOException
 	{
@@ -94,30 +99,7 @@ public class Utils
 	}
 
 
-	public static int getFontSizeLarge()
-	{
-		return (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight() / 27;
-	}
-
-
-	public static int getFontSizeMedium()
-	{
-		return (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight() / 65;
-	}
-
-
-	public static int getFontSizeSmall()
-	{
-		return (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight() / 80;
-	}
-
-
-	public static int getFontSizePanelHeader()
-	{
-		return (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight() / 44;
-	}
-
-
+	// DIMENSION UTILS
 	public static int fontSize(int size)
 	{
 		double screen = Toolkit.getDefaultToolkit().getScreenResolution();
@@ -129,5 +111,24 @@ public class Utils
 	{
 		double screen = Toolkit.getDefaultToolkit().getScreenResolution();
 		return (int) (dimension * (screen / 96f));
+	}
+
+
+	// RESOURCES UTILS
+	public static File getResourceFile(String filePath)
+	{
+		return new File(Utils.class.getClassLoader().getResource(filePath).getFile());
+	}
+
+
+	public static InputStream getResourceInputStream(String filePath)
+	{
+		return Utils.class.getClassLoader().getResourceAsStream(filePath);
+	}
+
+
+	public static BufferedImage getResourceIBufferedImage(String filePath) throws IOException
+	{
+		return ImageIO.read(Utils.class.getClassLoader().getResourceAsStream(filePath));
 	}
 }

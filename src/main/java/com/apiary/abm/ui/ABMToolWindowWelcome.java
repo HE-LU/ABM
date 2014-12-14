@@ -12,15 +12,10 @@ import net.miginfocom.swing.MigLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.ResourceBundle;
 
-import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -53,7 +48,7 @@ public class ABMToolWindowWelcome extends JFrame
 
 		// MIGLAYOUT ( params, columns, rows)
 		// insets TOP LEFT BOTTOM RIGHT
-		myToolWindowContent.setLayout(new MigLayout("insets 0, flowy, fillx, filly", "[fill, grow, center]", "[fill,top][fill][fill,bottom]"));
+		myToolWindowContent.setLayout(new MigLayout("insets 0, flowy, fillx, filly", "[fill, grow, center]", "[fill,top][fill, grow][fill,bottom]"));
 
 		JBackgroundPanel topPanel = new JBackgroundPanel("img_box_top.png", JBackgroundPanel.JBackgroundPanelType.PANEL);
 		JPanel middlePanel = new JPanel();
@@ -67,7 +62,7 @@ public class ABMToolWindowWelcome extends JFrame
 
 		// add elements
 		topPanel.setLayout(new MigLayout("insets 0 " + Utils.reDimension(20) + " " + Utils.reDimension(20) + " " + Utils.reDimension(20) + ", flowy, fillx, filly", "[fill, grow]", "[fill]"));
-		middlePanel.setLayout(new MigLayout("insets 0, flowy, fillx, filly", "[fill, grow]", "[fill][fill]"));
+		middlePanel.setLayout(new MigLayout("insets 0 " + Utils.reDimension(15) + " 0 " + Utils.reDimension(15) + ", flowy, fillx, filly", "[fill, grow]", "[fill][fill]"));
 		bottomPanel.setLayout(new MigLayout("insets " + Utils.reDimension(18) + " 0 0 0, flowy, fillx, filly", "[grow, center]", "[center, top]"));
 
 		topPanel.setOpaque(false);
@@ -101,18 +96,8 @@ public class ABMToolWindowWelcome extends JFrame
 
 		// connect button
 		final ImageButton button = new ImageButton();
-
-		try
-		{
-			BufferedImage img = ImageIO.read(JBackgroundPanel.class.getClassLoader().getResource("drawable/img_button_start.png"));
-			button.setImage(img);
-			button.setSize(Utils.reDimension(70), Utils.reDimension(70));
-
-		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
+		button.setImage("drawable/img_button_start.png");
+		button.setSize(Utils.reDimension(70), Utils.reDimension(70));
 
 		button.addMouseListener(new MouseAdapter()
 		{
@@ -124,31 +109,15 @@ public class ABMToolWindowWelcome extends JFrame
 
 			public void mousePressed(MouseEvent e)
 			{
-				try
-				{
-					BufferedImage img = ImageIO.read(JBackgroundPanel.class.getClassLoader().getResource("drawable/img_button_start_pressed.png"));
-					button.setImage(img);
-					button.setSize(Utils.reDimension(70), Utils.reDimension(70));
-				}
-				catch(IOException e1)
-				{
-					e1.printStackTrace();
-				}
+				button.setImage("drawable/img_button_start_pressed.png");
+				button.setSize(Utils.reDimension(70), Utils.reDimension(70));
 			}
 
 
 			public void mouseReleased(MouseEvent e)
 			{
-				try
-				{
-					BufferedImage img = ImageIO.read(JBackgroundPanel.class.getClassLoader().getResource("drawable/img_button_start.png"));
-					button.setImage(img);
-					button.setSize(Utils.reDimension(70), Utils.reDimension(70));
-				}
-				catch(IOException e2)
-				{
-					e2.printStackTrace();
-				}
+				button.setImage("drawable/img_button_start.png");
+				button.setSize(Utils.reDimension(70), Utils.reDimension(70));
 			}
 		});
 

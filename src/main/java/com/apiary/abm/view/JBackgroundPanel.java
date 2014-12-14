@@ -1,6 +1,6 @@
 package com.apiary.abm.view;
 
-import com.apiary.abm.utility.NinePatch;
+import com.apiary.abm.utility.images.NinePatch;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;

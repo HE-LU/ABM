@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apiary.abm.utility;
+package com.apiary.abm.utility.images;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
