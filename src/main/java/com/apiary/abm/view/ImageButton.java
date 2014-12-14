@@ -84,20 +84,21 @@ public class ImageButton extends JButton
 		try
 		{
 			mImage = image;
-			mAnimatedGif = Files.probeContentType(Paths.get(mImage)).equals("image/gif");
+			mAnimatedGif = Files.probeContentType(Paths.get(image)).equals("image/gif");
 			if(mAnimatedGif)
 			{
-				Log.d("It is a gif image!");
+				//				Log.d("It is a gif image!");
 				ImageReader is = ImageIO.getImageReadersBySuffix("GIF").next();
 				ImageInputStream iis = null;
 				try
 				{
-					iis = ImageIO.createImageInputStream(Utils.getResourceInputStream(mImage));
+					iis = ImageIO.createImageInputStream(Utils.getResourceInputStream(image));
+					//					Log.d("iis: " + iis);
 					is.setInput(iis);
 					int images = is.getNumImages(true);
-					Log.d("Images count in gif: " + images);
-					if(images<=1) mAnimatedGif = false;
-					else Log.d("And it is animated gif!");
+					//					Log.d("Images count in gif: " + images);
+					if(images>=0 && images<=1) mAnimatedGif = false;
+					//					else Log.d("And it is animated gif!");
 				}
 				catch(IOException e)
 				{
