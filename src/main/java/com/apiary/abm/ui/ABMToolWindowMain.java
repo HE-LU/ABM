@@ -35,7 +35,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -298,22 +297,22 @@ public class ABMToolWindowMain extends JFrame
 	private ABMEntity refreshBlueprint()
 	{
 		ABMEntity object = null;
-		try
-		{
-			com.apiary.abm.utility.Preferences preferences = new com.apiary.abm.utility.Preferences();
-			String inputFilePath = Utils.saveWebFileToTmp(preferences.getApiaryBlueprintUrl());
-			String tmp = Utils.readFileAsString(inputFilePath, StandardCharsets.UTF_8);
+		//		try
+		//		{
+		//			com.apiary.abm.utility.Preferences preferences = new com.apiary.abm.utility.Preferences();
+		//			String inputFilePath = Utils.saveWebFileToTmp(preferences.getApiaryBlueprintUrl());
+		//			String tmp = Utils.readFileAsString(inputFilePath, StandardCharsets.UTF_8);
+		//
+		// parse json from raw blueprint
+		//			String tmp_string = Utils.parseJsonFromBlueprint(tmp);
 
-			// parse json from raw blueprint
-			String tmp_string = Utils.parseJsonFromBlueprint(tmp);
-
-			// convert json string into object
-			object = Utils.getJsonObject(tmp_string);
-		}
-		catch(IOException e)
-		{
-			e.printStackTrace();
-		}
+		// convert json string into object
+		//			object = Utils.getJsonObject(tmp_string);
+		//		}
+		//		catch(IOException e)
+		//		{
+		//			e.printStackTrace();
+		//		}
 		return object;
 	}
 

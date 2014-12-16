@@ -1,7 +1,9 @@
 package com.apiary.abm.ui;
 
+import com.apiary.abm.enums.ConnectionType;
 import com.apiary.abm.utility.Log;
 import com.apiary.abm.utility.Network;
+import com.apiary.abm.utility.Preferences;
 import com.apiary.abm.utility.Utils;
 import com.apiary.abm.view.ImageButton;
 import com.apiary.abm.view.JBackgroundPanel;
@@ -22,6 +24,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ResourceBundle;
 
 import javax.swing.BorderFactory;
@@ -315,19 +319,52 @@ public class ABMToolWindowConnect extends JFrame
 						boolean error = true;
 						if(radBtnApiaryDoc.isSelected())
 						{
-							Network.requestBlueprintFromApiary(textFieldDocumentationUrl.getText(), textFieldDocumentationToken.getText());
+							try
+							{
+								String output = Network.requestBlueprintFromApiary(textFieldDocumentationUrl.getText(), textFieldDocumentationToken.getText());
+								String tmpFilePath = Utils.saveStringToTmpFile("blueprint", output);
+								Preferences preferences = new Preferences();
+								preferences.setBlueprintConnectionType(ConnectionType.CONNECTION_TYPE_DOC);
+								preferences.setBlueprintConnectionPath(textFieldDocumentationUrl.getText());
+								preferences.setBlueprintConnectionDocKey(textFieldDocumentationToken.getText());
+								preferences.setBlueprintTmpFileLocation(tmpFilePath);
+							}
+							catch(IOException e1)
+							{
+								e1.printStackTrace();
+							}
 						}
 						else if(radBtnWebUrl.isSelected())
 						{
-							Network.requestBlueprintFromURL(textFieldWebUrl.getText());
-
-
-							//	String inputFilePath = Utils.saveWebFileToTmp(textFieldWebUrl.getText());
-							//	String tmp = Utils.readFileAsString(inputFilePath, StandardCharsets.UTF_8);
-
-							//	Preferences preferences = new Preferences();
-							//	preferences.setApiaryBlueprintUrl(textFieldWebUrl.getText());
-							//	preferences.setApiaryBlueprintRaw(tmp);
+							try
+							{
+								String output = Network.requestBlueprintFromURL(textFieldWebUrl.getText());
+								String tmpFilePath = Utils.saveStringToTmpFile("blueprint", output);
+								Preferences preferences = new Preferences();
+								preferences.setBlueprintConnectionType(ConnectionType.CONNECTION_TYPE_WEB_URL);
+								preferences.setBlueprintConnectionPath(textFieldWebUrl.getText());
+								preferences.setBlueprintTmpFileLocation(tmpFilePath);
+							}
+							catch(IOException e1)
+							{
+								e1.printStackTrace();
+							}
+						}
+						else if(radBtnLocal.isSelected())
+						{
+							try
+							{
+								String output = Utils.readFileAsString(textFieldLocalPath.getText(), Charset.forName("UTF-8"));
+								String tmpFilePath = Utils.saveStringToTmpFile("blueprint", output);
+								Preferences preferences = new Preferences();
+								preferences.setBlueprintConnectionType(ConnectionType.CONNECTION_TYPE_FILE);
+								preferences.setBlueprintConnectionPath(textFieldLocalPath.getText());
+								preferences.setBlueprintTmpFileLocation(tmpFilePath);
+							}
+							catch(IOException e1)
+							{
+								e1.printStackTrace();
+							}
 						}
 
 						if(error)
@@ -342,16 +379,13 @@ public class ABMToolWindowConnect extends JFrame
 								}
 							});
 						}
-						else
+						else SwingUtilities.invokeLater(new Runnable()
 						{
-							SwingUtilities.invokeLater(new Runnable()
+							public void run()
 							{
-								public void run()
-								{
-									new ABMToolWindowMain(mToolWindow);
-								}
-							});
-						}
+								new ABMToolWindowMain(mToolWindow);
+							}
+						});
 					}
 				});
 				t.start();

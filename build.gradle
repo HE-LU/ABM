@@ -13,6 +13,7 @@ dependencies {
 	compile 'com.miglayout:miglayout-swing:4.2'
 	compile 'org.swinglabs:swingx:1.6.1'
 	compile 'com.mashape.unirest:unirest-java:1.3.27'
+	compile 'commons-io:commons-io:2.4'
 	compile 'org.apache.httpcomponents:httpclient:4.3.6'
 	compile 'org.apache.httpcomponents:httpasyncclient:4.0.2'
 	compile 'org.apache.httpcomponents:httpmime:4.3.6'
@@ -49,23 +50,17 @@ task setup {
 	}
 }
 
-task copyDependencies(type: Copy) {
-	from configurations.compile
-	into 'build/dependencies'
-}
-
 
 task makeJar(type: Jar, dependsOn: classes) {
 	outputs.upToDateWhen {false}
 	dependsOn setup
-	dependsOn copyDependencies
 
-	from zipTree('./build/dependencies/unirest-java-1.3.27.jar')
-	from zipTree('./build/dependencies/httpcore-nio-4.3.3.jar')
-	from zipTree('./build/dependencies/httpclient-4.3.6.jar')
-	from zipTree('./build/dependencies/httpmime-4.3.6.jar')
-	from zipTree('./build/dependencies/httpcore-4.3.3.jar')
-	from zipTree('./build/dependencies/httpasyncclient-4.0.2.jar')
+	from {
+		configurations.compile.collect {
+			(!it.isDirectory() && !it.getName().equals("openapi-short.jar") && !it.getName().equals("openapi-7.0.3.jar")) ? zipTree(it) : it
+		}
+	}
+
 	from sourceSets.main.output
 
 	doLast {

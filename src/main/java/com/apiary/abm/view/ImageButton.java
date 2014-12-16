@@ -1,6 +1,5 @@
 package com.apiary.abm.view;
 
-import com.apiary.abm.utility.Log;
 import com.apiary.abm.utility.Utils;
 import com.apiary.abm.utility.images.GraphicsUtilities;
 
