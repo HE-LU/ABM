@@ -1,6 +1,7 @@
 package com.apiary.abm.ui;
 
-import com.apiary.abm.enums.ConnectionType;
+import com.apiary.abm.entity.DocResponseEntity;
+import com.apiary.abm.enums.ConnectionTypeEnum;
 import com.apiary.abm.utility.Log;
 import com.apiary.abm.utility.Network;
 import com.apiary.abm.utility.Preferences;
@@ -24,7 +25,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ResourceBundle;
 
@@ -67,6 +67,7 @@ public class ABMToolWindowConnect extends JFrame
 		final JBackgroundPanel myToolWindowContent = new JBackgroundPanel("drawable/img_background.png", JBackgroundPanel.JBackgroundPanelType.BACKGROUND_REPEAT);
 		final ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
 		final Content content = contentFactory.createContent(myToolWindowContent, "", false);
+		mToolWindow.getContentManager().removeAllContents(true);
 		mToolWindow.getContentManager().addContent(content);
 
 		// MIGLAYOUT ( params, columns, rows)
@@ -316,22 +317,32 @@ public class ABMToolWindowConnect extends JFrame
 				{
 					public void run()
 					{
-						boolean error = true;
+						boolean error = false;
 						if(radBtnApiaryDoc.isSelected())
 						{
 							try
 							{
 								String output = Network.requestBlueprintFromApiary(textFieldDocumentationUrl.getText(), textFieldDocumentationToken.getText());
-								String tmpFilePath = Utils.saveStringToTmpFile("blueprint", output);
+								DocResponseEntity response = Utils.parseJsonDoc(output);
+
+								if(response==null) throw new Exception("Gson parsing problem!");
+
+								if(response.getError() || response.getCode()==null) throw new Exception(response.getMessage());
+
+								if(!Network.isBlueprintValid(response.getCode())) throw new Exception("Error in parsing blueprint!");
+
+								String tmpFilePath = Utils.saveStringToTmpFile("blueprint", response.getCode());
 								Preferences preferences = new Preferences();
-								preferences.setBlueprintConnectionType(ConnectionType.CONNECTION_TYPE_DOC);
+								preferences.setBlueprintConnectionType(ConnectionTypeEnum.CONNECTION_TYPE_DOC);
 								preferences.setBlueprintConnectionPath(textFieldDocumentationUrl.getText());
 								preferences.setBlueprintConnectionDocKey(textFieldDocumentationToken.getText());
 								preferences.setBlueprintTmpFileLocation(tmpFilePath);
 							}
-							catch(IOException e1)
+							catch(Exception e1)
 							{
+								Log.e("Exception message: " + e1.getMessage());
 								e1.printStackTrace();
+								error = true;
 							}
 						}
 						else if(radBtnWebUrl.isSelected())
@@ -339,15 +350,22 @@ public class ABMToolWindowConnect extends JFrame
 							try
 							{
 								String output = Network.requestBlueprintFromURL(textFieldWebUrl.getText());
+
+								if(output==null) throw new Exception("Could not get valid web file!");
+
+								if(!Network.isBlueprintValid(output)) throw new Exception("Error in parsing blueprint!");
+
 								String tmpFilePath = Utils.saveStringToTmpFile("blueprint", output);
 								Preferences preferences = new Preferences();
-								preferences.setBlueprintConnectionType(ConnectionType.CONNECTION_TYPE_WEB_URL);
+								preferences.setBlueprintConnectionType(ConnectionTypeEnum.CONNECTION_TYPE_WEB_URL);
 								preferences.setBlueprintConnectionPath(textFieldWebUrl.getText());
 								preferences.setBlueprintTmpFileLocation(tmpFilePath);
 							}
-							catch(IOException e1)
+							catch(Exception e1)
 							{
+								Log.e("Exception message: " + e1.getMessage());
 								e1.printStackTrace();
+								error = true;
 							}
 						}
 						else if(radBtnLocal.isSelected())
@@ -355,15 +373,22 @@ public class ABMToolWindowConnect extends JFrame
 							try
 							{
 								String output = Utils.readFileAsString(textFieldLocalPath.getText(), Charset.forName("UTF-8"));
+
+								if(output==null) throw new Exception("Could not read the file!");
+
+								if(!Network.isBlueprintValid(output)) throw new Exception("Error in parsing blueprint!");
+
 								String tmpFilePath = Utils.saveStringToTmpFile("blueprint", output);
 								Preferences preferences = new Preferences();
-								preferences.setBlueprintConnectionType(ConnectionType.CONNECTION_TYPE_FILE);
+								preferences.setBlueprintConnectionType(ConnectionTypeEnum.CONNECTION_TYPE_FILE);
 								preferences.setBlueprintConnectionPath(textFieldLocalPath.getText());
 								preferences.setBlueprintTmpFileLocation(tmpFilePath);
 							}
-							catch(IOException e1)
+							catch(Exception e1)
 							{
+								Log.e("Exception message: " + e1.getMessage());
 								e1.printStackTrace();
+								error = true;
 							}
 						}
 

@@ -1,13 +1,13 @@
 package com.apiary.abm.enums;
 
-public enum ConnectionType
+public enum ConnectionTypeEnum
 {
 	CONNECTION_TYPE_NONE(0), CONNECTION_TYPE_DOC(1), CONNECTION_TYPE_WEB_URL(2), CONNECTION_TYPE_FILE(3);
 
 	private final Integer value;
 
 
-	private ConnectionType(int value)
+	private ConnectionTypeEnum(int value)
 	{
 		this.value = value;
 	}
@@ -19,7 +19,7 @@ public enum ConnectionType
 	}
 
 
-	public static ConnectionType toConnectionType(int value)
+	public static ConnectionTypeEnum toConnectionType(int value)
 	{
 		switch(value)
 		{

@@ -1,5 +1,8 @@
 package com.apiary.abm.entity;
 
+import com.apiary.abm.enums.NodeTypeEnum;
+
+
 public class TreeNodeEntity
 {
 	private NodeTypeEnum mNodeType;

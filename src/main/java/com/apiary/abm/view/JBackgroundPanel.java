@@ -29,7 +29,7 @@ public class JBackgroundPanel extends JPanel
 
 		try
 		{
-			mImg = Utils.getResourceIBufferedImage(name);
+			mImg = Utils.getResourceBufferedImage(name);
 		}
 		catch(IOException e)
 		{

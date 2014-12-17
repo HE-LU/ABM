@@ -86,18 +86,14 @@ public class ImageButton extends JButton
 			mAnimatedGif = Files.probeContentType(Paths.get(image)).equals("image/gif");
 			if(mAnimatedGif)
 			{
-				//				Log.d("It is a gif image!");
 				ImageReader is = ImageIO.getImageReadersBySuffix("GIF").next();
 				ImageInputStream iis = null;
 				try
 				{
 					iis = ImageIO.createImageInputStream(Utils.getResourceInputStream(image));
-					//					Log.d("iis: " + iis);
 					is.setInput(iis);
 					int images = is.getNumImages(true);
-					//					Log.d("Images count in gif: " + images);
 					if(images>=0 && images<=1) mAnimatedGif = false;
-					//					else Log.d("And it is animated gif!");
 				}
 				catch(IOException e)
 				{
@@ -107,6 +103,12 @@ public class ImageButton extends JButton
 				{
 					if(iis!=null) iis.close();
 				}
+			}
+
+			if(getWidth() != 0 && getHeight() != 0)
+			{
+				ImageIcon icon = resizeImage(getWidth(), getHeight());
+				setIcon(icon);
 			}
 		}
 		catch(IOException e)
@@ -125,7 +127,7 @@ public class ImageButton extends JButton
 			BufferedImage bi = new BufferedImage(width, height, BufferedImage.TRANSLUCENT);
 			Graphics2D g2d = bi.createGraphics();
 			g2d.addRenderingHints(new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY));
-			g2d.drawImage(Utils.getResourceIBufferedImage(mImage), 0, 0, width, height, null);
+			g2d.drawImage(Utils.getResourceBufferedImage(mImage), 0, 0, width, height, null);
 			g2d.dispose();
 			return new ImageIcon(bi);
 		}

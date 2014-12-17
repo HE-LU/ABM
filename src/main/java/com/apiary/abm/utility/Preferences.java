@@ -1,7 +1,7 @@
 package com.apiary.abm.utility;
 
 
-import com.apiary.abm.enums.ConnectionType;
+import com.apiary.abm.enums.ConnectionTypeEnum;
 import com.apiary.abm.ui.ABMToolWindow;
 
 
@@ -28,9 +28,9 @@ public class Preferences
 	}
 
 
-	public ConnectionType getBlueprintConnectionType()
+	public ConnectionTypeEnum getBlueprintConnectionType()
 	{
-		return ConnectionType.toConnectionType(mPreferences.getInt(PREF_BLUEPRINT_CONNECTION_TYPE, -1));
+		return ConnectionTypeEnum.toConnectionType(mPreferences.getInt(PREF_BLUEPRINT_CONNECTION_TYPE, -1));
 	}
 
 
@@ -59,7 +59,7 @@ public class Preferences
 	}
 
 
-	public void setBlueprintConnectionType(ConnectionType value)
+	public void setBlueprintConnectionType(ConnectionTypeEnum value)
 	{
 		mPreferences.putInt(PREF_BLUEPRINT_CONNECTION_TYPE, value.toInteger());
 	}

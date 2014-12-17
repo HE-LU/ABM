@@ -1,4 +1,4 @@
-package com.apiary.abm.entity;
+package com.apiary.abm.entity.blueprint;
 
 import com.google.gson.annotations.SerializedName;
 

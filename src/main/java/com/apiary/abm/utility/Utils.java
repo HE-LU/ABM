@@ -1,5 +1,10 @@
 package com.apiary.abm.utility;
 
+import com.apiary.abm.entity.DocResponseEntity;
+import com.apiary.abm.entity.blueprint.ABMEntity;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import org.apache.commons.io.FileUtils;
 
 import java.awt.Toolkit;
@@ -69,27 +74,27 @@ public class Utils
 	//	}
 	//
 	//
-	//	public static String parseJsonFromBlueprint(String blueprint)
-	//	{
-	//		//		try
-	//		//		{
-	//		//			ClientResource resource = new ClientResource("https://api.apiblueprint.org/parser");
-	//		//
-	//		//			Representation r = resource.post(blueprint);
-	//		//			if(resource.getStatus().isSuccess())
-	//		//			{
-	//		//				if(resource.getStatus().getCode()==200)
-	//		//				{
-	//		//					return r.getText();
-	//		//				}
-	//		//			}
-	//		//		}
-	//		//		catch(IOException e)
-	//		//		{
-	//		//			e.printStackTrace();
-	//		//		}
-	//		return null;
-	//	}
+	//		public static String parseJsonFromBlueprint(String blueprint)
+	//		{
+	//			try
+	//			{
+	//				ClientResource resource = new ClientResource("https://api.apiblueprint.org/parser");
+	//
+	//				Representation r = resource.post(blueprint);
+	//				if(resource.getStatus().isSuccess())
+	//				{
+	//					if(resource.getStatus().getCode()==200)
+	//					{
+	//						return r.getText();
+	//					}
+	//				}
+	//			}
+	//			catch(IOException e)
+	//			{
+	//				e.printStackTrace();
+	//			}
+	//			return null;
+	//		}
 
 
 	// DIMENSION UTILS
@@ -120,7 +125,7 @@ public class Utils
 	}
 
 
-	public static BufferedImage getResourceIBufferedImage(String filePath) throws IOException
+	public static BufferedImage getResourceBufferedImage(String filePath) throws IOException
 	{
 		if(Utils.class.getClassLoader().getResourceAsStream(filePath)!=null)
 			return ImageIO.read(Utils.class.getClassLoader().getResourceAsStream(filePath));
@@ -149,5 +154,20 @@ public class Utils
 	{
 		byte[] encoded = Files.readAllBytes(file.toPath());
 		return new String(encoded, encoding);
+	}
+
+
+	// JSON
+	public static DocResponseEntity parseJsonDoc(String jsonDoc)
+	{
+		Gson gson = new GsonBuilder().create();
+		return gson.fromJson(jsonDoc, DocResponseEntity.class);
+	}
+
+
+	public static ABMEntity parseJsonBlueprint(String jsonBlueprint)
+	{
+		Gson gson = new GsonBuilder().create();
+		return gson.fromJson(jsonBlueprint, ABMEntity.class);
 	}
 }
