@@ -7,7 +7,9 @@ import com.apiary.abm.entity.blueprint.ResourceGroupsEntity;
 import com.apiary.abm.entity.blueprint.ResourcesEntity;
 import com.apiary.abm.enums.NodeTypeEnum;
 import com.apiary.abm.renderer.ABMTreeCellRenderer;
+import com.apiary.abm.utility.Network;
 import com.apiary.abm.utility.Utils;
+import com.apiary.abm.view.ImageButton;
 import com.apiary.abm.view.JBackgroundPanel;
 import com.intellij.ide.projectView.ViewSettings;
 import com.intellij.ide.projectView.impl.nodes.PackageUtil;
@@ -24,8 +26,8 @@ import com.intellij.psi.PsiPackage;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
-import com.intellij.ui.treeStructure.Tree;
 import com.intellij.util.containers.ContainerUtil;
+import com.intellij.util.ui.Tree;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -35,10 +37,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.Set;
 
 import javax.imageio.ImageIO;
@@ -47,6 +49,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTree;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -67,8 +71,6 @@ public class ABMToolWindowMain extends JFrame
 
 	private void initLayout()
 	{
-		final ResourceBundle messages = ResourceBundle.getBundle("values/strings");
-
 		// create UI
 		final JBackgroundPanel myToolWindowContent = new JBackgroundPanel("drawable/img_background.png", JBackgroundPanel.JBackgroundPanelType.BACKGROUND_REPEAT);
 		final ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
@@ -78,7 +80,7 @@ public class ABMToolWindowMain extends JFrame
 
 		// MIGLAYOUT ( params, columns, rows)
 		// insets TOP LEFT BOTTOM RIGHT
-		myToolWindowContent.setLayout(new MigLayout("insets 0, flowy, fillx, filly", "[fill, grow, center]", "[fill,top][fill][fill,bottom]"));
+		myToolWindowContent.setLayout(new MigLayout("insets 0, flowy, fillx, filly", "[fill, grow, center]", "[fill,top][fill, grow][fill,bottom]"));
 
 		final JBackgroundPanel topPanel = new JBackgroundPanel("drawable/img_box_top.png", JBackgroundPanel.JBackgroundPanelType.PANEL);
 		final JPanel middlePanel = new JPanel();
@@ -108,16 +110,15 @@ public class ABMToolWindowMain extends JFrame
 		myToolWindowContent.add(middleScrollPanel);
 		myToolWindowContent.add(bottomPanel);
 
-		// information icon
+		// refresh and analyze blueprint
+		ABMEntity object;
+		List<TreeNodeEntity> treeNodeList = null;
 		try
 		{
-			final JLabel informationIcon = new JLabel();
-			BufferedImage tmpImage = ImageIO.read(JBackgroundPanel.class.getClassLoader().getResourceAsStream("drawable/img_cross.png"));
-
-			Image image = tmpImage.getScaledInstance(95, 95, Image.SCALE_SMOOTH);
-			informationIcon.setIcon(new ImageIcon(image));
-			informationIcon.setOpaque(false);
-			topPanel.add(informationIcon);
+			String blueprint = Utils.readFileAsString(Network.refreshBlueprint(), Charset.forName("UTF-8"));
+			String json = Network.requestJSONFromBlueprint(blueprint);
+			object = Utils.parseJsonBlueprint(json);
+			if(object.getError()==null) treeNodeList = analyzeBlueprint(object);
 		}
 		catch(IOException e)
 		{
@@ -125,359 +126,358 @@ public class ABMToolWindowMain extends JFrame
 		}
 
 
-		// refresh and analyze blueprint
-//		ABMEntity object = refreshBlueprint();
-		//		analyzeBlueprint(object);
+		// information icon
+		try
+		{
+			final JLabel informationIcon = new JLabel();
+			BufferedImage tmpImage = ImageIO.read(JBackgroundPanel.class.getClassLoader().getResourceAsStream("drawable/img_cross.png"));
 
+			Image image = tmpImage.getScaledInstance(75, 75, Image.SCALE_SMOOTH);
+			informationIcon.setIcon(new ImageIcon(image));
+			informationIcon.setOpaque(false);
+			informationIcon.setHorizontalAlignment(SwingConstants.CENTER);
+			topPanel.add(informationIcon);
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+		}
 
 		// tree structure
 		final JBackgroundPanel middleTreePanel = new JBackgroundPanel("drawable/img_background_panel.9.png", JBackgroundPanel.JBackgroundPanelType.NINE_PATCH);
-		middleTreePanel.setLayout(new MigLayout("insets 12 12 18 19, flowy, fillx, filly", "[fill, grow]", "[fill]"));
+		middleTreePanel.setLayout(new MigLayout("insets " + Utils.reDimension(12) + " " + Utils.reDimension(12) + " " + Utils.reDimension(18) + " " + Utils.reDimension(19) + ", flowy, fillx, filly", "[fill, grow]", "[fill]"));
 		middleTreePanel.setOpaque(false);
 
-
 		//		Tree tree = new Tree(initExampleTreeStructure(object));
-//		Tree tree = new Tree(initTreeStructure(analyzeBlueprint(object)));
-//		tree.setRootVisible(false);
-//		tree.setOpaque(false);
-//		tree.setCellRenderer(new ABMTreeCellRenderer());
+		JTree tree = new Tree(initTreeStructure(treeNodeList));
+		tree.setRootVisible(false);
+		tree.setOpaque(false);
+		tree.setCellRenderer(new ABMTreeCellRenderer());
 
-//		JBScrollPane pane = new JBScrollPane(tree);
-//		pane.setBorder(null);
-//		pane.setOpaque(false);
+		JBScrollPane pane = new JBScrollPane(tree);
+		pane.setBorder(null);
+		pane.setOpaque(false);
 
-//		pane.getViewport().setBorder(null);
-//		pane.getViewport().setOpaque(false);
+		pane.getViewport().setBorder(null);
+		pane.getViewport().setOpaque(false);
 
-//		middleTreePanel.add(pane);
+		middleTreePanel.add(pane);
 
 		middlePanel.add(middleTreePanel);
 
-		// Button refresh
-		final JLabel buttonRefresh = new JLabel();
-		buttonRefresh.setOpaque(false);
-		buttonRefresh.setText("<html><img src='" + JBackgroundPanel.class.getClassLoader().getResource("drawable/img_button_reload.png") + "' width='90' height='90' /></html>");
+		// refresh button
+		final ImageButton button = new ImageButton();
+		button.setImage("drawable/img_button_refresh.png");
+		button.setSize(Utils.reDimension(70), Utils.reDimension(70));
 
-//		buttonRefresh.addMouseListener(new MouseAdapter()
-//		{
-//			private boolean reloading;
-//
-//
-//			public void mouseClicked(MouseEvent e)
-//			{
-//				if(reloading) return;
-//
-//				buttonRefresh.setText("<html><img src='" + JBackgroundPanel.class.getClassLoader().getResource("drawable/animation_reload.gif") + "' width='90' height='90' /></html>");
-//				reloading = true;
-//
-//				Thread t = new Thread(new Runnable()
-//				{
-//					public void run()
-//					{
-//						ABMEntity object = refreshBlueprint();
-//
-//						analyzeBlueprint(object);
-//
-//						Tree tree = new Tree(initExampleTreeStructure(object));
-//						tree.setRootVisible(false);
-//						tree.setOpaque(false);
-//						tree.setCellRenderer(new ABMTreeCellRenderer());
-//
-//						final JBScrollPane pane = new JBScrollPane(tree);
-//						pane.setBorder(null);
-//						pane.setOpaque(false);
-//
-//						pane.getViewport().setBorder(null);
-//						pane.getViewport().setOpaque(false);
-//
-//						reloading = false;
-//
-//						SwingUtilities.invokeLater(new Runnable()
-//						{
-//							public void run()
-//							{
-//								middleTreePanel.removeAll();
-//								middleTreePanel.add(pane);
-//
-//								buttonRefresh.setText("<html><img src='" + JBackgroundPanel.class.getClassLoader().getResource("drawable/img_button_reload.png") + "' width='90' height='90' /></html>");
-//							}
-//						});
-//					}
-//				});
-//				t.start();
-//			}
-//
-//
-//			public void mousePressed(MouseEvent e)
-//			{
-//				if(reloading) return;
-//
-//				buttonRefresh.setText("<html><img src='" + JBackgroundPanel.class.getClassLoader().getResource("drawable/img_button_reload_pressed.png") + "' width='90' height='90' /></html>");
-//			}
-//
-//
-//			public void mouseReleased(MouseEvent e)
-//			{
-//				if(reloading) return;
-//
-//				buttonRefresh.setText("<html><img src='" + JBackgroundPanel.class.getClassLoader().getResource("drawable/img_button_reload.png") + "' width='90' height='90' /></html>");
-//			}
-//
-//		});
-		bottomPanel.add(buttonRefresh);
+		button.addMouseListener(new MouseAdapter()
+		{
+			private boolean refreshing;
+
+
+			public void mouseClicked(MouseEvent e)
+			{
+				if(refreshing) return;
+				refreshing = true;
+
+				button.setImage("drawable/animation_refresh.gif");
+				button.setSize(Utils.reDimension(70), Utils.reDimension(70));
+
+				Thread t = new Thread(new Runnable()
+				{
+					public void run()
+					{
+						ABMEntity object;
+						List<TreeNodeEntity> treeNodeList = null;
+						try
+						{
+							String blueprint = Utils.readFileAsString(Network.refreshBlueprint(), Charset.forName("UTF-8"));
+							String json = Network.requestJSONFromBlueprint(blueprint);
+							object = Utils.parseJsonBlueprint(json);
+							if(object.getError()==null) treeNodeList = analyzeBlueprint(object);
+						}
+						catch(IOException e)
+						{
+							e.printStackTrace();
+						}
+
+						JTree tree = new Tree(initTreeStructure(treeNodeList));
+						tree.setRootVisible(false);
+						tree.setOpaque(false);
+						tree.setCellRenderer(new ABMTreeCellRenderer());
+
+						final JBScrollPane pane = new JBScrollPane(tree);
+						pane.setBorder(null);
+						pane.setOpaque(false);
+
+						pane.getViewport().setBorder(null);
+						pane.getViewport().setOpaque(false);
+
+						SwingUtilities.invokeLater(new Runnable()
+						{
+							public void run()
+							{
+								middleTreePanel.removeAll();
+								middleTreePanel.add(pane);
+
+								button.setImage("drawable/img_button_refresh.png");
+								button.setSize(Utils.reDimension(70), Utils.reDimension(70));
+
+								refreshing = false;
+							}
+						});
+					}
+				});
+				t.start();
+			}
+
+
+			public void mousePressed(MouseEvent e)
+			{
+				if(refreshing) return;
+				button.setImage("drawable/img_button_refresh_pressed.png");
+				button.setSize(Utils.reDimension(70), Utils.reDimension(70));
+			}
+
+
+			public void mouseReleased(MouseEvent e)
+			{
+				if(refreshing) return;
+				button.setImage("drawable/img_button_refresh.png");
+				button.setSize(Utils.reDimension(70), Utils.reDimension(70));
+			}
+		});
+		bottomPanel.add(button);
 	}
 
-//
-//	private List<TreeNodeEntity> analyzeBlueprint(ABMEntity object)
-//	{
-//		if(object==null || object.getError()!=null) return null;
-//
-//		List<TreeNodeEntity> outputList = new ArrayList<TreeNodeEntity>();
-//		for(ResourceGroupsEntity resourceGroupsEntity : object.getAst().getResourceGroups())
-//		{
-//			for(ResourcesEntity resourcesEntity : resourceGroupsEntity.getResources())
-//			{
-//				for(ActionsEntity actionsEntity : resourcesEntity.getActions())
-//				{
-//					TreeNodeEntity entity = new TreeNodeEntity();
-//					entity.setName(actionsEntity.getName().replace(" ", ""));
-//					entity.setUri(resourcesEntity.getUriTemplate());
-//					entity.setMethod(actionsEntity.getMethod());
-//
-//					if(entity.getMethod().equals("GET")) entity.setNodeType(NodeTypeEnum.ERROR);
-//					else if(entity.getMethod().equals("POST")) entity.setNodeType(NodeTypeEnum.WARNING);
-//					else entity.setNodeType(NodeTypeEnum.MISSING);
-//
-//					outputList.add(entity);
-//				}
-//			}
-//		}
-//		return outputList;
-//	}
-//
-//
-//	private DefaultMutableTreeNode initTreeStructure(List<TreeNodeEntity> nodeList)
-//	{
-//		DefaultMutableTreeNode root = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.ROOT, "Root object", ""));
-//
-//		DefaultMutableTreeNode categoryError = null;
-//		DefaultMutableTreeNode categoryWarning = null;
-//		DefaultMutableTreeNode categoryMissing = null;
-//		DefaultMutableTreeNode item = null;
-//
-//		categoryError = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.ERROR_ROOT, "Errors", "3"));
-//		root.add(categoryError);
-//
-//		categoryWarning = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.WARNING_ROOT, "Warnings", "2"));
-//		root.add(categoryWarning);
-//
-//		categoryMissing = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.MISSING_ROOT, "Not implemented", "2"));
-//		root.add(categoryMissing);
-//
-//		for(TreeNodeEntity entity : nodeList)
-//		{
-//			if(entity.getMethod().equals("GET"))
-//			{
-//				item = new DefaultMutableTreeNode(entity);
-//				categoryError.add(item);
-//			}
-//			else if(entity.getMethod().equals("POST"))
-//			{
-//				item = new DefaultMutableTreeNode(entity);
-//				categoryWarning.add(item);
-//			}
-//			else
-//			{
-//				item = new DefaultMutableTreeNode(entity);
-//				categoryMissing.add(item);
-//			}
-//
-//		}
-//
-//		return root;
-//	}
-//
-//
-//	// Utility
-//	private ABMEntity refreshBlueprint()
-//	{
-//		ABMEntity object = null;
-//		//		try
-//		//		{
-//		//			com.apiary.abm.utility.Preferences preferences = new com.apiary.abm.utility.Preferences();
-//		//			String inputFilePath = Utils.saveWebFileToTmp(preferences.getApiaryBlueprintUrl());
-//		//			String tmp = Utils.readFileAsString(inputFilePath, StandardCharsets.UTF_8);
-//		//
-//		// parse json from raw blueprint
-//		//			String tmp_string = Utils.parseJsonFromBlueprint(tmp);
-//
-//		// convert json string into object
-//		//			object = Utils.getJsonObject(tmp_string);
-//		//		}
-//		//		catch(IOException e)
-//		//		{
-//		//			e.printStackTrace();
-//		//		}
-//		return object;
-//	}
-//
-//
-//	private TreeNodeEntity createTreeNodeItem(NodeTypeEnum type, String name, String value)
-//	{
-//		return new TreeNodeEntity(type, name, value);
-//	}
-//
-//
-//	// Not used
-//	private DefaultMutableTreeNode initExampleTreeStructure(ABMEntity object)
-//	{
-//		DefaultMutableTreeNode top = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.ROOT, "Root", "1"));
-//
-//		DefaultMutableTreeNode category = null;
-//		DefaultMutableTreeNode book = null;
-//
-//		category = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.ERROR_ROOT, "Errors", "3"));
-//		top.add(category);
-//
-//		//original Tutorial
-//		book = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.ERROR, "File: test.java", "Missing argument test"));
-//		category.add(book);
-//
-//		//Tutorial Continued
-//		book = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.ERROR, "File: date.java", "Missing argument day"));
-//		category.add(book);
-//
-//		//Swing Tutorial
-//		book = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.ERROR, "File: date.java", "Missing argument month"));
-//		category.add(book);
-//
-//		//...add more books for programmers...
-//
-//		category = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.WARNING_ROOT, "Warnings", "2"));
-//		top.add(category);
-//
-//		//VM
-//		book = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.WARNING, "File: test.java", "Bad argument type String"));
-//		category.add(book);
-//
-//		//Language Spec
-//		book = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.WARNING, "File: date.java", "Bad argument type Date"));
-//		category.add(book);
-//
-//		category = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.MISSING_ROOT, "Not implemented", "2"));
-//		top.add(category);
-//
-//		//VM
-//		book = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.MISSING, "File: test.java", "Missing argument test2"));
-//		category.add(book);
-//
-//		//Language Spec
-//		book = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.MISSING, "File: date.java", "Missing argument year"));
-//		category.add(book);
-//
-//		return top;
-//	}
-//
-//
-//	public class ProjectViewSettings implements ViewSettings
-//	{
-//		@Override
-//		public boolean isShowMembers()
-//		{
-//			return false;
-//		}
-//
-//
-//		@Override
-//		public boolean isStructureView()
-//		{
-//			return false;
-//		}
-//
-//
-//		@Override
-//		public boolean isShowModules()
-//		{
-//			return false;
-//		}
-//
-//
-//		@Override
-//		public boolean isFlattenPackages()
-//		{
-//			return false;
-//		}
-//
-//
-//		@Override
-//		public boolean isAbbreviatePackageNames()
-//		{
-//			return false;
-//		}
-//
-//
-//		@Override
-//		public boolean isHideEmptyMiddlePackages()
-//		{
-//			return false;
-//		}
-//
-//
-//		@Override
-//		public boolean isShowLibraryContents()
-//		{
-//			return false;
-//		}
-//	}
-//
-//
-//	private List<PsiPackage> getPackages()
-//	{
-//		//		Project myProject = presenterConfigModel.getProject();
-//		Project myProject = ABMToolWindow.getProject();
-//
-//		ProjectViewSettings viewSettings = new ProjectViewSettings();
-//
-//		final List<VirtualFile> sourceRoots = new ArrayList<VirtualFile>();
-//		final ProjectRootManager projectRootManager = ProjectRootManager.getInstance(myProject);
-//		ContainerUtil.addAll(sourceRoots, projectRootManager.getContentSourceRoots());
-//
-//		final PsiManager psiManager = PsiManager.getInstance(myProject);
-//		final List<AbstractTreeNode> children = new ArrayList<AbstractTreeNode>();
-//		final Set<PsiPackage> topLevelPackages = new HashSet<PsiPackage>();
-//
-//		for(final VirtualFile root : sourceRoots)
-//		{
-//			final PsiDirectory directory = psiManager.findDirectory(root);
-//			if(directory==null)
-//			{
-//				continue;
-//			}
-//			final PsiPackage directoryPackage = JavaDirectoryService.getInstance().getPackage(directory);
-//			if(directoryPackage==null || PackageUtil.isPackageDefault(directoryPackage))
-//			{
-//				// add subpackages
-//				final PsiDirectory[] subdirectories = directory.getSubdirectories();
-//				for(PsiDirectory subdirectory : subdirectories)
-//				{
-//					final PsiPackage aPackage = JavaDirectoryService.getInstance().getPackage(subdirectory);
-//					if(aPackage!=null && !PackageUtil.isPackageDefault(aPackage))
-//					{
-//						topLevelPackages.add(aPackage);
-//					}
-//				}
-//				// add non-dir items
-//				children.addAll(ProjectViewDirectoryHelper.getInstance(myProject).getDirectoryChildren(directory, viewSettings, false));
-//			}
-//			else
-//			{
-//				// this is the case when a source root has package prefix assigned
-//				topLevelPackages.add(directoryPackage);
-//			}
-//		}
-//
-//		return new ArrayList<PsiPackage>(topLevelPackages);
-//	}
+
+	private List<TreeNodeEntity> analyzeBlueprint(ABMEntity object)
+	{
+		if(object==null || object.getError()!=null) return null;
+
+		List<TreeNodeEntity> outputList = new ArrayList<TreeNodeEntity>();
+		for(ResourceGroupsEntity resourceGroupsEntity : object.getAst().getResourceGroups())
+		{
+			for(ResourcesEntity resourcesEntity : resourceGroupsEntity.getResources())
+			{
+				for(ActionsEntity actionsEntity : resourcesEntity.getActions())
+				{
+					TreeNodeEntity entity = new TreeNodeEntity();
+					entity.setName(actionsEntity.getName().replace(" ", ""));
+					entity.setUri(resourcesEntity.getUriTemplate());
+					entity.setMethod(actionsEntity.getMethod());
+
+					if(entity.getMethod().equals("GET")) entity.setNodeType(NodeTypeEnum.ERROR);
+					else if(entity.getMethod().equals("POST")) entity.setNodeType(NodeTypeEnum.WARNING);
+					else entity.setNodeType(NodeTypeEnum.MISSING);
+
+					outputList.add(entity);
+				}
+			}
+		}
+		return outputList;
+	}
+
+
+	private DefaultMutableTreeNode initTreeStructure(List<TreeNodeEntity> nodeList)
+	{
+		DefaultMutableTreeNode root = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.ROOT, "Root object", ""));
+
+		DefaultMutableTreeNode categoryError;
+		DefaultMutableTreeNode categoryWarning;
+		DefaultMutableTreeNode categoryMissing;
+		DefaultMutableTreeNode item;
+
+		categoryError = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.ERROR_ROOT, "Errors", "3"));
+		root.add(categoryError);
+
+		categoryWarning = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.WARNING_ROOT, "Warnings", "2"));
+		root.add(categoryWarning);
+
+		categoryMissing = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.MISSING_ROOT, "Not implemented", "2"));
+		root.add(categoryMissing);
+
+		for(TreeNodeEntity entity : nodeList)
+		{
+			if(entity.getMethod().equals("GET"))
+			{
+				item = new DefaultMutableTreeNode(entity);
+				categoryError.add(item);
+			}
+			else if(entity.getMethod().equals("POST"))
+			{
+				item = new DefaultMutableTreeNode(entity);
+				categoryWarning.add(item);
+			}
+			else
+			{
+				item = new DefaultMutableTreeNode(entity);
+				categoryMissing.add(item);
+			}
+
+		}
+
+		return root;
+	}
+
+
+	// Utility
+	private TreeNodeEntity createTreeNodeItem(NodeTypeEnum type, String name, String value)
+	{
+		return new TreeNodeEntity(type, name, value);
+	}
+
+
+	// Not used
+	private DefaultMutableTreeNode initExampleTreeStructure(ABMEntity object)
+	{
+		DefaultMutableTreeNode top = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.ROOT, "Root", "1"));
+
+		DefaultMutableTreeNode category;
+		DefaultMutableTreeNode book;
+
+		category = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.ERROR_ROOT, "Errors", "3"));
+		top.add(category);
+
+		//original Tutorial
+		book = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.ERROR, "File: test.java", "Missing argument test"));
+		category.add(book);
+
+		//Tutorial Continued
+		book = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.ERROR, "File: date.java", "Missing argument day"));
+		category.add(book);
+
+		//Swing Tutorial
+		book = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.ERROR, "File: date.java", "Missing argument month"));
+		category.add(book);
+
+		//...add more books for programmers...
+
+		category = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.WARNING_ROOT, "Warnings", "2"));
+		top.add(category);
+
+		//VM
+		book = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.WARNING, "File: test.java", "Bad argument type String"));
+		category.add(book);
+
+		//Language Spec
+		book = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.WARNING, "File: date.java", "Bad argument type Date"));
+		category.add(book);
+
+		category = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.MISSING_ROOT, "Not implemented", "2"));
+		top.add(category);
+
+		//VM
+		book = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.MISSING, "File: test.java", "Missing argument test2"));
+		category.add(book);
+
+		//Language Spec
+		book = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.MISSING, "File: date.java", "Missing argument year"));
+		category.add(book);
+
+		return top;
+	}
+
+
+	public class ProjectViewSettings implements ViewSettings
+	{
+		@Override
+		public boolean isShowMembers()
+		{
+			return false;
+		}
+
+
+		@Override
+		public boolean isStructureView()
+		{
+			return false;
+		}
+
+
+		@Override
+		public boolean isShowModules()
+		{
+			return false;
+		}
+
+
+		@Override
+		public boolean isFlattenPackages()
+		{
+			return false;
+		}
+
+
+		@Override
+		public boolean isAbbreviatePackageNames()
+		{
+			return false;
+		}
+
+
+		@Override
+		public boolean isHideEmptyMiddlePackages()
+		{
+			return false;
+		}
+
+
+		@Override
+		public boolean isShowLibraryContents()
+		{
+			return false;
+		}
+	}
+
+
+	private List<PsiPackage> getPackages()
+	{
+		//		Project myProject = presenterConfigModel.getProject();
+		Project myProject = ABMToolWindow.getProject();
+
+		ProjectViewSettings viewSettings = new ProjectViewSettings();
+
+		final List<VirtualFile> sourceRoots = new ArrayList<VirtualFile>();
+		final ProjectRootManager projectRootManager = ProjectRootManager.getInstance(myProject);
+		ContainerUtil.addAll(sourceRoots, projectRootManager.getContentSourceRoots());
+
+		final PsiManager psiManager = PsiManager.getInstance(myProject);
+		final List<AbstractTreeNode> children = new ArrayList<AbstractTreeNode>();
+		final Set<PsiPackage> topLevelPackages = new HashSet<PsiPackage>();
+
+		for(final VirtualFile root : sourceRoots)
+		{
+			final PsiDirectory directory = psiManager.findDirectory(root);
+			if(directory==null)
+			{
+				continue;
+			}
+			final PsiPackage directoryPackage = JavaDirectoryService.getInstance().getPackage(directory);
+			if(directoryPackage==null || PackageUtil.isPackageDefault(directoryPackage))
+			{
+				// add subpackages
+				final PsiDirectory[] subdirectories = directory.getSubdirectories();
+				for(PsiDirectory subdirectory : subdirectories)
+				{
+					final PsiPackage aPackage = JavaDirectoryService.getInstance().getPackage(subdirectory);
+					if(aPackage!=null && !PackageUtil.isPackageDefault(aPackage))
+					{
+						topLevelPackages.add(aPackage);
+					}
+				}
+				// add non-dir items
+				children.addAll(ProjectViewDirectoryHelper.getInstance(myProject).getDirectoryChildren(directory, viewSettings, false));
+			}
+			else
+			{
+				// this is the case when a source root has package prefix assigned
+				topLevelPackages.add(directoryPackage);
+			}
+		}
+
+		return new ArrayList<PsiPackage>(topLevelPackages);
+	}
 
 
 }

@@ -105,7 +105,7 @@ public class ImageButton extends JButton
 				}
 			}
 
-			if(getWidth() != 0 && getHeight() != 0)
+			if(getWidth()!=0 && getHeight()!=0)
 			{
 				ImageIcon icon = resizeImage(getWidth(), getHeight());
 				setIcon(icon);
