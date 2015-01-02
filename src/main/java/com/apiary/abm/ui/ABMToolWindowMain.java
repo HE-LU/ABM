@@ -80,11 +80,11 @@ public class ABMToolWindowMain extends JFrame
 
 		// MIGLAYOUT ( params, columns, rows)
 		// insets TOP LEFT BOTTOM RIGHT
-		myToolWindowContent.setLayout(new MigLayout("insets 0, flowy, fillx, filly", "[fill, grow, center]", "[fill,top][fill, grow][fill,bottom]"));
+		myToolWindowContent.setLayout(new MigLayout("insets 0, flowy, fillx, filly", "[fill, grow]", "[fill,top][fill, grow][fill,bottom]"));
 
 		final JBackgroundPanel topPanel = new JBackgroundPanel("drawable/img_box_top.png", JBackgroundPanel.JBackgroundPanelType.PANEL);
 		final JPanel middlePanel = new JPanel();
-		final JBScrollPane middleScrollPanel = new JBScrollPane(middlePanel, JBScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JBScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		final JBScrollPane middleScrollPanel = new JBScrollPane(middlePanel, JBScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JBScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		final JBackgroundPanel bottomPanel = new JBackgroundPanel("drawable/img_box_bottom.png", JBackgroundPanel.JBackgroundPanelType.PANEL);
 
 		topPanel.setMinimumSize(new Dimension(0, Utils.reDimension(90)));
@@ -95,7 +95,7 @@ public class ABMToolWindowMain extends JFrame
 
 		// add elements
 		topPanel.setLayout(new MigLayout("insets 0 " + Utils.reDimension(20) + " " + Utils.reDimension(20) + " " + Utils.reDimension(20) + ", flowy, fillx, filly", "[fill, grow]", "[fill]"));
-		middlePanel.setLayout(new MigLayout("insets 0 " + Utils.reDimension(15) + " 0 " + Utils.reDimension(15) + ", flowy, fillx, filly", "[grow, center]", "[][]"));
+		middlePanel.setLayout(new MigLayout("insets 0 " + Utils.reDimension(15) + " 0 " + Utils.reDimension(15) + ", flowy, fillx, filly", "[fill, grow]", "[fill, grow]"));
 		bottomPanel.setLayout(new MigLayout("insets " + Utils.reDimension(18) + " 0 0 0, flowy, fillx, filly", "[grow, center]", "[center, top]"));
 
 		topPanel.setOpaque(false);
@@ -145,24 +145,15 @@ public class ABMToolWindowMain extends JFrame
 
 		// tree structure
 		final JBackgroundPanel middleTreePanel = new JBackgroundPanel("drawable/img_background_panel.9.png", JBackgroundPanel.JBackgroundPanelType.NINE_PATCH);
-		middleTreePanel.setLayout(new MigLayout("insets " + Utils.reDimension(12) + " " + Utils.reDimension(12) + " " + Utils.reDimension(18) + " " + Utils.reDimension(19) + ", flowy, fillx, filly", "[fill, grow]", "[fill]"));
+		middleTreePanel.setLayout(new MigLayout("insets " + Utils.reDimension(12) + " " + Utils.reDimension(12) + " " + Utils.reDimension(18) + " " + Utils.reDimension(19) + ", flowy, fillx, filly", "[fill, grow]", "[fill, grow]"));
 		middleTreePanel.setOpaque(false);
 
-		//		Tree tree = new Tree(initExampleTreeStructure(object));
 		JTree tree = new Tree(initTreeStructure(treeNodeList));
 		tree.setRootVisible(false);
 		tree.setOpaque(false);
 		tree.setCellRenderer(new ABMTreeCellRenderer());
 
-		JBScrollPane pane = new JBScrollPane(tree);
-		pane.setBorder(null);
-		pane.setOpaque(false);
-
-		pane.getViewport().setBorder(null);
-		pane.getViewport().setOpaque(false);
-
-		middleTreePanel.add(pane);
-
+		middleTreePanel.add(tree);
 		middlePanel.add(middleTreePanel);
 
 		// refresh button
@@ -201,24 +192,19 @@ public class ABMToolWindowMain extends JFrame
 							e.printStackTrace();
 						}
 
-						JTree tree = new Tree(initTreeStructure(treeNodeList));
+						final JTree tree = new Tree(initTreeStructure(treeNodeList));
 						tree.setRootVisible(false);
 						tree.setOpaque(false);
 						tree.setCellRenderer(new ABMTreeCellRenderer());
-
-						final JBScrollPane pane = new JBScrollPane(tree);
-						pane.setBorder(null);
-						pane.setOpaque(false);
-
-						pane.getViewport().setBorder(null);
-						pane.getViewport().setOpaque(false);
 
 						SwingUtilities.invokeLater(new Runnable()
 						{
 							public void run()
 							{
 								middleTreePanel.removeAll();
-								middleTreePanel.add(pane);
+								middleTreePanel.add(tree);
+								middleTreePanel.validate();
+								middleTreePanel.repaint();
 
 								button.setImage("drawable/img_button_refresh.png");
 								button.setSize(Utils.reDimension(70), Utils.reDimension(70));
