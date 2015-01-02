@@ -27,7 +27,7 @@ import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import com.intellij.util.containers.ContainerUtil;
-import com.intellij.util.ui.Tree;
+import com.intellij.ui.treeStructure.Tree;
 
 import net.miginfocom.swing.MigLayout;
 

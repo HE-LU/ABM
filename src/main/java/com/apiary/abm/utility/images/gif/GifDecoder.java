@@ -1,5 +1,7 @@
 package com.apiary.abm.utility.images.gif;
 
+import com.intellij.util.ui.UIUtil;
+
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -101,7 +103,7 @@ public class GifDecoder
 	protected byte[] pixelStack;
 	protected byte[] pixels;
 
-	protected ArrayList frames; // frames read from current file
+	protected ArrayList<GifFrame> frames; // frames read from current file
 	protected int frameCount;
 
 
@@ -131,7 +133,7 @@ public class GifDecoder
 		delay = -1;
 		if((n>=0) && (n<frameCount))
 		{
-			delay = ((GifFrame) frames.get(n)).delay;
+			delay = (frames.get(n)).delay;
 		}
 		return delay;
 	}
@@ -165,6 +167,7 @@ public class GifDecoder
 	 *
 	 * @return iteration count if one was specified, else 1.
 	 */
+	@SuppressWarnings("unused")
 	public int getLoopCount()
 	{
 		return loopCount;
@@ -207,7 +210,7 @@ public class GifDecoder
 				{
 					// fill last image rect area with background color
 					Graphics2D g = image.createGraphics();
-					Color c = null;
+					Color c;
 					if(transparency)
 					{
 						c = new Color(0, 0, 0, 0);    // assume background is transparent
@@ -290,7 +293,7 @@ public class GifDecoder
 		BufferedImage im = null;
 		if((n>=0) && (n<frameCount))
 		{
-			im = ((GifFrame) frames.get(n)).image;
+			im = (frames.get(n)).image;
 		}
 		return im;
 	}
@@ -301,6 +304,7 @@ public class GifDecoder
 	 *
 	 * @return GIF image dimensions
 	 */
+	@SuppressWarnings("unused")
 	public Dimension getFrameSize()
 	{
 		return new Dimension(width, height);
@@ -339,6 +343,7 @@ public class GifDecoder
 		}
 		catch(IOException e)
 		{
+			e.printStackTrace();
 		}
 		return status;
 	}
@@ -377,6 +382,7 @@ public class GifDecoder
 		}
 		catch(IOException e)
 		{
+			e.printStackTrace();
 		}
 		return status;
 	}
@@ -389,13 +395,14 @@ public class GifDecoder
 	 * @param name String containing source
 	 * @return read status code (0 = no errors)
 	 */
+	@SuppressWarnings("unused")
 	public int read(String name)
 	{
 		status = STATUS_OK;
 		try
 		{
 			name = name.trim().toLowerCase();
-			if((name.indexOf("file:")>=0) || (name.indexOf(":/")>0))
+			if((name.contains("file:")) || (name.indexOf(":/")>0))
 			{
 				URL url = new URL(name);
 				in = new BufferedInputStream(url.openStream());
@@ -573,7 +580,7 @@ public class GifDecoder
 	{
 		status = STATUS_OK;
 		frameCount = 0;
-		frames = new ArrayList();
+		frames = new ArrayList<GifFrame>();
 		gct = null;
 		lct = null;
 	}
@@ -610,7 +617,7 @@ public class GifDecoder
 		{
 			try
 			{
-				int count = 0;
+				int count;
 				while(n<blockSize)
 				{
 					count = in.read(block, n, blockSize - n);
@@ -620,6 +627,7 @@ public class GifDecoder
 			}
 			catch(IOException e)
 			{
+				e.printStackTrace();
 			}
 
 			if(n<blockSize)
@@ -649,6 +657,7 @@ public class GifDecoder
 		}
 		catch(IOException e)
 		{
+			e.printStackTrace();
 		}
 		if(n<nbytes)
 		{
@@ -897,9 +906,9 @@ public class GifDecoder
 		lastRect = new Rectangle(ix, iy, iw, ih);
 		lastImage = image;
 		lastBgColor = bgColor;
-		int dispose = 0;
-		boolean transparency = false;
-		int delay = 0;
+//		int dispose = 0;
+//		boolean transparency = false;
+//		int delay = 0;
 		lct = null;
 	}
 
