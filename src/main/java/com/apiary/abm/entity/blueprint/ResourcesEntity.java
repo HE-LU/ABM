@@ -15,8 +15,8 @@ public class ResourcesEntity
 	@SerializedName("description")
 	private String mDescription;
 
-	@SerializedName("model")
-	private ModelEntity mModel;
+	//	@SerializedName("model")
+	//	private ModelEntity mModel;
 
 	@SerializedName("name")
 	private String mName;
@@ -40,10 +40,10 @@ public class ResourcesEntity
 	}
 
 
-	public ModelEntity getModel()
-	{
-		return this.mModel;
-	}
+	//	public ModelEntity getModel()
+	//	{
+	//		return this.mModel;
+	//	}
 
 
 	public String getName()

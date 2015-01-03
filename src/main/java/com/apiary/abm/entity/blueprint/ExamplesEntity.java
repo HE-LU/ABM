@@ -13,11 +13,11 @@ public class ExamplesEntity
 	@SerializedName("name")
 	private String mName;
 
-	@SerializedName("requests")
-	private List mRequests;
+	//	@SerializedName("requests")
+	//	private List mRequests;
 
 	@SerializedName("responses")
-	private List mResponses;
+	private List<ResponsesEntity> mResponses;
 
 
 	public String getDescription()
@@ -32,13 +32,13 @@ public class ExamplesEntity
 	}
 
 
-	public List getRequests()
-	{
-		return this.mRequests;
-	}
+	//	public List getRequests()
+	//	{
+	//		return this.mRequests;
+	//	}
 
 
-	public List getResponses()
+	public List<ResponsesEntity> getResponses()
 	{
 		return this.mResponses;
 	}

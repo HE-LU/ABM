@@ -19,8 +19,8 @@ public class ActionsEntity
 	@SerializedName("name")
 	private String mName;
 
-	@SerializedName("parameters")
-	private List<ParametersEntity> mParameters;
+	//	@SerializedName("parameters")
+	//	private List<ParametersEntity> mParameters;
 
 
 	public String getDescription()
@@ -47,8 +47,8 @@ public class ActionsEntity
 	}
 
 
-	public List<ParametersEntity> getParameters()
-	{
-		return this.mParameters;
-	}
+	//	public List<ParametersEntity> getParameters()
+	//	{
+	//		return this.mParameters;
+	//	}
 }

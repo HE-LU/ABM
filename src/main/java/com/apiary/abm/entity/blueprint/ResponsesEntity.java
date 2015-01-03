@@ -15,13 +15,13 @@ public class ResponsesEntity
 	private String mDescription;
 
 	@SerializedName("headers")
-	private List mHeaders;
+	private List<HeadersEntity> mHeaders;
 
 	@SerializedName("name")
 	private String mName;
 
-	@SerializedName("schema")
-	private String mSchema;
+	//	@SerializedName("schema")
+	//	private String mSchema;
 
 
 	public String getBody()
@@ -36,7 +36,7 @@ public class ResponsesEntity
 	}
 
 
-	public List getHeaders()
+	public List<HeadersEntity> getHeaders()
 	{
 		return this.mHeaders;
 	}
@@ -48,8 +48,8 @@ public class ResponsesEntity
 	}
 
 
-	public String getSchema()
-	{
-		return this.mSchema;
-	}
+	//	public String getSchema()
+	//	{
+	//		return this.mSchema;
+	//	}
 }

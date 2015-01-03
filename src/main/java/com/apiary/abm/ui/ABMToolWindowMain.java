@@ -8,6 +8,7 @@ import com.apiary.abm.entity.blueprint.ResourcesEntity;
 import com.apiary.abm.enums.NodeTypeEnum;
 import com.apiary.abm.renderer.ABMTreeCellRenderer;
 import com.apiary.abm.utility.Network;
+import com.apiary.abm.utility.Preferences;
 import com.apiary.abm.utility.Utils;
 import com.apiary.abm.view.ImageButton;
 import com.apiary.abm.view.JBackgroundPanel;
@@ -26,8 +27,8 @@ import com.intellij.psi.PsiPackage;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
-import com.intellij.util.containers.ContainerUtil;
 import com.intellij.ui.treeStructure.Tree;
+import com.intellij.util.containers.ContainerUtil;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -182,8 +183,11 @@ public class ABMToolWindowMain extends JFrame
 						List<TreeNodeEntity> treeNodeList = null;
 						try
 						{
+							Preferences prefs = new Preferences();
 							String blueprint = Utils.readFileAsString(Network.refreshBlueprint(), Charset.forName("UTF-8"));
-							String json = Network.requestJSONFromBlueprint(blueprint);
+							String json;
+							if(blueprint.equals("")) json = prefs.getBlueprintTmpFileLocation();
+							else json = Network.requestJSONFromBlueprint(blueprint);
 							object = Utils.parseJsonBlueprint(json);
 							if(object.getError()==null) treeNodeList = analyzeBlueprint(object);
 						}
@@ -234,6 +238,16 @@ public class ABMToolWindowMain extends JFrame
 			}
 		});
 		bottomPanel.add(button);
+
+		// todo remove
+		//		List<PsiPackage> packList = getPackages();
+		//		for(PsiPackage pack : packList)
+		//		{
+		//			Log.d("Package: " + pack.getSubPackages()[0].getSubPackages()[0].getName());
+		//		}
+
+		//		ConfigPreferences confPrefs = new ConfigPreferences();
+		//		Log.d("exist: " + ConfigPreferences.configExist());
 	}
 
 
@@ -267,20 +281,20 @@ public class ABMToolWindowMain extends JFrame
 
 	private DefaultMutableTreeNode initTreeStructure(List<TreeNodeEntity> nodeList)
 	{
-		DefaultMutableTreeNode root = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.ROOT, "Root object", ""));
+		DefaultMutableTreeNode root = new DefaultMutableTreeNode(new TreeNodeEntity(NodeTypeEnum.ROOT, "Root object", ""));
 
 		DefaultMutableTreeNode categoryError;
 		DefaultMutableTreeNode categoryWarning;
 		DefaultMutableTreeNode categoryMissing;
 		DefaultMutableTreeNode item;
 
-		categoryError = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.ERROR_ROOT, "Errors", "3"));
+		categoryError = new DefaultMutableTreeNode(new TreeNodeEntity(NodeTypeEnum.ERROR_ROOT, "Errors", "3"));
 		root.add(categoryError);
 
-		categoryWarning = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.WARNING_ROOT, "Warnings", "2"));
+		categoryWarning = new DefaultMutableTreeNode(new TreeNodeEntity(NodeTypeEnum.WARNING_ROOT, "Warnings", "2"));
 		root.add(categoryWarning);
 
-		categoryMissing = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.MISSING_ROOT, "Not implemented", "2"));
+		categoryMissing = new DefaultMutableTreeNode(new TreeNodeEntity(NodeTypeEnum.MISSING_ROOT, "Not implemented", "2"));
 		root.add(categoryMissing);
 
 		for(TreeNodeEntity entity : nodeList)
@@ -307,64 +321,7 @@ public class ABMToolWindowMain extends JFrame
 	}
 
 
-	// Utility
-	private TreeNodeEntity createTreeNodeItem(NodeTypeEnum type, String name, String value)
-	{
-		return new TreeNodeEntity(type, name, value);
-	}
-
-
-	// Not used
-	private DefaultMutableTreeNode initExampleTreeStructure(ABMEntity object)
-	{
-		DefaultMutableTreeNode top = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.ROOT, "Root", "1"));
-
-		DefaultMutableTreeNode category;
-		DefaultMutableTreeNode book;
-
-		category = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.ERROR_ROOT, "Errors", "3"));
-		top.add(category);
-
-		//original Tutorial
-		book = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.ERROR, "File: test.java", "Missing argument test"));
-		category.add(book);
-
-		//Tutorial Continued
-		book = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.ERROR, "File: date.java", "Missing argument day"));
-		category.add(book);
-
-		//Swing Tutorial
-		book = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.ERROR, "File: date.java", "Missing argument month"));
-		category.add(book);
-
-		//...add more books for programmers...
-
-		category = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.WARNING_ROOT, "Warnings", "2"));
-		top.add(category);
-
-		//VM
-		book = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.WARNING, "File: test.java", "Bad argument type String"));
-		category.add(book);
-
-		//Language Spec
-		book = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.WARNING, "File: date.java", "Bad argument type Date"));
-		category.add(book);
-
-		category = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.MISSING_ROOT, "Not implemented", "2"));
-		top.add(category);
-
-		//VM
-		book = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.MISSING, "File: test.java", "Missing argument test2"));
-		category.add(book);
-
-		//Language Spec
-		book = new DefaultMutableTreeNode(createTreeNodeItem(NodeTypeEnum.MISSING, "File: date.java", "Missing argument year"));
-		category.add(book);
-
-		return top;
-	}
-
-
+	// CODE ANALYZE
 	public class ProjectViewSettings implements ViewSettings
 	{
 		@Override

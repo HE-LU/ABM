@@ -2,8 +2,6 @@ package com.apiary.abm.entity.blueprint;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
-
 
 public class ParametersEntity
 {
@@ -22,11 +20,11 @@ public class ParametersEntity
 	@SerializedName("default")
 	private String mDefault;
 
-	@SerializedName("example")
-	private String mExample;
+	//	@SerializedName("example")
+	//	private String mExample;
 
-	@SerializedName("values")
-	private List mValues;
+	//	@SerializedName("values")
+	//	private List mValues;
 
 
 	public String getName()
@@ -59,14 +57,14 @@ public class ParametersEntity
 	}
 
 
-	public String getExample()
-	{
-		return mExample;
-	}
+	//	public String getExample()
+	//	{
+	//		return mExample;
+	//	}
 
 
-	public List getValues()
-	{
-		return mValues;
-	}
+	//	public List getValues()
+	//	{
+	//		return mValues;
+	//	}
 }

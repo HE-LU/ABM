@@ -24,7 +24,7 @@ public class ABMToolWindow extends JFrame implements ToolWindowFactory
 		sProject = project;
 
 		Preferences preferences = new Preferences();
-		if(preferences.getPluginInitialized()) new ABMToolWindowMain(toolWindow);
+		if(!preferences.getPluginInitialized()) new ABMToolWindowMain(toolWindow);
 		else new ABMToolWindowWelcome(toolWindow);
 	}
 

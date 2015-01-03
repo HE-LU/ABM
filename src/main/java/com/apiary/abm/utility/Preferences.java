@@ -12,6 +12,7 @@ public class Preferences
 	public static final String PREF_BLUEPRINT_CONNECTION_PATH = "pref_blueprint_connection_path";
 	public static final String PREF_BLUEPRINT_CONNECTION_DOC_KEY = "pref_blueprint_connection_doc_key";
 	public static final String PREF_BLUEPRINT_TMP_FILE_LOCATION = "pref_blueprint_tmp_file_location";
+	public static final String PREF_BLUEPRINT_JSON_TMP_FILE_LOCATION = "pref_blueprint_json_tmp_file_location";
 	private java.util.prefs.Preferences mPreferences;
 
 
@@ -52,6 +53,12 @@ public class Preferences
 	}
 
 
+	public String getBlueprintJsonTmpFileLocation()
+	{
+		return new String(mPreferences.getByteArray(PREF_BLUEPRINT_JSON_TMP_FILE_LOCATION, null));
+	}
+
+
 	// SETTERS
 	public void setPluginInitialized(boolean value)
 	{
@@ -80,6 +87,12 @@ public class Preferences
 	public void setBlueprintTmpFileLocation(String value)
 	{
 		mPreferences.putByteArray(PREF_BLUEPRINT_TMP_FILE_LOCATION, value.getBytes());
+	}
+
+
+	public void setBlueprintJsonTmpFileLocation(String value)
+	{
+		mPreferences.putByteArray(PREF_BLUEPRINT_JSON_TMP_FILE_LOCATION, value.getBytes());
 	}
 
 

@@ -8,26 +8,26 @@ import java.util.ArrayList;
 public class ResourceGroupsEntity
 {
 
-	@SerializedName("description")
-	private String mDescription;
+	//	@SerializedName("description")
+	//	private String mDescription;
 
-	@SerializedName("name")
-	private String mName;
+	//	@SerializedName("name")
+	//	private String mName;
 
 	@SerializedName("resources")
 	private ArrayList<ResourcesEntity> mResources;
 
 
-	public String getDescription()
-	{
-		return this.mDescription;
-	}
+	//	public String getDescription()
+	//	{
+	//		return this.mDescription;
+	//	}
 
 
-	public String getName()
-	{
-		return this.mName;
-	}
+	//	public String getName()
+	//	{
+	//		return this.mName;
+	//	}
 
 
 	public ArrayList<ResourcesEntity> getResources()

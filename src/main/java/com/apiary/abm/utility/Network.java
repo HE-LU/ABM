@@ -6,6 +6,7 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
+import java.io.IOException;
 import java.nio.charset.Charset;
 
 
@@ -44,17 +45,38 @@ public class Network
 
 	public static String requestJSONFromBlueprint(String blueprint)
 	{
+		Preferences prefs = new Preferences();
+		String json = "";
+
 		try
 		{
 			String url = "https://api.apiblueprint.org/parser";
 			HttpResponse<String> request = Unirest.post(url).body(blueprint).asString();
-			return request.getBody();
+			json = request.getBody();
+
+			try
+			{
+				prefs.setBlueprintJsonTmpFileLocation(Utils.saveStringToTmpFile("blueprint", json));
+			}
+			catch(IOException e)
+			{
+				e.printStackTrace();
+			}
 		}
 		catch(UnirestException e)
 		{
 			e.printStackTrace();
-			return null;
+
+			try
+			{
+				json = Utils.readFileAsString(prefs.getBlueprintJsonTmpFileLocation(), Charset.forName("UTF-8"));
+			}
+			catch(IOException e1)
+			{
+				e1.printStackTrace();
+			}
 		}
+		return json;
 	}
 
 
@@ -64,6 +86,15 @@ public class Network
 		{
 			String url = "https://api.apiblueprint.org/parser";
 			HttpResponse<String> request = Unirest.post(url).body(blueprint).asString();
+			Preferences prefs = new Preferences();
+			try
+			{
+				prefs.setBlueprintJsonTmpFileLocation(Utils.saveStringToTmpFile("blueprint", request.getBody()));
+			}
+			catch(IOException e)
+			{
+				e.printStackTrace();
+			}
 			return Utils.parseJsonBlueprint(request.getBody()).getError()==null;
 		}
 		catch(UnirestException e)
@@ -77,7 +108,7 @@ public class Network
 	public static String refreshBlueprint()
 	{
 		Preferences preferences = new Preferences();
-		String tmpFilePath = "";
+		String tmpFilePath = preferences.getBlueprintTmpFileLocation();
 		switch(preferences.getBlueprintConnectionType())
 		{
 			case CONNECTION_TYPE_DOC:

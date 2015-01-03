@@ -7,8 +7,8 @@ import java.util.ArrayList;
 
 public class ABMEntity
 {
-	@SerializedName("_version")
-	private String mVersion;
+	//	@SerializedName("_version")
+	//	private String mVersion;
 
 	@SerializedName("ast")
 	private AstEntity mAst;
@@ -20,10 +20,10 @@ public class ABMEntity
 	private ArrayList<WarningsEntity> mWarnings;
 
 
-	public String getVersion()
-	{
-		return this.mVersion;
-	}
+	//	public String getVersion()
+	//	{
+	//		return this.mVersion;
+	//	}
 
 
 	public AstEntity getAst()
