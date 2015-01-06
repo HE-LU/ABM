@@ -248,6 +248,7 @@ public class ABMToolWindowMain extends JFrame
 
 		//		ConfigPreferences confPrefs = new ConfigPreferences();
 		//		Log.d("exist: " + ConfigPreferences.configExist());
+		//		Utils.isGradleWithRetrofit();
 	}
 
 

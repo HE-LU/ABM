@@ -408,7 +408,7 @@ public class ABMToolWindowConnect extends JFrame
 						{
 							public void run()
 							{
-								new ABMToolWindowMain(mToolWindow);
+								new ABMToolWindowConnectGradle(mToolWindow);
 							}
 						});
 					}

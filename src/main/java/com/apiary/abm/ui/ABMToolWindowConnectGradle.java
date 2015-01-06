@@ -22,14 +22,15 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 
-public class ABMToolWindowWelcome extends JFrame
+public class ABMToolWindowConnectGradle extends JFrame
 {
 	private ToolWindow mToolWindow;
 
 
-	public ABMToolWindowWelcome(ToolWindow toolWindow)
+	public ABMToolWindowConnectGradle(ToolWindow toolWindow)
 	{
 		mToolWindow = toolWindow;
 		mToolWindow.getContentManager().removeAllContents(true);
@@ -66,7 +67,7 @@ public class ABMToolWindowWelcome extends JFrame
 
 		// add elements
 		topPanel.setLayout(new MigLayout("insets 0 " + Utils.reDimension(20) + " " + Utils.reDimension(20) + " " + Utils.reDimension(20) + ", flowy, fillx, filly", "[fill, grow]", "[fill]"));
-		middlePanel.setLayout(new MigLayout("insets 0 " + Utils.reDimension(15) + " 0 " + Utils.reDimension(15) + ", flowy, fillx, filly", "[grow, center]", "[][]"));
+		middlePanel.setLayout(new MigLayout("insets 0 " + Utils.reDimension(15) + " 0 " + Utils.reDimension(15) + ", flowy, fillx, filly", "[grow, center]", "[][][]"));
 		bottomPanel.setLayout(new MigLayout("insets " + Utils.reDimension(18) + " 0 0 0, flowy, fillx, filly", "[grow, center]", "[center, top]"));
 
 		topPanel.setOpaque(false);
@@ -81,50 +82,108 @@ public class ABMToolWindowWelcome extends JFrame
 		myToolWindowContent.add(middleScrollPanel);
 		myToolWindowContent.add(bottomPanel);
 
-		// name
-		final JLabel infoText = new JLabel("<html><center>" + messages.getString("welcome_name") + "</center></html>");
+		// Connect label
+		final JLabel infoText = new JLabel("<html><center>" + messages.getString("connect_gradle_header") + "</center></html>");
 		infoText.setForeground(Color.WHITE);
 		infoText.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_LARGE)));
 		infoText.setHorizontalAlignment(SwingConstants.CENTER);
 		topPanel.add(infoText);
 
-		// welcome information
-		final JLabel nameText = new JLabel("<html><center>" + messages.getString("welcome_information") + "</center></html>");
+		// spacerText
+		final JLabel spacerText = new JLabel("<html><center></center></html>");
+		middlePanel.add(spacerText);
+
+		// message
+		final JLabel nameText = new JLabel("<html><center>" + messages.getString("connect_gradle_message") + "</center></html>");
 		nameText.setForeground(Color.WHITE);
 		nameText.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM)));
 		nameText.setHorizontalAlignment(SwingConstants.CENTER);
 		middlePanel.add(nameText);
 
-		// version
-		final JLabel versionText = new JLabel("<html><center>" + messages.getString("welcome_version") + "</center></html>");
-		versionText.setForeground(Color.WHITE);
-		versionText.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_SMALL)));
-		versionText.setHorizontalAlignment(SwingConstants.CENTER);
-		middlePanel.add(versionText);
+		// error label
+		final JLabel labelError = new JLabel();
+		labelError.setForeground(Color.RED);
+		labelError.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM)));
+		labelError.setHorizontalAlignment(SwingConstants.CENTER);
+		labelError.setText("<html><center>" + messages.getString("connect_gradle_message_error") + "</html></center>");
+		labelError.setVisible(false);
+		middlePanel.add(labelError);
 
 		// connect button
 		final ImageButton button = new ImageButton();
-		button.setImage("drawable/img_button_start.png");
+		button.setImage("drawable/img_button_connect.png");
 		button.setSize(Utils.reDimension(70), Utils.reDimension(70));
 
 		button.addMouseListener(new MouseAdapter()
 		{
+			private boolean connecting;
+
+
 			public void mouseClicked(MouseEvent e)
 			{
-				new ABMToolWindowConnect(mToolWindow);
+				if(connecting) return;
+				button.setImage("drawable/animation_connect.gif");
+				button.setSize(Utils.reDimension(70), Utils.reDimension(70));
+				connecting = true;
+
+				Thread t = new Thread(new Runnable()
+				{
+					public void run()
+					{
+						boolean error = false;
+
+						if(Utils.isGradleWithRetrofit())
+						{
+							SwingUtilities.invokeLater(new Runnable()
+							{
+								public void run()
+								{
+									new ABMToolWindowMain(mToolWindow);
+								}
+							});
+						}
+						else
+						{
+							error = true;
+						}
+
+						if(error)
+						{
+							connecting = false;
+							SwingUtilities.invokeLater(new Runnable()
+							{
+								public void run()
+								{
+									labelError.setVisible(true);
+									button.setImage("drawable/img_button_connect.png");
+								}
+							});
+						}
+						else SwingUtilities.invokeLater(new Runnable()
+						{
+							public void run()
+							{
+								new ABMToolWindowMain(mToolWindow);
+							}
+						});
+					}
+				});
+				t.start();
 			}
 
 
 			public void mousePressed(MouseEvent e)
 			{
-				button.setImage("drawable/img_button_start_pressed.png");
+				if(connecting) return;
+				button.setImage("drawable/img_button_connect_pressed.png");
 				button.setSize(Utils.reDimension(70), Utils.reDimension(70));
 			}
 
 
 			public void mouseReleased(MouseEvent e)
 			{
-				button.setImage("drawable/img_button_start.png");
+				if(connecting) return;
+				button.setImage("drawable/img_button_connect.png");
 				button.setSize(Utils.reDimension(70), Utils.reDimension(70));
 			}
 		});

@@ -2,8 +2,10 @@ package com.apiary.abm.utility;
 
 import com.apiary.abm.entity.DocResponseEntity;
 import com.apiary.abm.entity.blueprint.ABMEntity;
+import com.apiary.abm.ui.ABMToolWindow;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.intellij.openapi.project.Project;
 
 import org.apache.commons.io.FileUtils;
 
@@ -15,6 +17,8 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Collection;
+import java.util.Iterator;
 
 import javax.imageio.ImageIO;
 
@@ -66,8 +70,22 @@ public class Utils
 	// FILES
 	public static String saveStringToTmpFile(String fileName, String input) throws IOException
 	{
-		// save to tmp file
 		File file = File.createTempFile(fileName, ".tmp");
+		FileUtils.writeStringToFile(file, input);
+		return file.getAbsolutePath();
+	}
+
+
+	public static String saveStringToFile(String path, String input) throws IOException
+	{
+		File file = new File(path);
+		FileUtils.writeStringToFile(file, input);
+		return file.getAbsolutePath();
+	}
+
+
+	public static String saveStringToFile(File file, String input) throws IOException
+	{
 		FileUtils.writeStringToFile(file, input);
 		return file.getAbsolutePath();
 	}
@@ -99,5 +117,44 @@ public class Utils
 	{
 		Gson gson = new GsonBuilder().create();
 		return gson.fromJson(jsonBlueprint, ABMEntity.class);
+	}
+
+
+	// GRADLE
+	public static boolean isGradleWithRetrofit()
+	{
+		Project myProject = ABMToolWindow.getProject();
+		File projectDirectory = new File(myProject.getBaseDir().getPath());
+
+		String fileName = "build.gradle";
+		try
+		{
+			Collection filesCollection = FileUtils.listFiles(projectDirectory, null, true);
+
+			for(Object fileObject : filesCollection)
+			{
+				File file = (File) fileObject;
+				if(file.getName().equals(fileName))
+				{
+					String gradleString = Utils.readFileAsString(file, Charset.forName("UTF-8"));
+
+					if(gradleString.contains("com.squareup.retrofit:retrofit")) return true;
+					//					else
+					//					{
+					//						int index = gradleString.indexOf("dependencies");
+					//						index = gradleString.indexOf("{", index);
+					//						index++;
+					//						gradleString = gradleString.substring(0, index) + "\n\tcompile 'com.squareup.retrofit:retrofit:1.8.0'" + gradleString.substring(index, gradleString.length());
+					//
+					//						Utils.saveStringToFile(file, gradleString);
+					//					}
+				}
+			}
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		return false;
 	}
 }
