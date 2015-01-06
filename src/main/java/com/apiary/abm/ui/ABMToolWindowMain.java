@@ -291,7 +291,15 @@ public class ABMToolWindowMain extends JFrame
 							}
 							else
 							{
-								entity.setNodeType(NodeTypeEnum.NOT_IMPLEMENTED);
+								entity.setNodeType(NodeTypeEnum.NOT_IMPLEMENTED_REQUEST);
+
+								TreeNodeEntity entity2 = new TreeNodeEntity(entity);
+								entity2.setNodeType(NodeTypeEnum.NOT_IMPLEMENTED_ENTITY);
+								outputList.add(entity2);
+
+								TreeNodeEntity entity3 = new TreeNodeEntity(entity);
+								entity3.setNodeType(NodeTypeEnum.NOT_IMPLEMENTED_PARSER);
+								outputList.add(entity3);
 							}
 
 							outputList.add(entity);
@@ -310,14 +318,20 @@ public class ABMToolWindowMain extends JFrame
 
 		DefaultMutableTreeNode categoryCannotRecognize = new DefaultMutableTreeNode(new TreeNodeEntity(NodeTypeEnum.CANNOT_RECOGNIZE_ROOT, "Cannot recognize"));
 		DefaultMutableTreeNode categoryNotImplemented = new DefaultMutableTreeNode(new TreeNodeEntity(NodeTypeEnum.NOT_IMPLEMENTED_ROOT, "Not implemented"));
+		DefaultMutableTreeNode categoryNotImplementedRequest = new DefaultMutableTreeNode(new TreeNodeEntity(NodeTypeEnum.NOT_IMPLEMENTED_REQUEST_ROOT, "Request"));
+		DefaultMutableTreeNode categoryNotImplementedEntity = new DefaultMutableTreeNode(new TreeNodeEntity(NodeTypeEnum.NOT_IMPLEMENTED_ENTITY_ROOT, "Response entity"));
+		DefaultMutableTreeNode categoryNotImplementedParser = new DefaultMutableTreeNode(new TreeNodeEntity(NodeTypeEnum.NOT_IMPLEMENTED_PARSER_ROOT, "Parser"));
 		DefaultMutableTreeNode categoryModified = new DefaultMutableTreeNode(new TreeNodeEntity(NodeTypeEnum.MODIFIED_ROOT, "Modified"));
 		DefaultMutableTreeNode categoryRemoved = new DefaultMutableTreeNode(new TreeNodeEntity(NodeTypeEnum.REMOVED_ROOT, "Removed"));
 		DefaultMutableTreeNode item;
 
-		root.add(categoryCannotRecognize);
-		root.add(categoryNotImplemented);
-		root.add(categoryModified);
-		root.add(categoryRemoved);
+		Integer categoryCannotRecognizeValue = 0;
+		Integer categoryNotImplementedValue = 0;
+		Integer categoryNotImplementedRequestValue = 0;
+		Integer categoryNotImplementedEntityValue = 0;
+		Integer categoryNotImplementedParserValue = 0;
+		Integer categoryModifiedValue = 0;
+		Integer categoryRemovedValue = 0;
 
 		for(TreeNodeEntity entity : nodeList)
 		{
@@ -326,18 +340,53 @@ public class ABMToolWindowMain extends JFrame
 			{
 				case CANNOT_RECOGNIZE:
 					categoryCannotRecognize.add(item);
+					categoryCannotRecognizeValue++;
 					break;
-				case NOT_IMPLEMENTED:
-					categoryNotImplemented.add(item);
+				case NOT_IMPLEMENTED_REQUEST:
+					categoryNotImplementedRequest.add(item);
+					categoryNotImplementedRequestValue++;
+					categoryNotImplementedValue++;
+					break;
+				case NOT_IMPLEMENTED_ENTITY:
+					categoryNotImplementedEntity.add(item);
+					categoryNotImplementedEntityValue++;
+					categoryNotImplementedValue++;
+					break;
+				case NOT_IMPLEMENTED_PARSER:
+					categoryNotImplementedParser.add(item);
+					categoryNotImplementedParserValue++;
+					categoryNotImplementedValue++;
 					break;
 				case MODIFIED:
 					categoryModified.add(item);
+					categoryModifiedValue++;
 					break;
 				case REMOVED:
 					categoryRemoved.add(item);
+					categoryRemovedValue++;
 					break;
 			}
 		}
+
+		((TreeNodeEntity) categoryCannotRecognize.getUserObject()).setValue(categoryCannotRecognizeValue);
+		((TreeNodeEntity) categoryNotImplemented.getUserObject()).setValue(categoryNotImplementedValue);
+		((TreeNodeEntity) categoryNotImplementedRequest.getUserObject()).setValue(categoryNotImplementedRequestValue);
+		((TreeNodeEntity) categoryNotImplementedEntity.getUserObject()).setValue(categoryNotImplementedEntityValue);
+		((TreeNodeEntity) categoryNotImplementedParser.getUserObject()).setValue(categoryNotImplementedParserValue);
+		((TreeNodeEntity) categoryModified.getUserObject()).setValue(categoryModifiedValue);
+		((TreeNodeEntity) categoryRemoved.getUserObject()).setValue(categoryRemovedValue);
+
+		if(categoryCannotRecognizeValue!=0) root.add(categoryCannotRecognize);
+		if(categoryNotImplementedValue!=0)
+		{
+			if(categoryNotImplementedRequestValue!=0) categoryNotImplemented.add(categoryNotImplementedRequest);
+			if(categoryNotImplementedEntityValue!=0) categoryNotImplemented.add(categoryNotImplementedEntity);
+			if(categoryNotImplementedParserValue!=0) categoryNotImplemented.add(categoryNotImplementedParser);
+
+			root.add(categoryNotImplemented);
+		}
+		if(categoryModifiedValue!=0) root.add(categoryModified);
+		if(categoryRemovedValue!=0) root.add(categoryRemoved);
 
 		return root;
 	}

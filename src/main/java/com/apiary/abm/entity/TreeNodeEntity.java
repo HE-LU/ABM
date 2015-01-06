@@ -14,7 +14,7 @@ public class TreeNodeEntity
 	private String mDescription; // api call for requesting ping
 	private String mUri; // /ping
 	private String mMethod; // GET, POST, DELETE ...
-	private String mValue; //
+	private Integer mValue; //
 	private List<ParametersEntity> mParameters;
 	private String mResponseCode;
 	private List<HeadersEntity> mResponseHeaders;
@@ -23,6 +23,7 @@ public class TreeNodeEntity
 
 	public TreeNodeEntity()
 	{
+		this.mValue = 0;
 	}
 
 
@@ -30,6 +31,22 @@ public class TreeNodeEntity
 	{
 		this.mNodeType = mNodeType;
 		this.mName = mName;
+		this.mValue = 0;
+	}
+
+
+	public TreeNodeEntity(TreeNodeEntity entity)
+	{
+		this.mNodeType = entity.getNodeType();
+		this.mName = entity.getName();
+		this.mDescription = entity.getDescription();
+		this.mUri = entity.getUri();
+		this.mMethod = entity.getMethod();
+		this.mValue = entity.getValue();
+		this.mParameters = entity.getParameters();
+		this.mResponseCode = entity.getResponseCode();
+		this.mResponseHeaders = entity.getResponseHeaders();
+		this.mResponseBody = entity.getResponseBody();
 	}
 
 
@@ -57,13 +74,13 @@ public class TreeNodeEntity
 	}
 
 
-	public String getValue()
+	public Integer getValue()
 	{
 		return mValue;
 	}
 
 
-	public void setValue(String mValue)
+	public void setValue(Integer mValue)
 	{
 		this.mValue = mValue;
 	}
