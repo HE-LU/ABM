@@ -3,8 +3,10 @@ package com.apiary.abm.ui;
 import com.apiary.abm.entity.TreeNodeEntity;
 import com.apiary.abm.entity.blueprint.ABMEntity;
 import com.apiary.abm.entity.blueprint.ActionsEntity;
+import com.apiary.abm.entity.blueprint.ExamplesEntity;
 import com.apiary.abm.entity.blueprint.ResourceGroupsEntity;
 import com.apiary.abm.entity.blueprint.ResourcesEntity;
+import com.apiary.abm.entity.blueprint.ResponsesEntity;
 import com.apiary.abm.enums.NodeTypeEnum;
 import com.apiary.abm.renderer.ABMTreeCellRenderer;
 import com.apiary.abm.utility.Network;
@@ -263,16 +265,38 @@ public class ABMToolWindowMain extends JFrame
 			{
 				for(ActionsEntity actionsEntity : resourcesEntity.getActions())
 				{
-					TreeNodeEntity entity = new TreeNodeEntity();
-					entity.setName(actionsEntity.getName().replace(" ", ""));
-					entity.setUri(resourcesEntity.getUriTemplate());
-					entity.setMethod(actionsEntity.getMethod());
+					for(ExamplesEntity examplesEntity : actionsEntity.getExamples())
+					{
+						for(ResponsesEntity responsesEntity : examplesEntity.getResponses())
+						{
+							TreeNodeEntity entity = new TreeNodeEntity();
+							entity.setName(actionsEntity.getName().replace(" ", ""));
+							entity.setDescription(actionsEntity.getDescription());
+							entity.setUri(resourcesEntity.getUriTemplate());
+							entity.setMethod(actionsEntity.getMethod());
+							entity.setParameters(resourcesEntity.getParameters());
+							entity.setResponseCode(responsesEntity.getName());
+							entity.setResponseHeaders(responsesEntity.getHeaders());
+							entity.setResponseBody(responsesEntity.getBody());
 
-					if(entity.getMethod().equals("GET")) entity.setNodeType(NodeTypeEnum.ERROR);
-					else if(entity.getMethod().equals("POST")) entity.setNodeType(NodeTypeEnum.WARNING);
-					else entity.setNodeType(NodeTypeEnum.MISSING);
+							// TODO check status of each entity
+							if(entity.getName().equals("") ||
+									entity.getUri().equals("") ||
+									entity.getMethod().equals("") ||
+									entity.getResponseCode().equals("") ||
+									entity.getResponseHeaders()==null ||
+									entity.getResponseBody().equals(""))
+							{
+								entity.setNodeType(NodeTypeEnum.CANNOT_RECOGNIZE);
+							}
+							else
+							{
+								entity.setNodeType(NodeTypeEnum.NOT_IMPLEMENTED);
+							}
 
-					outputList.add(entity);
+							outputList.add(entity);
+						}
+					}
 				}
 			}
 		}
@@ -282,40 +306,37 @@ public class ABMToolWindowMain extends JFrame
 
 	private DefaultMutableTreeNode initTreeStructure(List<TreeNodeEntity> nodeList)
 	{
-		DefaultMutableTreeNode root = new DefaultMutableTreeNode(new TreeNodeEntity(NodeTypeEnum.ROOT, "Root object", ""));
+		DefaultMutableTreeNode root = new DefaultMutableTreeNode(new TreeNodeEntity(NodeTypeEnum.ROOT, "Root object"));
 
-		DefaultMutableTreeNode categoryError;
-		DefaultMutableTreeNode categoryWarning;
-		DefaultMutableTreeNode categoryMissing;
+		DefaultMutableTreeNode categoryCannotRecognize = new DefaultMutableTreeNode(new TreeNodeEntity(NodeTypeEnum.CANNOT_RECOGNIZE_ROOT, "Cannot recognize"));
+		DefaultMutableTreeNode categoryNotImplemented = new DefaultMutableTreeNode(new TreeNodeEntity(NodeTypeEnum.NOT_IMPLEMENTED_ROOT, "Not implemented"));
+		DefaultMutableTreeNode categoryModified = new DefaultMutableTreeNode(new TreeNodeEntity(NodeTypeEnum.MODIFIED_ROOT, "Modified"));
+		DefaultMutableTreeNode categoryRemoved = new DefaultMutableTreeNode(new TreeNodeEntity(NodeTypeEnum.REMOVED_ROOT, "Removed"));
 		DefaultMutableTreeNode item;
 
-		categoryError = new DefaultMutableTreeNode(new TreeNodeEntity(NodeTypeEnum.ERROR_ROOT, "Errors", "3"));
-		root.add(categoryError);
-
-		categoryWarning = new DefaultMutableTreeNode(new TreeNodeEntity(NodeTypeEnum.WARNING_ROOT, "Warnings", "2"));
-		root.add(categoryWarning);
-
-		categoryMissing = new DefaultMutableTreeNode(new TreeNodeEntity(NodeTypeEnum.MISSING_ROOT, "Not implemented", "2"));
-		root.add(categoryMissing);
+		root.add(categoryCannotRecognize);
+		root.add(categoryNotImplemented);
+		root.add(categoryModified);
+		root.add(categoryRemoved);
 
 		for(TreeNodeEntity entity : nodeList)
 		{
-			if(entity.getMethod().equals("GET"))
+			item = new DefaultMutableTreeNode(entity);
+			switch(entity.getNodeType())
 			{
-				item = new DefaultMutableTreeNode(entity);
-				categoryError.add(item);
+				case CANNOT_RECOGNIZE:
+					categoryCannotRecognize.add(item);
+					break;
+				case NOT_IMPLEMENTED:
+					categoryNotImplemented.add(item);
+					break;
+				case MODIFIED:
+					categoryModified.add(item);
+					break;
+				case REMOVED:
+					categoryRemoved.add(item);
+					break;
 			}
-			else if(entity.getMethod().equals("POST"))
-			{
-				item = new DefaultMutableTreeNode(entity);
-				categoryWarning.add(item);
-			}
-			else
-			{
-				item = new DefaultMutableTreeNode(entity);
-				categoryMissing.add(item);
-			}
-
 		}
 
 		return root;

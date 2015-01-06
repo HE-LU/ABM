@@ -33,30 +33,41 @@ public class ABMTreeCellRenderer extends JLabel implements TreeCellRenderer
 
 		switch(entity.getNodeType())
 		{
-			case ERROR_ROOT:
+			case CANNOT_RECOGNIZE_ROOT:
 				setFont(new Font("Arial", Font.BOLD, 18));
 				setForeground(Color.RED);
 				setText(entity.getName() + " (" + entity.getValue() + ")");
 				break;
-			case WARNING_ROOT:
+			case NOT_IMPLEMENTED_ROOT:
 				setFont(new Font("Arial", Font.BOLD, 18));
 				setForeground(Color.ORANGE);
 				setText(entity.getName() + " (" + entity.getValue() + ")");
 				break;
-			case MISSING_ROOT:
+			case MODIFIED_ROOT:
+				setFont(new Font("Arial", Font.BOLD, 18));
+				setForeground(Color.ORANGE);
+				setText(entity.getName() + " (" + entity.getValue() + ")");
+				break;
+			case REMOVED_ROOT:
 				setFont(new Font("Arial", Font.BOLD, 18));
 				setForeground(Color.GREEN);
 				setText(entity.getName() + " (" + entity.getValue() + ")");
 				break;
-			case ERROR:
+
+
+			case CANNOT_RECOGNIZE:
 				setForeground(new Color(255, 200, 200));
 				setText("File: " + entity.getName() + ".java, Method: " + entity.getMethod() + ", URI: " + entity.getUri());
 				break;
-			case WARNING:
+			case NOT_IMPLEMENTED:
 				setForeground(new Color(255, 245, 200));
 				setText("File: " + entity.getName() + ".java, Method: " + entity.getMethod() + ", URI: " + entity.getUri());
 				break;
-			case MISSING:
+			case MODIFIED:
+				setForeground(new Color(255, 245, 200));
+				setText("File: " + entity.getName() + ".java, Method: " + entity.getMethod() + ", URI: " + entity.getUri());
+				break;
+			case REMOVED:
 				setForeground(new Color(200, 255, 200));
 				setText("File: " + entity.getName() + ".java, Method: " + entity.getMethod() + ", URI: " + entity.getUri());
 				break;
