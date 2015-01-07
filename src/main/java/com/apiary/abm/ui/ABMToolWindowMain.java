@@ -58,6 +58,7 @@ import javax.swing.JTree;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
 
 
 public class ABMToolWindowMain extends JFrame
@@ -245,6 +246,18 @@ public class ABMToolWindowMain extends JFrame
 		});
 		bottomPanel.add(button);
 
+		// Tree click listener
+		tree.addMouseListener(new MouseAdapter()
+		{
+			public void mousePressed(MouseEvent e)
+			{
+				int row = tree.getRowForLocation(e.getX(), e.getY());
+				TreePath path = tree.getPathForLocation(e.getX(), e.getY());
+				if(row!=-1 && e.getClickCount()==2)
+					onTreeNodeDoubleClick((TreeNodeEntity) ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject());
+			}
+		});
+
 		// todo remove
 		//		List<PsiPackage> packList = getPackages();
 		//		for(PsiPackage pack : packList)
@@ -255,6 +268,16 @@ public class ABMToolWindowMain extends JFrame
 		//		ConfigPreferences confPrefs = new ConfigPreferences();
 		//		Log.d("exist: " + ConfigPreferences.configExist());
 		//		Utils.isGradleWithRetrofit();
+	}
+
+
+	private void onTreeNodeDoubleClick(TreeNodeEntity entity)
+	{
+		if(entity.getTreeNodeType()==TreeNodeTypeEnum.CANNOT_RECOGNIZE)
+		{
+			// TODO: run ABMToolWindowCannotRecognize
+			//			new ABMToolWindowCannotRecognize(mToolWindow, entity);
+		}
 	}
 
 
