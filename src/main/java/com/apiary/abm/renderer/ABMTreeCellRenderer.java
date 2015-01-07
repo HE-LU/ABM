@@ -34,7 +34,7 @@ public class ABMTreeCellRenderer extends JLabel implements TreeCellRenderer
 		setFont(new Font("Arial", Font.BOLD, 14));
 		setForeground(Color.WHITE);
 
-		switch(entity.getNodeType())
+		switch(entity.getTreeNodeType())
 		{
 			case CANNOT_RECOGNIZE_ROOT:
 				setFont(new Font("Arial", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM_LARGE)));
@@ -91,7 +91,7 @@ public class ABMTreeCellRenderer extends JLabel implements TreeCellRenderer
 			case NOT_IMPLEMENTED_PARSER:
 				setFont(new Font("Arial", Font.BOLD, Utils.fontSize(Utils.FONT_SMALL)));
 				setForeground(Color.decode(colors.getString("text_orange_light")));
-				setText("File: " + entity.getName() + ".java, Method: " + entity.getMethod() + ", URI: " + entity.getUri());
+				setText("File: " + entity.getName() + ".java, Method: " + entity.getMethod() + ", URI: " + entity.getUri() + ", CODE: " + entity.getResponseCode());
 				break;
 			case MODIFIED:
 				setFont(new Font("Arial", Font.BOLD, Utils.fontSize(Utils.FONT_SMALL)));

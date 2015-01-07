@@ -3,12 +3,14 @@ package com.apiary.abm.entity;
 import com.apiary.abm.entity.blueprint.HeadersEntity;
 import com.apiary.abm.entity.blueprint.ParametersEntity;
 import com.apiary.abm.enums.NodeTypeEnum;
+import com.apiary.abm.enums.TreeNodeTypeEnum;
 
 import java.util.List;
 
 
 public class TreeNodeEntity
 {
+	private TreeNodeTypeEnum mTreeNodeType;
 	private NodeTypeEnum mNodeType;
 	private String mName; // pingCall
 	private String mDescription; // api call for requesting ping
@@ -27,9 +29,9 @@ public class TreeNodeEntity
 	}
 
 
-	public TreeNodeEntity(NodeTypeEnum mNodeType, String mName)
+	public TreeNodeEntity(TreeNodeTypeEnum mNodeType, String mName)
 	{
-		this.mNodeType = mNodeType;
+		this.mTreeNodeType = mNodeType;
 		this.mName = mName;
 		this.mValue = 0;
 	}
@@ -37,6 +39,7 @@ public class TreeNodeEntity
 
 	public TreeNodeEntity(TreeNodeEntity entity)
 	{
+		this.mTreeNodeType = entity.getTreeNodeType();
 		this.mNodeType = entity.getNodeType();
 		this.mName = entity.getName();
 		this.mDescription = entity.getDescription();
@@ -47,6 +50,18 @@ public class TreeNodeEntity
 		this.mResponseCode = entity.getResponseCode();
 		this.mResponseHeaders = entity.getResponseHeaders();
 		this.mResponseBody = entity.getResponseBody();
+	}
+
+
+	public TreeNodeTypeEnum getTreeNodeType()
+	{
+		return mTreeNodeType;
+	}
+
+
+	public void setTreeNodeType(TreeNodeTypeEnum mNodeType)
+	{
+		this.mTreeNodeType = mNodeType;
 	}
 
 

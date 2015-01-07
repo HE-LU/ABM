@@ -8,6 +8,7 @@ import com.apiary.abm.entity.blueprint.ResourceGroupsEntity;
 import com.apiary.abm.entity.blueprint.ResourcesEntity;
 import com.apiary.abm.entity.blueprint.ResponsesEntity;
 import com.apiary.abm.enums.NodeTypeEnum;
+import com.apiary.abm.enums.TreeNodeTypeEnum;
 import com.apiary.abm.renderer.ABMTreeCellRenderer;
 import com.apiary.abm.utility.Network;
 import com.apiary.abm.utility.Preferences;
@@ -43,6 +44,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -122,6 +124,7 @@ public class ABMToolWindowMain extends JFrame
 			String json = Network.requestJSONFromBlueprint(blueprint);
 			object = Utils.parseJsonBlueprint(json);
 			if(object.getError()==null) treeNodeList = analyzeBlueprint(object);
+			treeNodeList = analyzeTreeNodeList(treeNodeList);
 		}
 		catch(IOException e)
 		{
@@ -151,7 +154,7 @@ public class ABMToolWindowMain extends JFrame
 		middleTreePanel.setLayout(new MigLayout("insets " + Utils.reDimension(12) + " " + Utils.reDimension(12) + " " + Utils.reDimension(18) + " " + Utils.reDimension(19) + ", flowy, fillx, filly", "[fill, grow]", "[fill, grow]"));
 		middleTreePanel.setOpaque(false);
 
-		JTree tree = new Tree(initTreeStructure(treeNodeList));
+		final JTree tree = new Tree(initTreeStructure(treeNodeList));
 		tree.setRootVisible(false);
 		tree.setOpaque(false);
 		tree.setCellRenderer(new ABMTreeCellRenderer());
@@ -192,6 +195,7 @@ public class ABMToolWindowMain extends JFrame
 							else json = Network.requestJSONFromBlueprint(blueprint);
 							object = Utils.parseJsonBlueprint(json);
 							if(object.getError()==null) treeNodeList = analyzeBlueprint(object);
+							treeNodeList = analyzeTreeNodeList(treeNodeList);
 						}
 						catch(IOException e)
 						{
@@ -265,44 +269,29 @@ public class ABMToolWindowMain extends JFrame
 			{
 				for(ActionsEntity actionsEntity : resourcesEntity.getActions())
 				{
+					TreeNodeEntity entity = new TreeNodeEntity();
+					entity.setUri(resourcesEntity.getUriTemplate());
+					entity.setParameters(resourcesEntity.getParameters());
+					entity.setName(actionsEntity.getName().replace(" ", ""));
+					entity.setDescription(actionsEntity.getDescription());
+					entity.setMethod(actionsEntity.getMethod());
+					entity.setNodeType(NodeTypeEnum.REQUEST);
+					outputList.add(entity);
+
+					TreeNodeEntity entityResponse = new TreeNodeEntity(entity);
+					entityResponse.setNodeType(NodeTypeEnum.RESPONSE);
+					outputList.add(entityResponse);
+
 					for(ExamplesEntity examplesEntity : actionsEntity.getExamples())
 					{
 						for(ResponsesEntity responsesEntity : examplesEntity.getResponses())
 						{
-							TreeNodeEntity entity = new TreeNodeEntity();
-							entity.setName(actionsEntity.getName().replace(" ", ""));
-							entity.setDescription(actionsEntity.getDescription());
-							entity.setUri(resourcesEntity.getUriTemplate());
-							entity.setMethod(actionsEntity.getMethod());
-							entity.setParameters(resourcesEntity.getParameters());
-							entity.setResponseCode(responsesEntity.getName());
-							entity.setResponseHeaders(responsesEntity.getHeaders());
-							entity.setResponseBody(responsesEntity.getBody());
-
-							// TODO check status of each entity
-							if(entity.getName().equals("") ||
-									entity.getUri().equals("") ||
-									entity.getMethod().equals("") ||
-									entity.getResponseCode().equals("") ||
-									entity.getResponseHeaders()==null ||
-									entity.getResponseBody().equals(""))
-							{
-								entity.setNodeType(NodeTypeEnum.CANNOT_RECOGNIZE);
-							}
-							else
-							{
-								entity.setNodeType(NodeTypeEnum.NOT_IMPLEMENTED_REQUEST);
-
-								TreeNodeEntity entity2 = new TreeNodeEntity(entity);
-								entity2.setNodeType(NodeTypeEnum.NOT_IMPLEMENTED_ENTITY);
-								outputList.add(entity2);
-
-								TreeNodeEntity entity3 = new TreeNodeEntity(entity);
-								entity3.setNodeType(NodeTypeEnum.NOT_IMPLEMENTED_PARSER);
-								outputList.add(entity3);
-							}
-
-							outputList.add(entity);
+							TreeNodeEntity entityParser = new TreeNodeEntity(entity);
+							entityParser.setResponseCode(responsesEntity.getName());
+							entityParser.setResponseHeaders(responsesEntity.getHeaders());
+							entityParser.setResponseBody(responsesEntity.getBody());
+							entityParser.setNodeType(NodeTypeEnum.PARSER);
+							outputList.add(entityParser);
 						}
 					}
 				}
@@ -312,17 +301,39 @@ public class ABMToolWindowMain extends JFrame
 	}
 
 
+	private List<TreeNodeEntity> analyzeTreeNodeList(List<TreeNodeEntity> list)
+	{
+		// TODO check status of each entity
+		for(TreeNodeEntity entity : list)
+		{
+			if(entity.getName().equals("")) entity.setTreeNodeType(TreeNodeTypeEnum.CANNOT_RECOGNIZE);
+			else if(entity.getNodeType()==NodeTypeEnum.REQUEST) entity.setTreeNodeType(TreeNodeTypeEnum.NOT_IMPLEMENTED_REQUEST);
+			else if(entity.getNodeType()==NodeTypeEnum.RESPONSE) entity.setTreeNodeType(TreeNodeTypeEnum.NOT_IMPLEMENTED_ENTITY);
+			else if(entity.getNodeType()==NodeTypeEnum.PARSER) entity.setTreeNodeType(TreeNodeTypeEnum.NOT_IMPLEMENTED_PARSER);
+		}
+
+		Iterator<TreeNodeEntity> iterator = list.iterator();
+		while(iterator.hasNext())
+		{
+			TreeNodeEntity entity = iterator.next();
+			if(entity.getTreeNodeType()==TreeNodeTypeEnum.CANNOT_RECOGNIZE && entity.getNodeType()!=NodeTypeEnum.REQUEST) iterator.remove();
+		}
+
+		return list;
+	}
+
+
 	private DefaultMutableTreeNode initTreeStructure(List<TreeNodeEntity> nodeList)
 	{
-		DefaultMutableTreeNode root = new DefaultMutableTreeNode(new TreeNodeEntity(NodeTypeEnum.ROOT, "Root object"));
+		DefaultMutableTreeNode root = new DefaultMutableTreeNode(new TreeNodeEntity(TreeNodeTypeEnum.ROOT, "Root object"));
 
-		DefaultMutableTreeNode categoryCannotRecognize = new DefaultMutableTreeNode(new TreeNodeEntity(NodeTypeEnum.CANNOT_RECOGNIZE_ROOT, "Cannot recognize"));
-		DefaultMutableTreeNode categoryNotImplemented = new DefaultMutableTreeNode(new TreeNodeEntity(NodeTypeEnum.NOT_IMPLEMENTED_ROOT, "Not implemented"));
-		DefaultMutableTreeNode categoryNotImplementedRequest = new DefaultMutableTreeNode(new TreeNodeEntity(NodeTypeEnum.NOT_IMPLEMENTED_REQUEST_ROOT, "Request"));
-		DefaultMutableTreeNode categoryNotImplementedEntity = new DefaultMutableTreeNode(new TreeNodeEntity(NodeTypeEnum.NOT_IMPLEMENTED_ENTITY_ROOT, "Response entity"));
-		DefaultMutableTreeNode categoryNotImplementedParser = new DefaultMutableTreeNode(new TreeNodeEntity(NodeTypeEnum.NOT_IMPLEMENTED_PARSER_ROOT, "Parser"));
-		DefaultMutableTreeNode categoryModified = new DefaultMutableTreeNode(new TreeNodeEntity(NodeTypeEnum.MODIFIED_ROOT, "Modified"));
-		DefaultMutableTreeNode categoryRemoved = new DefaultMutableTreeNode(new TreeNodeEntity(NodeTypeEnum.REMOVED_ROOT, "Removed"));
+		DefaultMutableTreeNode categoryCannotRecognize = new DefaultMutableTreeNode(new TreeNodeEntity(TreeNodeTypeEnum.CANNOT_RECOGNIZE_ROOT, "Cannot recognize"));
+		DefaultMutableTreeNode categoryNotImplemented = new DefaultMutableTreeNode(new TreeNodeEntity(TreeNodeTypeEnum.NOT_IMPLEMENTED_ROOT, "Not implemented"));
+		DefaultMutableTreeNode categoryNotImplementedRequest = new DefaultMutableTreeNode(new TreeNodeEntity(TreeNodeTypeEnum.NOT_IMPLEMENTED_REQUEST_ROOT, "Request"));
+		DefaultMutableTreeNode categoryNotImplementedEntity = new DefaultMutableTreeNode(new TreeNodeEntity(TreeNodeTypeEnum.NOT_IMPLEMENTED_ENTITY_ROOT, "Response entity"));
+		DefaultMutableTreeNode categoryNotImplementedParser = new DefaultMutableTreeNode(new TreeNodeEntity(TreeNodeTypeEnum.NOT_IMPLEMENTED_PARSER_ROOT, "Parser"));
+		DefaultMutableTreeNode categoryModified = new DefaultMutableTreeNode(new TreeNodeEntity(TreeNodeTypeEnum.MODIFIED_ROOT, "Modified"));
+		DefaultMutableTreeNode categoryRemoved = new DefaultMutableTreeNode(new TreeNodeEntity(TreeNodeTypeEnum.REMOVED_ROOT, "Removed"));
 		DefaultMutableTreeNode item;
 
 		Integer categoryCannotRecognizeValue = 0;
@@ -336,7 +347,7 @@ public class ABMToolWindowMain extends JFrame
 		for(TreeNodeEntity entity : nodeList)
 		{
 			item = new DefaultMutableTreeNode(entity);
-			switch(entity.getNodeType())
+			switch(entity.getTreeNodeType())
 			{
 				case CANNOT_RECOGNIZE:
 					categoryCannotRecognize.add(item);
@@ -447,7 +458,6 @@ public class ABMToolWindowMain extends JFrame
 
 	private List<PsiPackage> getPackages()
 	{
-		//		Project myProject = presenterConfigModel.getProject();
 		Project myProject = ABMToolWindow.getProject();
 
 		ProjectViewSettings viewSettings = new ProjectViewSettings();
