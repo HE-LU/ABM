@@ -10,6 +10,7 @@ import com.apiary.abm.entity.blueprint.ResponsesEntity;
 import com.apiary.abm.enums.NodeTypeEnum;
 import com.apiary.abm.enums.TreeNodeTypeEnum;
 import com.apiary.abm.renderer.ABMTreeCellRenderer;
+import com.apiary.abm.utility.ConfigPreferences;
 import com.apiary.abm.utility.Network;
 import com.apiary.abm.utility.Preferences;
 import com.apiary.abm.utility.Utils;
@@ -64,6 +65,7 @@ import javax.swing.tree.TreePath;
 public class ABMToolWindowMain extends JFrame
 {
 	private ToolWindow mToolWindow;
+	private JLabel mInformationIcon;
 
 
 	public ABMToolWindowMain(ToolWindow toolWindow)
@@ -134,21 +136,11 @@ public class ABMToolWindowMain extends JFrame
 
 
 		// information icon
-		try
-		{
-			final JLabel informationIcon = new JLabel();
-			BufferedImage tmpImage = ImageIO.read(JBackgroundPanel.class.getClassLoader().getResourceAsStream("drawable/img_cross.png"));
+		mInformationIcon = new JLabel();
+		mInformationIcon.setOpaque(false);
+		mInformationIcon.setHorizontalAlignment(SwingConstants.CENTER);
+		topPanel.add(mInformationIcon);
 
-			Image image = tmpImage.getScaledInstance(75, 75, Image.SCALE_SMOOTH);
-			informationIcon.setIcon(new ImageIcon(image));
-			informationIcon.setOpaque(false);
-			informationIcon.setHorizontalAlignment(SwingConstants.CENTER);
-			topPanel.add(informationIcon);
-		}
-		catch(IOException e)
-		{
-			e.printStackTrace();
-		}
 
 		// tree structure
 		final JBackgroundPanel middleTreePanel = new JBackgroundPanel("drawable/img_background_panel.9.png", JBackgroundPanel.JBackgroundPanelType.NINE_PATCH);
@@ -207,6 +199,16 @@ public class ABMToolWindowMain extends JFrame
 						tree.setRootVisible(false);
 						tree.setOpaque(false);
 						tree.setCellRenderer(new ABMTreeCellRenderer());
+						tree.addMouseListener(new MouseAdapter()
+						{
+							public void mousePressed(MouseEvent e)
+							{
+								int row = tree.getRowForLocation(e.getX(), e.getY());
+								TreePath path = tree.getPathForLocation(e.getX(), e.getY());
+								if(row!=-1 && e.getClickCount()==2)
+									onTreeNodeDoubleClick((TreeNodeEntity) ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject());
+							}
+						});
 
 						SwingUtilities.invokeLater(new Runnable()
 						{
@@ -264,10 +266,6 @@ public class ABMToolWindowMain extends JFrame
 		//		{
 		//			Log.d("Package: " + pack.getSubPackages()[0].getSubPackages()[0].getName());
 		//		}
-
-		//		ConfigPreferences confPrefs = new ConfigPreferences();
-		//		Log.d("exist: " + ConfigPreferences.configExist());
-		//		Utils.isGradleWithRetrofit();
 	}
 
 
@@ -275,8 +273,7 @@ public class ABMToolWindowMain extends JFrame
 	{
 		if(entity.getTreeNodeType()==TreeNodeTypeEnum.CANNOT_RECOGNIZE)
 		{
-			// TODO: run ABMToolWindowCannotRecognize
-			//			new ABMToolWindowCannotRecognize(mToolWindow, entity);
+			new ABMToolWindowCannotRecognize(mToolWindow, entity);
 		}
 	}
 
@@ -326,9 +323,12 @@ public class ABMToolWindowMain extends JFrame
 
 	private List<TreeNodeEntity> analyzeTreeNodeList(List<TreeNodeEntity> list)
 	{
+		ConfigPreferences cp = new ConfigPreferences();
+
 		// TODO check status of each entity
 		for(TreeNodeEntity entity : list)
 		{
+			if(entity.getName().equals("")) entity = cp.tryToFillTreeNodeEntity(entity);
 			if(entity.getName().equals("")) entity.setTreeNodeType(TreeNodeTypeEnum.CANNOT_RECOGNIZE);
 			else if(entity.getNodeType()==NodeTypeEnum.REQUEST) entity.setTreeNodeType(TreeNodeTypeEnum.NOT_IMPLEMENTED_REQUEST);
 			else if(entity.getNodeType()==NodeTypeEnum.RESPONSE) entity.setTreeNodeType(TreeNodeTypeEnum.NOT_IMPLEMENTED_ENTITY);
@@ -421,6 +421,39 @@ public class ABMToolWindowMain extends JFrame
 		}
 		if(categoryModifiedValue!=0) root.add(categoryModified);
 		if(categoryRemovedValue!=0) root.add(categoryRemoved);
+
+
+		try
+		{
+			final BufferedImage tmpImageCross = ImageIO.read(JBackgroundPanel.class.getClassLoader().getResourceAsStream("drawable/img_cross.png"));
+			final BufferedImage tmpImageExclamation = ImageIO.read(JBackgroundPanel.class.getClassLoader().getResourceAsStream("drawable/img_exclamation_mark.png"));
+			final BufferedImage tmpImageCheck = ImageIO.read(JBackgroundPanel.class.getClassLoader().getResourceAsStream("drawable/img_check.png"));
+			if(categoryCannotRecognizeValue>0) SwingUtilities.invokeLater(new Runnable()
+			{
+				public void run()
+				{
+					mInformationIcon.setIcon(new ImageIcon(tmpImageCross.getScaledInstance(75, 75, Image.SCALE_SMOOTH)));
+				}
+			});
+			else if(categoryNotImplementedValue>0 || categoryModifiedValue>0) SwingUtilities.invokeLater(new Runnable()
+			{
+				public void run()
+				{
+					mInformationIcon.setIcon(new ImageIcon(tmpImageExclamation.getScaledInstance(75, 75, Image.SCALE_SMOOTH)));
+				}
+			});
+			else SwingUtilities.invokeLater(new Runnable()
+				{
+					public void run()
+					{
+						mInformationIcon.setIcon(new ImageIcon(tmpImageCheck.getScaledInstance(75, 75, Image.SCALE_SMOOTH)));
+					}
+				});
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+		}
 
 		return root;
 	}

@@ -1,6 +1,8 @@
 package com.apiary.abm.entity.config;
 
-import javax.xml.bind.annotation.XmlAttribute;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -8,46 +10,38 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class ConfigRootEntity
 {
-	String name;
-	int age;
-	int id;
+	String mName;
+	List<ConfigClassInfoEntity> mClassInfoList = new ArrayList<ConfigClassInfoEntity>();
 
 
 	public String getName()
 	{
-		return name;
+		return mName;
 	}
 
 
 	@XmlElement
-	public void setName(String name)
+	public void setName(String mName)
 	{
-		this.name = name;
+		this.mName = mName;
 	}
 
 
-	public int getAge()
+	public List<ConfigClassInfoEntity> getClassInfoList()
 	{
-		return age;
+		return mClassInfoList;
 	}
 
 
 	@XmlElement
-	public void setAge(int age)
+	public void setClassInfoList(List<ConfigClassInfoEntity> mClassInfoList)
 	{
-		this.age = age;
+		this.mClassInfoList = mClassInfoList;
 	}
 
 
-	public int getId()
+	public void addClassInfoItem(ConfigClassInfoEntity mClassInfoItem)
 	{
-		return id;
-	}
-
-
-	@XmlAttribute
-	public void setId(int id)
-	{
-		this.id = id;
+		this.mClassInfoList.add(mClassInfoItem);
 	}
 }

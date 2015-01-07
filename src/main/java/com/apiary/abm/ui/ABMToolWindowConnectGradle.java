@@ -111,7 +111,7 @@ public class ABMToolWindowConnectGradle extends JFrame
 
 		// connect button
 		final ImageButton button = new ImageButton();
-		button.setImage("drawable/img_button_connect.png");
+		button.setImage("drawable/img_button_next.png");
 		button.setSize(Utils.reDimension(70), Utils.reDimension(70));
 
 		button.addMouseListener(new MouseAdapter()
@@ -122,7 +122,7 @@ public class ABMToolWindowConnectGradle extends JFrame
 			public void mouseClicked(MouseEvent e)
 			{
 				if(connecting) return;
-				button.setImage("drawable/animation_connect.gif");
+				button.setImage("drawable/img_button_next_pressed.png");
 				button.setSize(Utils.reDimension(70), Utils.reDimension(70));
 				connecting = true;
 
@@ -155,7 +155,7 @@ public class ABMToolWindowConnectGradle extends JFrame
 								public void run()
 								{
 									labelError.setVisible(true);
-									button.setImage("drawable/img_button_connect.png");
+									button.setImage("drawable/img_button_next.png");
 								}
 							});
 						}
@@ -175,7 +175,7 @@ public class ABMToolWindowConnectGradle extends JFrame
 			public void mousePressed(MouseEvent e)
 			{
 				if(connecting) return;
-				button.setImage("drawable/img_button_connect_pressed.png");
+				button.setImage("drawable/img_button_next_pressed.png");
 				button.setSize(Utils.reDimension(70), Utils.reDimension(70));
 			}
 
@@ -183,7 +183,7 @@ public class ABMToolWindowConnectGradle extends JFrame
 			public void mouseReleased(MouseEvent e)
 			{
 				if(connecting) return;
-				button.setImage("drawable/img_button_connect.png");
+				button.setImage("drawable/img_button_next.png");
 				button.setSize(Utils.reDimension(70), Utils.reDimension(70));
 			}
 		});

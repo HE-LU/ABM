@@ -1,6 +1,8 @@
 package com.apiary.abm.utility;
 
 
+import com.apiary.abm.entity.TreeNodeEntity;
+import com.apiary.abm.entity.config.ConfigClassInfoEntity;
 import com.apiary.abm.entity.config.ConfigRootEntity;
 import com.apiary.abm.ui.ABMToolWindow;
 import com.intellij.openapi.project.Project;
@@ -24,8 +26,13 @@ public class ConfigPreferences
 		{
 			if(!configExist())
 			{
-				mConfig = null;
-				return;
+				mConfig = new ConfigRootEntity();
+				saveConfig();
+				if(!configExist())
+				{
+					mConfig = null;
+					return;
+				}
 			}
 
 			Project myProject = ABMToolWindow.getProject();
@@ -71,7 +78,25 @@ public class ConfigPreferences
 		return new File(ABMToolWindow.getProject().getBaseDir().getPath() + "/abm_config.xml").exists();
 	}
 
-	// Setters
 
-	// Getters
+	public void saveTreeNodeEntity(TreeNodeEntity entity)
+	{
+		ConfigClassInfoEntity classInfoEntity = new ConfigClassInfoEntity();
+		classInfoEntity.setName(entity.getName());
+		classInfoEntity.setMethod(entity.getMethod());
+		classInfoEntity.setUri(entity.getUri());
+		mConfig.addClassInfoItem(classInfoEntity);
+
+		saveConfig();
+	}
+
+
+	public TreeNodeEntity tryToFillTreeNodeEntity(TreeNodeEntity entity)
+	{
+		for(ConfigClassInfoEntity item : mConfig.getClassInfoList())
+		{
+			if(item.getMethod().equals(entity.getMethod()) && item.getUri().equals(entity.getUri())) entity.setName(item.getName());
+		}
+		return entity;
+	}
 }
