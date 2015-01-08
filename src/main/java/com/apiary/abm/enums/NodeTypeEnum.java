@@ -3,7 +3,7 @@ package com.apiary.abm.enums;
 
 public enum NodeTypeEnum
 {
-	REQUEST("request"), RESPONSE("response"), PARSER("parser");
+	REQUEST("request"), RESPONSE("response");
 
 	private final String value;
 

@@ -13,6 +13,8 @@ import javax.swing.JFrame;
 
 public class ABMToolWindow extends JFrame implements ToolWindowFactory
 {
+	private final boolean DEBUG_FIRST_RUN = false;
+
 	private static Project sProject;
 
 
@@ -27,7 +29,7 @@ public class ABMToolWindow extends JFrame implements ToolWindowFactory
 		sProject = project;
 
 		Preferences preferences = new Preferences();
-		if(preferences.getPluginInitialized())
+		if(preferences.getPluginInitialized() && !DEBUG_FIRST_RUN)
 		{
 			if(Utils.isGradleWithRetrofit()) new ABMToolWindowMain(toolWindow);
 			else new ABMToolWindowConnectGradle(toolWindow);

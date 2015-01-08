@@ -3,10 +3,8 @@ package com.apiary.abm.ui;
 import com.apiary.abm.entity.TreeNodeEntity;
 import com.apiary.abm.entity.blueprint.ABMEntity;
 import com.apiary.abm.entity.blueprint.ActionsEntity;
-import com.apiary.abm.entity.blueprint.ExamplesEntity;
 import com.apiary.abm.entity.blueprint.ResourceGroupsEntity;
 import com.apiary.abm.entity.blueprint.ResourcesEntity;
-import com.apiary.abm.entity.blueprint.ResponsesEntity;
 import com.apiary.abm.enums.NodeTypeEnum;
 import com.apiary.abm.enums.TreeNodeTypeEnum;
 import com.apiary.abm.renderer.ABMTreeCellRenderer;
@@ -102,7 +100,7 @@ public class ABMToolWindowMain extends JFrame
 		bottomPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Utils.reDimension(90)));
 
 		// add elements
-		topPanel.setLayout(new MigLayout("insets 0 " + Utils.reDimension(20) + " " + Utils.reDimension(20) + " " + Utils.reDimension(20) + ", flowy, fillx, filly", "[fill, grow]", "[fill]"));
+		topPanel.setLayout(new MigLayout("insets 0 " + Utils.reDimension(20) + " " + Utils.reDimension(20) + " 0, flowx, fillx, filly", "[grow, center][]", "[center, top]"));
 		middlePanel.setLayout(new MigLayout("insets 0 " + Utils.reDimension(15) + " 0 " + Utils.reDimension(15) + ", flowy, fillx, filly", "[fill, grow]", "[fill, grow]"));
 		bottomPanel.setLayout(new MigLayout("insets " + Utils.reDimension(18) + " 0 0 0, flowy, fillx, filly", "[grow, center]", "[center, top]"));
 
@@ -134,12 +132,11 @@ public class ABMToolWindowMain extends JFrame
 			e.printStackTrace();
 		}
 
-
 		// information icon
 		mInformationIcon = new JLabel();
 		mInformationIcon.setOpaque(false);
 		mInformationIcon.setHorizontalAlignment(SwingConstants.CENTER);
-		topPanel.add(mInformationIcon);
+		topPanel.add(mInformationIcon, "gap " + Utils.reDimension(27) + "px"); // config button gaps (10 + 10) + size (35) = 55 / 2 = 27
 
 
 		// tree structure
@@ -162,13 +159,13 @@ public class ABMToolWindowMain extends JFrame
 
 		button.addMouseListener(new MouseAdapter()
 		{
-			private boolean refreshing;
+			private boolean progress;
 
 
 			public void mouseClicked(MouseEvent e)
 			{
-				if(refreshing) return;
-				refreshing = true;
+				if(progress) return;
+				progress = true;
 
 				button.setImage("drawable/animation_refresh.gif");
 				button.setSize(Utils.reDimension(70), Utils.reDimension(70));
@@ -222,7 +219,7 @@ public class ABMToolWindowMain extends JFrame
 								button.setImage("drawable/img_button_refresh.png");
 								button.setSize(Utils.reDimension(70), Utils.reDimension(70));
 
-								refreshing = false;
+								progress = false;
 							}
 						});
 					}
@@ -233,7 +230,7 @@ public class ABMToolWindowMain extends JFrame
 
 			public void mousePressed(MouseEvent e)
 			{
-				if(refreshing) return;
+				if(progress) return;
 				button.setImage("drawable/img_button_refresh_pressed.png");
 				button.setSize(Utils.reDimension(70), Utils.reDimension(70));
 			}
@@ -241,12 +238,51 @@ public class ABMToolWindowMain extends JFrame
 
 			public void mouseReleased(MouseEvent e)
 			{
-				if(refreshing) return;
+				if(progress) return;
 				button.setImage("drawable/img_button_refresh.png");
 				button.setSize(Utils.reDimension(70), Utils.reDimension(70));
 			}
 		});
 		bottomPanel.add(button);
+
+		// config button
+		final ImageButton buttonConfig = new ImageButton();
+		buttonConfig.setImage("drawable/img_button_config.png");
+		buttonConfig.setSize(Utils.reDimension(35), Utils.reDimension(35));
+
+		buttonConfig.addMouseListener(new MouseAdapter()
+		{
+			private boolean progress;
+
+
+			public void mouseClicked(MouseEvent e)
+			{
+				if(progress) return;
+				buttonConfig.setImage("drawable/img_button_config_pressed.png");
+				buttonConfig.setSize(Utils.reDimension(35), Utils.reDimension(35));
+				progress = true;
+
+				new ABMToolWindowConfiguration(mToolWindow);
+			}
+
+
+			public void mousePressed(MouseEvent e)
+			{
+				if(progress) return;
+				buttonConfig.setImage("drawable/img_button_config_pressed.png");
+				buttonConfig.setSize(Utils.reDimension(35), Utils.reDimension(35));
+			}
+
+
+			public void mouseReleased(MouseEvent e)
+			{
+				if(progress) return;
+				buttonConfig.setImage("drawable/img_button_config.png");
+				buttonConfig.setSize(Utils.reDimension(35), Utils.reDimension(35));
+			}
+		});
+		topPanel.add(buttonConfig, "right, gap 0px " + Utils.reDimension(10) + "px " + Utils.reDimension(10) + "px 0px ");
+
 
 		// Tree click listener
 		tree.addMouseListener(new MouseAdapter()
@@ -271,10 +307,9 @@ public class ABMToolWindowMain extends JFrame
 
 	private void onTreeNodeDoubleClick(TreeNodeEntity entity)
 	{
-		if(entity.getTreeNodeType()==TreeNodeTypeEnum.CANNOT_RECOGNIZE)
-		{
-			new ABMToolWindowCannotRecognize(mToolWindow, entity);
-		}
+		if(entity.getTreeNodeType()==TreeNodeTypeEnum.CONFIGURATION) new ABMToolWindowConfiguration(mToolWindow);
+		else if(entity.getTreeNodeType()==TreeNodeTypeEnum.CANNOT_RECOGNIZE) new ABMToolWindowCannotRecognize(mToolWindow, entity);
+		else if(entity.getTreeNodeType()==TreeNodeTypeEnum.NOT_IMPLEMENTED_REQUEST) new ABMToolWindowCannotRecognize(mToolWindow, entity);
 	}
 
 
@@ -302,18 +337,18 @@ public class ABMToolWindowMain extends JFrame
 					entityResponse.setNodeType(NodeTypeEnum.RESPONSE);
 					outputList.add(entityResponse);
 
-					for(ExamplesEntity examplesEntity : actionsEntity.getExamples())
-					{
-						for(ResponsesEntity responsesEntity : examplesEntity.getResponses())
-						{
-							TreeNodeEntity entityParser = new TreeNodeEntity(entity);
-							entityParser.setResponseCode(responsesEntity.getName());
-							entityParser.setResponseHeaders(responsesEntity.getHeaders());
-							entityParser.setResponseBody(responsesEntity.getBody());
-							entityParser.setNodeType(NodeTypeEnum.PARSER);
-							outputList.add(entityParser);
-						}
-					}
+					//					for(ExamplesEntity examplesEntity : actionsEntity.getExamples())
+					//					{
+					//						for(ResponsesEntity responsesEntity : examplesEntity.getResponses())
+					//						{
+					//							TreeNodeEntity entityParser = new TreeNodeEntity(entity);
+					//							entityParser.setResponseCode(responsesEntity.getName());
+					//							entityParser.setResponseHeaders(responsesEntity.getHeaders());
+					//							entityParser.setResponseBody(responsesEntity.getBody());
+					//							entityParser.setNodeType(NodeTypeEnum.PARSER);
+					//							outputList.add(entityParser);
+					//						}
+					//					}
 				}
 			}
 		}
@@ -332,7 +367,6 @@ public class ABMToolWindowMain extends JFrame
 			if(entity.getName().equals("")) entity.setTreeNodeType(TreeNodeTypeEnum.CANNOT_RECOGNIZE);
 			else if(entity.getNodeType()==NodeTypeEnum.REQUEST) entity.setTreeNodeType(TreeNodeTypeEnum.NOT_IMPLEMENTED_REQUEST);
 			else if(entity.getNodeType()==NodeTypeEnum.RESPONSE) entity.setTreeNodeType(TreeNodeTypeEnum.NOT_IMPLEMENTED_ENTITY);
-			else if(entity.getNodeType()==NodeTypeEnum.PARSER) entity.setTreeNodeType(TreeNodeTypeEnum.NOT_IMPLEMENTED_PARSER);
 		}
 
 		Iterator<TreeNodeEntity> iterator = list.iterator();
@@ -350,20 +384,20 @@ public class ABMToolWindowMain extends JFrame
 	{
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode(new TreeNodeEntity(TreeNodeTypeEnum.ROOT, "Root object"));
 
+		DefaultMutableTreeNode categoryConfiguration = new DefaultMutableTreeNode(new TreeNodeEntity(TreeNodeTypeEnum.CONFIGURATION_ROOT, "Configuration"));
 		DefaultMutableTreeNode categoryCannotRecognize = new DefaultMutableTreeNode(new TreeNodeEntity(TreeNodeTypeEnum.CANNOT_RECOGNIZE_ROOT, "Cannot recognize"));
 		DefaultMutableTreeNode categoryNotImplemented = new DefaultMutableTreeNode(new TreeNodeEntity(TreeNodeTypeEnum.NOT_IMPLEMENTED_ROOT, "Not implemented"));
 		DefaultMutableTreeNode categoryNotImplementedRequest = new DefaultMutableTreeNode(new TreeNodeEntity(TreeNodeTypeEnum.NOT_IMPLEMENTED_REQUEST_ROOT, "Request"));
 		DefaultMutableTreeNode categoryNotImplementedEntity = new DefaultMutableTreeNode(new TreeNodeEntity(TreeNodeTypeEnum.NOT_IMPLEMENTED_ENTITY_ROOT, "Response entity"));
-		DefaultMutableTreeNode categoryNotImplementedParser = new DefaultMutableTreeNode(new TreeNodeEntity(TreeNodeTypeEnum.NOT_IMPLEMENTED_PARSER_ROOT, "Parser"));
 		DefaultMutableTreeNode categoryModified = new DefaultMutableTreeNode(new TreeNodeEntity(TreeNodeTypeEnum.MODIFIED_ROOT, "Modified"));
 		DefaultMutableTreeNode categoryRemoved = new DefaultMutableTreeNode(new TreeNodeEntity(TreeNodeTypeEnum.REMOVED_ROOT, "Removed"));
 		DefaultMutableTreeNode item;
 
+		Integer categoryConfigurationValue = 0;
 		Integer categoryCannotRecognizeValue = 0;
 		Integer categoryNotImplementedValue = 0;
 		Integer categoryNotImplementedRequestValue = 0;
 		Integer categoryNotImplementedEntityValue = 0;
-		Integer categoryNotImplementedParserValue = 0;
 		Integer categoryModifiedValue = 0;
 		Integer categoryRemovedValue = 0;
 
@@ -372,6 +406,9 @@ public class ABMToolWindowMain extends JFrame
 			item = new DefaultMutableTreeNode(entity);
 			switch(entity.getTreeNodeType())
 			{
+				case CONFIGURATION:
+					categoryConfiguration.add(item);
+					categoryConfigurationValue++;
 				case CANNOT_RECOGNIZE:
 					categoryCannotRecognize.add(item);
 					categoryCannotRecognizeValue++;
@@ -384,11 +421,6 @@ public class ABMToolWindowMain extends JFrame
 				case NOT_IMPLEMENTED_ENTITY:
 					categoryNotImplementedEntity.add(item);
 					categoryNotImplementedEntityValue++;
-					categoryNotImplementedValue++;
-					break;
-				case NOT_IMPLEMENTED_PARSER:
-					categoryNotImplementedParser.add(item);
-					categoryNotImplementedParserValue++;
 					categoryNotImplementedValue++;
 					break;
 				case MODIFIED:
@@ -406,7 +438,6 @@ public class ABMToolWindowMain extends JFrame
 		((TreeNodeEntity) categoryNotImplemented.getUserObject()).setValue(categoryNotImplementedValue);
 		((TreeNodeEntity) categoryNotImplementedRequest.getUserObject()).setValue(categoryNotImplementedRequestValue);
 		((TreeNodeEntity) categoryNotImplementedEntity.getUserObject()).setValue(categoryNotImplementedEntityValue);
-		((TreeNodeEntity) categoryNotImplementedParser.getUserObject()).setValue(categoryNotImplementedParserValue);
 		((TreeNodeEntity) categoryModified.getUserObject()).setValue(categoryModifiedValue);
 		((TreeNodeEntity) categoryRemoved.getUserObject()).setValue(categoryRemovedValue);
 
@@ -415,7 +446,6 @@ public class ABMToolWindowMain extends JFrame
 		{
 			if(categoryNotImplementedRequestValue!=0) categoryNotImplemented.add(categoryNotImplementedRequest);
 			if(categoryNotImplementedEntityValue!=0) categoryNotImplemented.add(categoryNotImplementedEntity);
-			if(categoryNotImplementedParserValue!=0) categoryNotImplemented.add(categoryNotImplementedParser);
 
 			root.add(categoryNotImplemented);
 		}
@@ -428,7 +458,7 @@ public class ABMToolWindowMain extends JFrame
 			final BufferedImage tmpImageCross = ImageIO.read(JBackgroundPanel.class.getClassLoader().getResourceAsStream("drawable/img_cross.png"));
 			final BufferedImage tmpImageExclamation = ImageIO.read(JBackgroundPanel.class.getClassLoader().getResourceAsStream("drawable/img_exclamation_mark.png"));
 			final BufferedImage tmpImageCheck = ImageIO.read(JBackgroundPanel.class.getClassLoader().getResourceAsStream("drawable/img_check.png"));
-			if(categoryCannotRecognizeValue>0) SwingUtilities.invokeLater(new Runnable()
+			if(categoryCannotRecognizeValue>0 || categoryConfigurationValue>0) SwingUtilities.invokeLater(new Runnable()
 			{
 				public void run()
 				{

@@ -11,6 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class ConfigRootEntity
 {
 	String mName;
+	ConfigConfigurationEntity mConfigurationEntity;
 	List<ConfigClassInfoEntity> mClassInfoList = new ArrayList<ConfigClassInfoEntity>();
 
 
@@ -30,6 +31,19 @@ public class ConfigRootEntity
 	public List<ConfigClassInfoEntity> getClassInfoList()
 	{
 		return mClassInfoList;
+	}
+
+
+	@XmlElement
+	public void setConfigurationEntity(ConfigConfigurationEntity mConfigurationEntity)
+	{
+		this.mConfigurationEntity = mConfigurationEntity;
+	}
+
+
+	public ConfigConfigurationEntity getConfigurationEntity()
+	{
+		return mConfigurationEntity;
 	}
 
 

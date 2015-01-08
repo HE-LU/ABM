@@ -36,6 +36,11 @@ public class ABMTreeCellRenderer extends JLabel implements TreeCellRenderer
 
 		switch(entity.getTreeNodeType())
 		{
+			case CONFIGURATION_ROOT:
+				setFont(new Font("Arial", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM_LARGE)));
+				setForeground(Color.decode(colors.getString("text_red_dark")));
+				setText(entity.getName());
+				break;
 			case CANNOT_RECOGNIZE_ROOT:
 				setFont(new Font("Arial", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM_LARGE)));
 				setForeground(Color.decode(colors.getString("text_red_dark")));
@@ -56,11 +61,6 @@ public class ABMTreeCellRenderer extends JLabel implements TreeCellRenderer
 				setForeground(Color.decode(colors.getString("text_orange_medium")));
 				setText(entity.getName() + " (" + entity.getValue() + ")");
 				break;
-			case NOT_IMPLEMENTED_PARSER_ROOT:
-				setFont(new Font("Arial", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM)));
-				setForeground(Color.decode(colors.getString("text_orange_medium")));
-				setText(entity.getName() + " (" + entity.getValue() + ")");
-				break;
 			case MODIFIED_ROOT:
 				setFont(new Font("Arial", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM_LARGE)));
 				setForeground(Color.decode(colors.getString("text_orange_dark")));
@@ -73,6 +73,11 @@ public class ABMTreeCellRenderer extends JLabel implements TreeCellRenderer
 				break;
 
 
+			case CONFIGURATION:
+				setFont(new Font("Arial", Font.BOLD, Utils.fontSize(Utils.FONT_SMALL)));
+				setForeground(Color.decode(colors.getString("text_red_light")));
+				setText("URI: " + entity.getUri() + ", Method: " + entity.getMethod());
+				break;
 			case CANNOT_RECOGNIZE:
 				setFont(new Font("Arial", Font.BOLD, Utils.fontSize(Utils.FONT_SMALL)));
 				setForeground(Color.decode(colors.getString("text_red_light")));
@@ -87,11 +92,6 @@ public class ABMTreeCellRenderer extends JLabel implements TreeCellRenderer
 				setFont(new Font("Arial", Font.BOLD, Utils.fontSize(Utils.FONT_SMALL)));
 				setForeground(Color.decode(colors.getString("text_orange_light")));
 				setText("File: " + entity.getName() + ".java, Method: " + entity.getMethod() + ", URI: " + entity.getUri());
-				break;
-			case NOT_IMPLEMENTED_PARSER:
-				setFont(new Font("Arial", Font.BOLD, Utils.fontSize(Utils.FONT_SMALL)));
-				setForeground(Color.decode(colors.getString("text_orange_light")));
-				setText("File: " + entity.getName() + ".java, Method: " + entity.getMethod() + ", URI: " + entity.getUri() + ", CODE: " + entity.getResponseCode());
 				break;
 			case MODIFIED:
 				setFont(new Font("Arial", Font.BOLD, Utils.fontSize(Utils.FONT_SMALL)));
