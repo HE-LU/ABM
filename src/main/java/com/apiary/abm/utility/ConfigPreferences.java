@@ -3,6 +3,7 @@ package com.apiary.abm.utility;
 
 import com.apiary.abm.entity.TreeNodeEntity;
 import com.apiary.abm.entity.config.ConfigClassInfoEntity;
+import com.apiary.abm.entity.config.ConfigConfigurationEntity;
 import com.apiary.abm.entity.config.ConfigRootEntity;
 import com.apiary.abm.ui.ABMToolWindow;
 import com.intellij.openapi.project.Project;
@@ -88,6 +89,21 @@ public class ConfigPreferences
 		mConfig.addClassInfoItem(classInfoEntity);
 
 		saveConfig();
+	}
+
+
+	public void saveConfigurationEntity(ConfigConfigurationEntity entity)
+	{
+		mConfig.setConfigurationEntity(entity);
+
+		saveConfig();
+	}
+
+
+	public ConfigConfigurationEntity getConfigurationEntity()
+	{
+		if(mConfig.getConfigurationEntity()!=null) return mConfig.getConfigurationEntity();
+		else return new ConfigConfigurationEntity();
 	}
 
 

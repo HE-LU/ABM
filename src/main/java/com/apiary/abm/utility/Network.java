@@ -56,7 +56,7 @@ public class Network
 
 			try
 			{
-				prefs.setBlueprintJsonTmpFileLocation(Utils.saveStringToTmpFile("blueprint", json));
+				prefs.setBlueprintJsonTmpFileLocation(Utils.saveStringToTmpFile("blueprint_json", json));
 			}
 			catch(IOException e)
 			{
@@ -89,7 +89,7 @@ public class Network
 			Preferences prefs = new Preferences();
 			try
 			{
-				prefs.setBlueprintJsonTmpFileLocation(Utils.saveStringToTmpFile("blueprint", request.getBody()));
+				prefs.setBlueprintJsonTmpFileLocation(Utils.saveStringToTmpFile("blueprint_json", request.getBody()));
 			}
 			catch(IOException e)
 			{

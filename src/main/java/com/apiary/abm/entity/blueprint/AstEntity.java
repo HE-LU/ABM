@@ -13,8 +13,8 @@ public class AstEntity
 	//	@SerializedName("description")
 	//	private String mDescription;
 
-	//	@SerializedName("metadata")
-	//	private ArrayList<MetadataEntity> mMetadata;
+	@SerializedName("metadata")
+	private ArrayList<MetadataEntity> mMetadata;
 
 	//	@SerializedName("name")
 	//	private String mName;
@@ -35,10 +35,10 @@ public class AstEntity
 	//	}
 
 
-	//	public ArrayList<MetadataEntity> getMetadata()
-	//	{
-	//		return this.mMetadata;
-	//	}
+	public ArrayList<MetadataEntity> getMetadata()
+	{
+		return this.mMetadata;
+	}
 
 
 	//	public String getName()

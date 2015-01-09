@@ -24,8 +24,8 @@ import javax.imageio.ImageIO;
 
 public class Utils
 {
-	final public static int FONT_SMALL = 13;
-	final public static int FONT_MEDIUM = 16;
+	final public static int FONT_SMALL = 12;
+	final public static int FONT_MEDIUM = 15;
 	final public static int FONT_MEDIUM_LARGE = 20;
 	final public static int FONT_LARGE = 24;
 	final public static int FONT_XLARGE = 30;

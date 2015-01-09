@@ -14,23 +14,11 @@ import com.apiary.abm.utility.Preferences;
 import com.apiary.abm.utility.Utils;
 import com.apiary.abm.view.ImageButton;
 import com.apiary.abm.view.JBackgroundPanel;
-import com.intellij.ide.projectView.ViewSettings;
-import com.intellij.ide.projectView.impl.nodes.PackageUtil;
-import com.intellij.ide.projectView.impl.nodes.ProjectViewDirectoryHelper;
-import com.intellij.ide.util.treeView.AbstractTreeNode;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ProjectRootManager;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.psi.JavaDirectoryService;
-import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.PsiPackage;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import com.intellij.ui.treeStructure.Tree;
-import com.intellij.util.containers.ContainerUtil;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -42,10 +30,8 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -487,107 +473,4 @@ public class ABMToolWindowMain extends JFrame
 
 		return root;
 	}
-
-
-	// CODE ANALYZE
-	public class ProjectViewSettings implements ViewSettings
-	{
-		@Override
-		public boolean isShowMembers()
-		{
-			return false;
-		}
-
-
-		@Override
-		public boolean isStructureView()
-		{
-			return false;
-		}
-
-
-		@Override
-		public boolean isShowModules()
-		{
-			return false;
-		}
-
-
-		@Override
-		public boolean isFlattenPackages()
-		{
-			return false;
-		}
-
-
-		@Override
-		public boolean isAbbreviatePackageNames()
-		{
-			return false;
-		}
-
-
-		@Override
-		public boolean isHideEmptyMiddlePackages()
-		{
-			return false;
-		}
-
-
-		@Override
-		public boolean isShowLibraryContents()
-		{
-			return false;
-		}
-	}
-
-
-	private List<PsiPackage> getPackages()
-	{
-		Project myProject = ABMToolWindow.getProject();
-
-		ProjectViewSettings viewSettings = new ProjectViewSettings();
-
-		final List<VirtualFile> sourceRoots = new ArrayList<VirtualFile>();
-		final ProjectRootManager projectRootManager = ProjectRootManager.getInstance(myProject);
-		ContainerUtil.addAll(sourceRoots, projectRootManager.getContentSourceRoots());
-
-		final PsiManager psiManager = PsiManager.getInstance(myProject);
-		final List<AbstractTreeNode> children = new ArrayList<AbstractTreeNode>();
-		final Set<PsiPackage> topLevelPackages = new HashSet<PsiPackage>();
-
-		for(final VirtualFile root : sourceRoots)
-		{
-			final PsiDirectory directory = psiManager.findDirectory(root);
-			if(directory==null)
-			{
-				continue;
-			}
-			final PsiPackage directoryPackage = JavaDirectoryService.getInstance().getPackage(directory);
-			if(directoryPackage==null || PackageUtil.isPackageDefault(directoryPackage))
-			{
-				// add subpackages
-				final PsiDirectory[] subdirectories = directory.getSubdirectories();
-				for(PsiDirectory subdirectory : subdirectories)
-				{
-					final PsiPackage aPackage = JavaDirectoryService.getInstance().getPackage(subdirectory);
-					if(aPackage!=null && !PackageUtil.isPackageDefault(aPackage))
-					{
-						topLevelPackages.add(aPackage);
-					}
-				}
-				// add non-dir items
-				children.addAll(ProjectViewDirectoryHelper.getInstance(myProject).getDirectoryChildren(directory, viewSettings, false));
-			}
-			else
-			{
-				// this is the case when a source root has package prefix assigned
-				topLevelPackages.add(directoryPackage);
-			}
-		}
-
-		return new ArrayList<PsiPackage>(topLevelPackages);
-	}
-
-
 }

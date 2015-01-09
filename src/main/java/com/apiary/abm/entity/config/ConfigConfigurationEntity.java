@@ -8,10 +8,20 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class ConfigConfigurationEntity
 {
 	String mHost;
-	String mApiPackage;
-	String mInterfaceFile;
+	String mModule;
+	String mInterfaceClass;
 	String mEntityPackage;
-	String mApiManagerFile;
+	String mManagerClass;
+
+
+	public ConfigConfigurationEntity()
+	{
+		mHost = "";
+		mModule = "";
+		mInterfaceClass = "APIRequest";
+		mEntityPackage = "com.example.app.api.entity";
+		mManagerClass = "APIManager";
+	}
 
 
 	public String getHost()
@@ -27,29 +37,29 @@ public class ConfigConfigurationEntity
 	}
 
 
-	public String getApiPackage()
+	public String getModule()
 	{
-		return mApiPackage;
+		return mModule;
 	}
 
 
 	@XmlElement
-	public void setApiPackage(String mApiPackage)
+	public void setModule(String mApiModule)
 	{
-		this.mApiPackage = mApiPackage;
+		this.mModule = mApiModule;
 	}
 
 
-	public String getInterfaceFile()
+	public String getInterfaceClass()
 	{
-		return mInterfaceFile;
+		return mInterfaceClass;
 	}
 
 
 	@XmlElement
-	public void setInterfaceFile(String mInterfaceFile)
+	public void setInterfaceClass(String mInterfaceFile)
 	{
-		this.mInterfaceFile = mInterfaceFile;
+		this.mInterfaceClass = mInterfaceFile;
 	}
 
 
@@ -66,15 +76,15 @@ public class ConfigConfigurationEntity
 	}
 
 
-	public String getApiManagerFile()
+	public String getManagerClass()
 	{
-		return mApiManagerFile;
+		return mManagerClass;
 	}
 
 
 	@XmlElement
-	public void setApiManagerFile(String mApiManagerFile)
+	public void setManagerClass(String mApiManagerFile)
 	{
-		this.mApiManagerFile = mApiManagerFile;
+		this.mManagerClass = mApiManagerFile;
 	}
 }
