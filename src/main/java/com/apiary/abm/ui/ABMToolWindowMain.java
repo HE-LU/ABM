@@ -11,10 +11,13 @@ import com.apiary.abm.renderer.ABMTreeCellRenderer;
 import com.apiary.abm.utility.ConfigPreferences;
 import com.apiary.abm.utility.Network;
 import com.apiary.abm.utility.Preferences;
+import com.apiary.abm.utility.ProjectManager;
 import com.apiary.abm.utility.Utils;
 import com.apiary.abm.view.ImageButton;
 import com.apiary.abm.view.JBackgroundPanel;
 import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiPackage;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
@@ -161,53 +164,57 @@ public class ABMToolWindowMain extends JFrame
 					public void run()
 					{
 						ABMEntity object;
-						List<TreeNodeEntity> treeNodeList = null;
+						Preferences prefs = new Preferences();
+						String blueprint;
+						String json = "";
 						try
 						{
-							Preferences prefs = new Preferences();
-							String blueprint = Utils.readFileAsString(Network.refreshBlueprint(), Charset.forName("UTF-8"));
-							String json;
-							if(blueprint.equals("")) json = prefs.getBlueprintTmpFileLocation();
+							blueprint = Utils.readFileAsString(Network.refreshBlueprint(), Charset.forName("UTF-8"));
+
+							if(blueprint.equals(""))
+								json = Utils.readFileAsString(prefs.getBlueprintTmpFileLocation(), Charset.forName("UTF-8"));
 							else json = Network.requestJSONFromBlueprint(blueprint);
-							object = Utils.parseJsonBlueprint(json);
-							if(object.getError()==null) treeNodeList = analyzeBlueprint(object);
-							treeNodeList = analyzeTreeNodeList(treeNodeList);
 						}
 						catch(IOException e)
 						{
 							e.printStackTrace();
 						}
-
-						final JTree tree = new Tree(initTreeStructure(treeNodeList));
-						tree.setRootVisible(false);
-						tree.setOpaque(false);
-						tree.setCellRenderer(new ABMTreeCellRenderer());
-						tree.addMouseListener(new MouseAdapter()
+						object = Utils.parseJsonBlueprint(json);
+						if(object.getError()==null)
 						{
-							public void mousePressed(MouseEvent e)
+							final List<TreeNodeEntity> treeNodeList = analyzeBlueprint(object);
+
+							SwingUtilities.invokeLater(new Runnable()
 							{
-								int row = tree.getRowForLocation(e.getX(), e.getY());
-								TreePath path = tree.getPathForLocation(e.getX(), e.getY());
-								if(row!=-1 && e.getClickCount()==2)
-									onTreeNodeDoubleClick((TreeNodeEntity) ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject());
-							}
-						});
+								public void run()
+								{
+									final JTree tree = new Tree(initTreeStructure(analyzeTreeNodeList(treeNodeList)));
+									tree.setRootVisible(false);
+									tree.setOpaque(false);
+									tree.setCellRenderer(new ABMTreeCellRenderer());
+									tree.addMouseListener(new MouseAdapter()
+									{
+										public void mousePressed(MouseEvent e)
+										{
+											int row = tree.getRowForLocation(e.getX(), e.getY());
+											TreePath path = tree.getPathForLocation(e.getX(), e.getY());
+											if(row!=-1 && e.getClickCount()==2)
+												onTreeNodeDoubleClick((TreeNodeEntity) ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject());
+										}
+									});
 
-						SwingUtilities.invokeLater(new Runnable()
-						{
-							public void run()
-							{
-								middleTreePanel.removeAll();
-								middleTreePanel.add(tree);
-								middleTreePanel.validate();
-								middleTreePanel.repaint();
+									middleTreePanel.removeAll();
+									middleTreePanel.add(tree);
+									middleTreePanel.validate();
+									middleTreePanel.repaint();
 
-								button.setImage("drawable/img_button_refresh.png");
-								button.setSize(Utils.reDimension(70), Utils.reDimension(70));
+									button.setImage("drawable/img_button_refresh.png");
+									button.setSize(Utils.reDimension(70), Utils.reDimension(70));
 
-								progress = false;
-							}
-						});
+									progress = false;
+								}
+							});
+						}
 					}
 				});
 				t.start();
@@ -281,13 +288,6 @@ public class ABMToolWindowMain extends JFrame
 					onTreeNodeDoubleClick((TreeNodeEntity) ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject());
 			}
 		});
-
-		// todo remove
-		//		List<PsiPackage> packList = getPackages();
-		//		for(PsiPackage pack : packList)
-		//		{
-		//			Log.d("Package: " + pack.getSubPackages()[0].getSubPackages()[0].getName());
-		//		}
 	}
 
 
@@ -344,12 +344,49 @@ public class ABMToolWindowMain extends JFrame
 
 	private List<TreeNodeEntity> analyzeTreeNodeList(List<TreeNodeEntity> list)
 	{
-		ConfigPreferences cp = new ConfigPreferences();
+		ConfigPreferences configPreferences = new ConfigPreferences();
+
+
+		ProjectManager projectManager = new ProjectManager();
+		PsiPackage entityPackage = projectManager.getPackage(configPreferences.getConfigurationEntity().getEntityPackage());
+		List<PsiClass> interfaceClass = projectManager.getClasses(configPreferences.getConfigurationEntity().getModule(), configPreferences.getConfigurationEntity().getInterfaceClass());
+		List<PsiClass> managerClass = projectManager.getClasses(configPreferences.getConfigurationEntity().getModule(), configPreferences.getConfigurationEntity().getManagerClass());
+
+		if(!(entityPackage!=null && interfaceClass!=null && interfaceClass.size()>0 && managerClass!=null && managerClass.size()>0))
+		{
+			list.clear();
+
+			if(entityPackage==null)
+			{
+				TreeNodeEntity entity = new TreeNodeEntity();
+				entity.setName("Entity package is not configured properly");
+				entity.setTreeNodeType(TreeNodeTypeEnum.CONFIGURATION);
+				list.add(entity);
+			}
+
+			if(!(interfaceClass!=null && interfaceClass.size()>0))
+			{
+				TreeNodeEntity entity = new TreeNodeEntity();
+				entity.setName("Interface class is not configured properly");
+				entity.setTreeNodeType(TreeNodeTypeEnum.CONFIGURATION);
+				list.add(entity);
+			}
+
+			if(!(managerClass!=null && managerClass.size()>0))
+			{
+				TreeNodeEntity entity = new TreeNodeEntity();
+				entity.setName("Manager class is not configured properly");
+				entity.setTreeNodeType(TreeNodeTypeEnum.CONFIGURATION);
+				list.add(entity);
+			}
+			return list;
+		}
+
 
 		// TODO check status of each entity
 		for(TreeNodeEntity entity : list)
 		{
-			if(entity.getName().equals("")) entity = cp.tryToFillTreeNodeEntity(entity);
+			if(entity.getName().equals("")) entity = configPreferences.tryToFillTreeNodeEntity(entity);
 			if(entity.getName().equals("")) entity.setTreeNodeType(TreeNodeTypeEnum.CANNOT_RECOGNIZE);
 			else if(entity.getNodeType()==NodeTypeEnum.REQUEST) entity.setTreeNodeType(TreeNodeTypeEnum.NOT_IMPLEMENTED_REQUEST);
 			else if(entity.getNodeType()==NodeTypeEnum.RESPONSE) entity.setTreeNodeType(TreeNodeTypeEnum.NOT_IMPLEMENTED_ENTITY);
@@ -395,6 +432,7 @@ public class ABMToolWindowMain extends JFrame
 				case CONFIGURATION:
 					categoryConfiguration.add(item);
 					categoryConfigurationValue++;
+					break;
 				case CANNOT_RECOGNIZE:
 					categoryCannotRecognize.add(item);
 					categoryCannotRecognizeValue++;
@@ -427,6 +465,7 @@ public class ABMToolWindowMain extends JFrame
 		((TreeNodeEntity) categoryModified.getUserObject()).setValue(categoryModifiedValue);
 		((TreeNodeEntity) categoryRemoved.getUserObject()).setValue(categoryRemovedValue);
 
+		if(categoryConfigurationValue!=0) root.add(categoryConfiguration);
 		if(categoryCannotRecognizeValue!=0) root.add(categoryCannotRecognize);
 		if(categoryNotImplementedValue!=0)
 		{

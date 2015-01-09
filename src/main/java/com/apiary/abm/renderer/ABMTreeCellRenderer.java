@@ -76,7 +76,7 @@ public class ABMTreeCellRenderer extends JLabel implements TreeCellRenderer
 			case CONFIGURATION:
 				setFont(new Font("Arial", Font.BOLD, Utils.fontSize(Utils.FONT_SMALL)));
 				setForeground(Color.decode(colors.getString("text_red_light")));
-				setText("URI: " + entity.getUri() + ", Method: " + entity.getMethod());
+				setText(entity.getName());
 				break;
 			case CANNOT_RECOGNIZE:
 				setFont(new Font("Arial", Font.BOLD, Utils.fontSize(Utils.FONT_SMALL)));

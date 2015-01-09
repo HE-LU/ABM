@@ -18,9 +18,9 @@ public enum TreeNodeTypeEnum
 	//		removed_root
 	//			removed
 
-	ROOT("root"), CONFIGURATION_ROOT("cannot_recognize_root"), CANNOT_RECOGNIZE_ROOT("cannot_recognize_root"),
+	ROOT("root"), CANNOT_RECOGNIZE_ROOT("cannot_recognize_root"), CONFIGURATION_ROOT("configuration_root"),
 	NOT_IMPLEMENTED_ROOT("not_implemented_root"), MODIFIED_ROOT("modified_root"), REMOVED_ROOT("removed_root"),
-	CONFIGURATION("cannot_recognize"), CANNOT_RECOGNIZE("cannot_recognize"), NOT_IMPLEMENTED_REQUEST_ROOT("not_implemented_request_root"),
+	CANNOT_RECOGNIZE("cannot_recognize"), CONFIGURATION("configuration"), NOT_IMPLEMENTED_REQUEST_ROOT("not_implemented_request_root"),
 	NOT_IMPLEMENTED_ENTITY_ROOT("not_implemented_entity_root"), NOT_IMPLEMENTED_REQUEST("not_implemented_request"),
 	NOT_IMPLEMENTED_ENTITY("not_implemented_entity"), MODIFIED("modified"), REMOVED("removed");
 
