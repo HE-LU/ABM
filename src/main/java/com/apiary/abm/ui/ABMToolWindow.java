@@ -1,5 +1,6 @@
 package com.apiary.abm.ui;
 
+import com.apiary.abm.utility.ConfigPreferences;
 import com.apiary.abm.utility.Preferences;
 import com.apiary.abm.utility.Utils;
 import com.intellij.openapi.project.Project;
@@ -13,8 +14,6 @@ import javax.swing.JFrame;
 
 public class ABMToolWindow extends JFrame implements ToolWindowFactory
 {
-	private final boolean DEBUG_FIRST_RUN = false;
-
 	private static Project sProject;
 
 
@@ -29,7 +28,8 @@ public class ABMToolWindow extends JFrame implements ToolWindowFactory
 		sProject = project;
 
 		Preferences preferences = new Preferences();
-		if(preferences.getPluginInitialized() && !DEBUG_FIRST_RUN)
+		//		if(preferences.getPluginInitialized())
+		if(ConfigPreferences.configExist())
 		{
 			if(Utils.isGradleWithRetrofit()) new ABMToolWindowMain(toolWindow);
 			else new ABMToolWindowConnectGradle(toolWindow);

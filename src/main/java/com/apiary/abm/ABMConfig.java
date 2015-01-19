@@ -67,7 +67,7 @@ public interface MockAPI
 	void getNote(Callback<NoteEntity> getNoteCallback);
 
 	@GET("/noteSecond")
-	void getNoteSecond(Callback<NoteEntity> getNoteCallback);
+	void getNoteSecond(Callback<NoteSecondEntity> getNoteSecondCallback);
 }
 
 

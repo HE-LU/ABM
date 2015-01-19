@@ -126,6 +126,14 @@ public class ABMToolWindowCannotRecognize extends JFrame
 		identificationPanel.add(methodText);
 
 
+		String text = mEntity.getUri();
+		if(text.charAt(0)=='/') text = text.replaceFirst("/", "");
+
+		if(text.length()==1) text = text.toUpperCase();
+		else if(text.length()>1) text = text.substring(0, 1).toUpperCase() + text.substring(1, text.length());
+
+		text = mEntity.getMethod().toLowerCase() + text;
+
 		// Panel fill info
 		final JBackgroundPanel fillInfoPanel = new JBackgroundPanel("drawable/img_background_panel.9.png", JBackgroundPanel.JBackgroundPanelType.NINE_PATCH);
 		fillInfoPanel.setLayout(new MigLayout("insets " + Utils.reDimension(12) + " " + Utils.reDimension(12) + " " + Utils.reDimension(18) + " " + Utils.reDimension(19) + ", flowx, fillx, filly", "[fill, grow][fill, grow]", "[]"));
@@ -144,10 +152,11 @@ public class ABMToolWindowCannotRecognize extends JFrame
 		final JTextField textFieldFillName = new JTextField();
 		textFieldFillName.setMaximumSize(new Dimension(Utils.reDimension(170), Integer.MAX_VALUE));
 		textFieldFillName.setMinimumSize(new Dimension(Utils.reDimension(170), 0));
+		textFieldFillName.setText(text);
 		fillInfoPanel.add(textFieldFillName, "wrap");
 
 		// Label example name
-		final JLabel exampleNameText = new JLabel("<html><center>" + textFieldFillName.getText() + "<a style=\"color: red\">Request.java</a><br />" + textFieldFillName.getText() + "<a style=\"color: red\">Parser.java</a><br />" + textFieldFillName.getText() + "<a style=\"color: red\">Entity.java</a></center></html>");
+		final JLabel exampleNameText = new JLabel("<html><center>Example: void <a style=\"color: red\">" + text + "</a>(...);</center></html>");
 		exampleNameText.setForeground(Color.WHITE);
 		exampleNameText.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM)));
 		exampleNameText.setHorizontalAlignment(SwingConstants.CENTER);
@@ -223,7 +232,7 @@ public class ABMToolWindowCannotRecognize extends JFrame
 					{
 						boolean error = false;
 
-						String text = textFieldFillName.getText();
+						String text = textFieldFillName.getText().substring(0, 1).toUpperCase() + textFieldFillName.getText().substring(1, textFieldFillName.getText().length());
 						if(text.length()!=text.replaceAll("[^A-Za-z]", "").length()) error = true;
 						else
 						{
@@ -311,7 +320,12 @@ public class ABMToolWindowCannotRecognize extends JFrame
 
 			public void update()
 			{
-				exampleNameText.setText("<html><center>" + textFieldFillName.getText() + "<a style=\"color: red\">Request.java</a><br />" + textFieldFillName.getText() + "<a style=\"color: red\">Parser.java</a><br />" + textFieldFillName.getText() + "<a style=\"color: red\">Entity.java</a></center></html>");
+				String text = "";
+
+				if(textFieldFillName.getText().length()==1) text = textFieldFillName.getText().toUpperCase();
+				else if(textFieldFillName.getText().length()>1)
+					text = textFieldFillName.getText().substring(0, 1).toUpperCase() + textFieldFillName.getText().substring(1, textFieldFillName.getText().length());
+				exampleNameText.setText("<html><center>Example: void <a style=\"color: red\">" + text + "</a>(...);</center></html>");
 			}
 		});
 	}
