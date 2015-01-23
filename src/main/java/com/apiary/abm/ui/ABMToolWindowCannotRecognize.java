@@ -1,6 +1,7 @@
 package com.apiary.abm.ui;
 
 import com.apiary.abm.entity.TreeNodeEntity;
+import com.apiary.abm.entity.blueprint.ParametersEntity;
 import com.apiary.abm.utility.ConfigPreferences;
 import com.apiary.abm.utility.Utils;
 import com.apiary.abm.view.ImageButton;
@@ -25,6 +26,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -106,7 +108,7 @@ public class ABMToolWindowCannotRecognize extends JFrame
 
 		// Panel identification
 		final JBackgroundPanel identificationPanel = new JBackgroundPanel("drawable/img_background_panel.9.png", JBackgroundPanel.JBackgroundPanelType.NINE_PATCH);
-		identificationPanel.setLayout(new MigLayout("insets " + Utils.reDimension(12) + " " + Utils.reDimension(12) + " " + Utils.reDimension(18) + " " + Utils.reDimension(19) + ", flowx, fillx, filly", "[fill, grow]" + Utils.reDimension(50) + "[fill, grow]", "[]"));
+		identificationPanel.setLayout(new MigLayout("insets " + Utils.reDimension(12) + " " + Utils.reDimension(12) + " " + Utils.reDimension(18) + " " + Utils.reDimension(19) + ", flowy, fillx, filly", "[fill, grow][fill, grow]", "[]"));
 		identificationPanel.setOpaque(false);
 		identificationPanel.setMaximumSize(new Dimension(Utils.reDimension(600), Integer.MAX_VALUE));
 		middlePanel.add(identificationPanel);
@@ -126,13 +128,95 @@ public class ABMToolWindowCannotRecognize extends JFrame
 		identificationPanel.add(methodText);
 
 
-		String text = mEntity.getUri();
-		if(text.charAt(0)=='/') text = text.replaceFirst("/", "");
+		if(mEntity.getParameters()!=null && mEntity.getParameters().size()>0)
+		{
+			// Panel parameters
+			final JBackgroundPanel parametersPanel = new JBackgroundPanel("drawable/img_background_panel.9.png", JBackgroundPanel.JBackgroundPanelType.NINE_PATCH);
+			parametersPanel.setLayout(new MigLayout("insets " + Utils.reDimension(12) + " " + Utils.reDimension(12) + " " + Utils.reDimension(18) + " " + Utils.reDimension(19) + ", flowx, fillx, filly", "[fill, grow]", "[][]"));
+			parametersPanel.setOpaque(false);
+			parametersPanel.setMaximumSize(new Dimension(Utils.reDimension(600), Integer.MAX_VALUE));
+			middlePanel.add(parametersPanel);
 
-		if(text.length()==1) text = text.toUpperCase();
-		else if(text.length()>1) text = text.substring(0, 1).toUpperCase() + text.substring(1, text.length());
+			// Label parameters header
+			final JLabel parametersHeaderText = new JLabel("<html><center>" + messages.getString("cannot_recognize_message_parameters") + "</center></html>");
+			parametersHeaderText.setForeground(Color.WHITE);
+			parametersHeaderText.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM)));
+			parametersHeaderText.setHorizontalAlignment(SwingConstants.CENTER);
+			parametersPanel.add(parametersHeaderText, "span");
 
-		text = mEntity.getMethod().toLowerCase() + text;
+			for(ParametersEntity entity : mEntity.getParameters())
+			{
+				final JLabel parametersTypeText = new JLabel("<html><center>" + entity.getType() + "</center></html>");
+				parametersTypeText.setForeground(Color.WHITE);
+				parametersTypeText.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM)));
+				parametersTypeText.setHorizontalAlignment(SwingConstants.CENTER);
+				parametersPanel.add(parametersTypeText);
+
+				final JLabel parametersNameText = new JLabel("<html><center>" + entity.getName() + "</center></html>");
+				parametersNameText.setForeground(Color.WHITE);
+				parametersNameText.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM)));
+				parametersNameText.setHorizontalAlignment(SwingConstants.CENTER);
+				parametersPanel.add(parametersNameText, "wrap");
+			}
+		}
+
+		if(!mEntity.getRequestBody().equals(""))
+		{
+			// Panel request
+			final JBackgroundPanel requestPanel = new JBackgroundPanel("drawable/img_background_panel.9.png", JBackgroundPanel.JBackgroundPanelType.NINE_PATCH);
+			requestPanel.setLayout(new MigLayout("insets " + Utils.reDimension(12) + " " + Utils.reDimension(12) + " " + Utils.reDimension(18) + " " + Utils.reDimension(19) + ", flowy, fillx, filly", "[fill, grow]", "[][]"));
+			requestPanel.setOpaque(false);
+			requestPanel.setMaximumSize(new Dimension(Utils.reDimension(600), Integer.MAX_VALUE));
+			middlePanel.add(requestPanel);
+
+			// Label request header
+			final JLabel requestHeaderText = new JLabel("<html><center>" + messages.getString("cannot_recognize_message_request") + "</center></html>");
+			requestHeaderText.setForeground(Color.WHITE);
+			requestHeaderText.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM)));
+			requestHeaderText.setHorizontalAlignment(SwingConstants.CENTER);
+			requestPanel.add(requestHeaderText);
+
+			String tmpText = mEntity.getRequestBody();
+			tmpText = tmpText.substring(0, tmpText.length() - 1);
+
+			// TextArea response
+			final JTextArea requestBodyText = new JTextArea(tmpText);
+			requestBodyText.setForeground(Color.WHITE);
+			requestBodyText.setFont(new Font("Ariel", Font.PLAIN, Utils.fontSize(Utils.FONT_SMALL)));
+			requestBodyText.setOpaque(false);
+			requestBodyText.setEditable(false);
+			requestPanel.add(requestBodyText);
+		}
+
+
+		if(!mEntity.getResponseBody().equals(""))
+		{
+			// Panel response
+			final JBackgroundPanel responsePanel = new JBackgroundPanel("drawable/img_background_panel.9.png", JBackgroundPanel.JBackgroundPanelType.NINE_PATCH);
+			responsePanel.setLayout(new MigLayout("insets " + Utils.reDimension(12) + " " + Utils.reDimension(12) + " " + Utils.reDimension(18) + " " + Utils.reDimension(19) + ", flowy, fillx, filly", "[fill, grow]", "[][]"));
+			responsePanel.setOpaque(false);
+			responsePanel.setMaximumSize(new Dimension(Utils.reDimension(600), Integer.MAX_VALUE));
+			middlePanel.add(responsePanel);
+
+			// Label response header
+			final JLabel responseHeaderText = new JLabel("<html><center>" + messages.getString("cannot_recognize_message_response") + "</center></html>");
+			responseHeaderText.setForeground(Color.WHITE);
+			responseHeaderText.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM)));
+			responseHeaderText.setHorizontalAlignment(SwingConstants.CENTER);
+			responsePanel.add(responseHeaderText);
+
+			String tmpText = mEntity.getResponseBody();
+			tmpText = tmpText.substring(0, tmpText.length() - 1);
+
+			// TextArea response
+			final JTextArea responseBodyText = new JTextArea(tmpText);
+			responseBodyText.setForeground(Color.WHITE);
+			responseBodyText.setFont(new Font("Ariel", Font.PLAIN, Utils.fontSize(Utils.FONT_SMALL)));
+			responseBodyText.setOpaque(false);
+			responseBodyText.setEditable(false);
+			responsePanel.add(responseBodyText);
+		}
+
 
 		// Panel fill info
 		final JBackgroundPanel fillInfoPanel = new JBackgroundPanel("drawable/img_background_panel.9.png", JBackgroundPanel.JBackgroundPanelType.NINE_PATCH);
@@ -152,11 +236,10 @@ public class ABMToolWindowCannotRecognize extends JFrame
 		final JTextField textFieldFillName = new JTextField();
 		textFieldFillName.setMaximumSize(new Dimension(Utils.reDimension(170), Integer.MAX_VALUE));
 		textFieldFillName.setMinimumSize(new Dimension(Utils.reDimension(170), 0));
-		textFieldFillName.setText(text);
 		fillInfoPanel.add(textFieldFillName, "wrap");
 
 		// Label example name
-		final JLabel exampleNameText = new JLabel("<html><center>Example: void <a style=\"color: red\">" + text + "</a>(...);</center></html>");
+		final JLabel exampleNameText = new JLabel("<html><center>Example: void <a style=\"color: red\"></a>(...);</center></html>");
 		exampleNameText.setForeground(Color.WHITE);
 		exampleNameText.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM)));
 		exampleNameText.setHorizontalAlignment(SwingConstants.CENTER);
@@ -168,7 +251,6 @@ public class ABMToolWindowCannotRecognize extends JFrame
 		labelError.setForeground(Color.RED);
 		labelError.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM)));
 		labelError.setHorizontalAlignment(SwingConstants.CENTER);
-		labelError.setText("<html><center>" + messages.getString("cannot_recognize_message_error") + "</html></center>");
 		labelError.setVisible(false);
 		middlePanel.add(labelError);
 
@@ -232,8 +314,17 @@ public class ABMToolWindowCannotRecognize extends JFrame
 					{
 						boolean error = false;
 
-						String text = textFieldFillName.getText().substring(0, 1).toUpperCase() + textFieldFillName.getText().substring(1, textFieldFillName.getText().length());
-						if(text.length()!=text.replaceAll("[^A-Za-z]", "").length()) error = true;
+						String text = textFieldFillName.getText();
+						if(text.length()!=text.replaceAll("[^A-Za-z]", "").length())
+						{
+							error = true;
+							labelError.setText("<html><center>" + messages.getString("cannot_recognize_message_error_empty") + "</html></center>");
+						}
+						else if(text.length()==0)
+						{
+							error = true;
+							labelError.setText("<html><center>" + messages.getString("cannot_recognize_message_error_invalid") + "</html></center>");
+						}
 						else
 						{
 							mEntity.setName(text);
@@ -320,12 +411,7 @@ public class ABMToolWindowCannotRecognize extends JFrame
 
 			public void update()
 			{
-				String text = "";
-
-				if(textFieldFillName.getText().length()==1) text = textFieldFillName.getText().toUpperCase();
-				else if(textFieldFillName.getText().length()>1)
-					text = textFieldFillName.getText().substring(0, 1).toUpperCase() + textFieldFillName.getText().substring(1, textFieldFillName.getText().length());
-				exampleNameText.setText("<html><center>Example: void <a style=\"color: red\">" + text + "</a>(...);</center></html>");
+				exampleNameText.setText("<html><center>Example: void <a style=\"color: red\">" + textFieldFillName.getText() + "</a>(...);</center></html>");
 			}
 		});
 	}

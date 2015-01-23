@@ -41,6 +41,11 @@ public class ABMTreeCellRenderer extends JLabel implements TreeCellRenderer
 				setForeground(Color.decode(colors.getString("text_red_dark")));
 				setText(entity.getName());
 				break;
+			case ERROR_ROOT:
+				setFont(new Font("Arial", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM_LARGE)));
+				setForeground(Color.decode(colors.getString("text_red_dark")));
+				setText(entity.getName() + " (" + entity.getValue() + ")");
+				break;
 			case CANNOT_RECOGNIZE_ROOT:
 				setFont(new Font("Arial", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM_LARGE)));
 				setForeground(Color.decode(colors.getString("text_red_dark")));
@@ -71,9 +76,19 @@ public class ABMTreeCellRenderer extends JLabel implements TreeCellRenderer
 				setForeground(Color.decode(colors.getString("text_green_dark")));
 				setText(entity.getName() + " (" + entity.getValue() + ")");
 				break;
+			case HIDDEN_ROOT:
+				setFont(new Font("Arial", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM_LARGE)));
+				setForeground(Color.decode(colors.getString("text_grey_dark")));
+				setText(entity.getName() + " (" + entity.getValue() + ")");
+				break;
 
 
 			case CONFIGURATION:
+				setFont(new Font("Arial", Font.BOLD, Utils.fontSize(Utils.FONT_SMALL)));
+				setForeground(Color.decode(colors.getString("text_red_light")));
+				setText(entity.getName());
+				break;
+			case ERROR:
 				setFont(new Font("Arial", Font.BOLD, Utils.fontSize(Utils.FONT_SMALL)));
 				setForeground(Color.decode(colors.getString("text_red_light")));
 				setText(entity.getName());
@@ -102,6 +117,11 @@ public class ABMTreeCellRenderer extends JLabel implements TreeCellRenderer
 				setFont(new Font("Arial", Font.BOLD, Utils.fontSize(Utils.FONT_SMALL)));
 				setForeground(Color.decode(colors.getString("text_green_light")));
 				setText("File: " + entity.getName() + ".java, Method: " + entity.getMethod() + ", URI: " + entity.getUri());
+				break;
+			case HIDDEN:
+				setFont(new Font("Arial", Font.BOLD, Utils.fontSize(Utils.FONT_SMALL)));
+				setForeground(Color.decode(colors.getString("text_grey_light")));
+				setText("Some text here!!!");
 				break;
 		}
 

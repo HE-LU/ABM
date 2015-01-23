@@ -3,7 +3,6 @@ package com.apiary.abm.entity.blueprint;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class ResourcesEntity
@@ -21,8 +20,8 @@ public class ResourcesEntity
 	@SerializedName("name")
 	private String mName;
 
-	@SerializedName("parameters")
-	private List<ParametersEntity> mParameters;
+	//	@SerializedName("parameters")
+	//	private List<ParametersEntity> mParameters;
 
 	@SerializedName("uriTemplate")
 	private String mUriTemplate;
@@ -52,10 +51,10 @@ public class ResourcesEntity
 	}
 
 
-	public List<ParametersEntity> getParameters()
-	{
-		return this.mParameters;
-	}
+	//	public List<ParametersEntity> getParameters()
+	//	{
+	//		return this.mParameters;
+	//	}
 
 
 	public String getUriTemplate()

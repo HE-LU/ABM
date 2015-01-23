@@ -18,6 +18,8 @@ public class TreeNodeEntity
 	private String mMethod; // GET, POST, DELETE ...
 	private Integer mValue; //
 	private List<ParametersEntity> mParameters;
+	private List<HeadersEntity> mRequestHeaders;
+	private String mRequestBody;
 	private String mResponseCode;
 	private List<HeadersEntity> mResponseHeaders;
 	private String mResponseBody;
@@ -47,6 +49,8 @@ public class TreeNodeEntity
 		this.mMethod = entity.getMethod();
 		this.mValue = entity.getValue();
 		this.mParameters = entity.getParameters();
+		this.mRequestHeaders = entity.getRequestHeaders();
+		this.mRequestBody = entity.getRequestBody();
 		this.mResponseCode = entity.getResponseCode();
 		this.mResponseHeaders = entity.getResponseHeaders();
 		this.mResponseBody = entity.getResponseBody();
@@ -146,6 +150,30 @@ public class TreeNodeEntity
 	public void setParameters(List<ParametersEntity> mParameters)
 	{
 		this.mParameters = mParameters;
+	}
+
+
+	public List<HeadersEntity> getRequestHeaders()
+	{
+		return mRequestHeaders;
+	}
+
+
+	public void setRequestHeaders(List<HeadersEntity> mRequestHeaders)
+	{
+		this.mRequestHeaders = mRequestHeaders;
+	}
+
+
+	public String getRequestBody()
+	{
+		return mRequestBody;
+	}
+
+
+	public void setRequestBody(String mRequestBody)
+	{
+		this.mRequestBody = mRequestBody;
 	}
 
 
