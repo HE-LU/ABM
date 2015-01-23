@@ -14,7 +14,7 @@ public class RequestEntity
 	private String mDescription;
 
 	@SerializedName("headers")
-	private List mHeaders;
+	private List<HeadersEntity> mHeaders;
 
 	@SerializedName("name")
 	private String mName;
@@ -35,7 +35,7 @@ public class RequestEntity
 	}
 
 
-	public List getHeaders()
+	public List<HeadersEntity> getHeaders()
 	{
 		return this.mHeaders;
 	}
