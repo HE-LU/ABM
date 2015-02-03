@@ -36,95 +36,69 @@ public class ABMTreeCellRenderer extends JLabel implements TreeCellRenderer
 
 		switch(entity.getTreeNodeType())
 		{
-			case CONFIGURATION_ROOT:
+			case CONFIGURATION_PROBLEM_ROOT:
 				setFont(new Font("Arial", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM_LARGE)));
 				setForeground(Color.decode(colors.getString("text_red_dark")));
-				setText(entity.getName());
+				setText(entity.getText());
 				break;
-			case ERROR_ROOT:
+			case BLUEPRINT_PROBLEM_ROOT:
 				setFont(new Font("Arial", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM_LARGE)));
 				setForeground(Color.decode(colors.getString("text_red_dark")));
-				setText(entity.getName() + " (" + entity.getValue() + ")");
-				break;
-			case CANNOT_RECOGNIZE_ROOT:
-				setFont(new Font("Arial", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM_LARGE)));
-				setForeground(Color.decode(colors.getString("text_red_dark")));
-				setText(entity.getName() + " (" + entity.getValue() + ")");
+				setText(entity.getText() + " (" + entity.getValue() + ")");
 				break;
 			case NOT_IMPLEMENTED_ROOT:
 				setFont(new Font("Arial", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM_LARGE)));
 				setForeground(Color.decode(colors.getString("text_orange_dark")));
-				setText(entity.getName() + " (" + entity.getValue() + ")");
-				break;
-			case NOT_IMPLEMENTED_REQUEST_ROOT:
-				setFont(new Font("Arial", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM)));
-				setForeground(Color.decode(colors.getString("text_orange_medium")));
-				setText(entity.getName() + " (" + entity.getValue() + ")");
-				break;
-			case NOT_IMPLEMENTED_ENTITY_ROOT:
-				setFont(new Font("Arial", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM)));
-				setForeground(Color.decode(colors.getString("text_orange_medium")));
-				setText(entity.getName() + " (" + entity.getValue() + ")");
+				setText(entity.getText() + " (" + entity.getValue() + ")");
 				break;
 			case MODIFIED_ROOT:
 				setFont(new Font("Arial", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM_LARGE)));
 				setForeground(Color.decode(colors.getString("text_orange_dark")));
-				setText(entity.getName() + " (" + entity.getValue() + ")");
+				setText(entity.getText() + " (" + entity.getValue() + ")");
 				break;
 			case REMOVED_ROOT:
 				setFont(new Font("Arial", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM_LARGE)));
 				setForeground(Color.decode(colors.getString("text_green_dark")));
-				setText(entity.getName() + " (" + entity.getValue() + ")");
+				setText(entity.getText() + " (" + entity.getValue() + ")");
 				break;
 			case HIDDEN_ROOT:
 				setFont(new Font("Arial", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM_LARGE)));
 				setForeground(Color.decode(colors.getString("text_grey_dark")));
-				setText(entity.getName() + " (" + entity.getValue() + ")");
+				setText(entity.getText() + " (" + entity.getValue() + ")");
 				break;
 
 
-			case CONFIGURATION:
+			case CONFIGURATION_PROBLEM:
 				setFont(new Font("Arial", Font.BOLD, Utils.fontSize(Utils.FONT_SMALL)));
 				setForeground(Color.decode(colors.getString("text_red_light")));
-				setText(entity.getName());
+				setText(entity.getText());
 				break;
-			case ERROR:
+			case BLUEPRINT_PROBLEM:
 				setFont(new Font("Arial", Font.BOLD, Utils.fontSize(Utils.FONT_SMALL)));
 				setForeground(Color.decode(colors.getString("text_red_light")));
-				setText(entity.getName());
+				setText(entity.getText());
 				break;
-			case CANNOT_RECOGNIZE:
-				setFont(new Font("Arial", Font.BOLD, Utils.fontSize(Utils.FONT_SMALL)));
-				setForeground(Color.decode(colors.getString("text_red_light")));
-				setText("URI: " + entity.getUri() + ", Method: " + entity.getMethod());
-				break;
-			case NOT_IMPLEMENTED_REQUEST:
+			case NOT_IMPLEMENTED:
 				setFont(new Font("Arial", Font.BOLD, Utils.fontSize(Utils.FONT_SMALL)));
 				setForeground(Color.decode(colors.getString("text_orange_light")));
-				setText("File: " + entity.getName() + ".java, Method: " + entity.getMethod() + ", URI: " + entity.getUri());
-				break;
-			case NOT_IMPLEMENTED_ENTITY:
-				setFont(new Font("Arial", Font.BOLD, Utils.fontSize(Utils.FONT_SMALL)));
-				setForeground(Color.decode(colors.getString("text_orange_light")));
-				setText("File: " + entity.getName() + ".java, Method: " + entity.getMethod() + ", URI: " + entity.getUri());
+				setText("Method: " + entity.getMethod() + "   URI: " + entity.getUri());
 				break;
 			case MODIFIED:
 				setFont(new Font("Arial", Font.BOLD, Utils.fontSize(Utils.FONT_SMALL)));
 				setForeground(Color.decode(colors.getString("text_orange_light")));
-				setText("File: " + entity.getName() + ".java, Method: " + entity.getMethod() + ", URI: " + entity.getUri());
+				setText("Method: " + entity.getMethod() + "   URI: " + entity.getUri());
 				break;
 			case REMOVED:
 				setFont(new Font("Arial", Font.BOLD, Utils.fontSize(Utils.FONT_SMALL)));
 				setForeground(Color.decode(colors.getString("text_green_light")));
-				setText("File: " + entity.getName() + ".java, Method: " + entity.getMethod() + ", URI: " + entity.getUri());
+				setText("Method: " + entity.getMethod() + "   URI: " + entity.getUri());
 				break;
 			case HIDDEN:
 				setFont(new Font("Arial", Font.BOLD, Utils.fontSize(Utils.FONT_SMALL)));
 				setForeground(Color.decode(colors.getString("text_grey_light")));
-				setText("Some text here!!!");
+				setText("Method: " + entity.getMethod() + "   URI: " + entity.getUri());
 				break;
 		}
-
 		return this;
 	}
 }

@@ -1,5 +1,6 @@
 package com.apiary.abm.ui;
 
+import com.apiary.abm.ABMConfig;
 import com.apiary.abm.entity.DocResponseEntity;
 import com.apiary.abm.enums.ConnectionTypeEnum;
 import com.apiary.abm.utility.Log;
@@ -34,6 +35,7 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
@@ -48,6 +50,7 @@ public class ABMToolWindowConnect extends JFrame
 	final static String CARD_LOCAL_FILE = "panelLocalFile";
 
 	private ToolWindow mToolWindow;
+	private final ResourceBundle mMessages = ResourceBundle.getBundle("values/strings");
 
 
 	public ABMToolWindowConnect(ToolWindow toolWindow)
@@ -61,8 +64,6 @@ public class ABMToolWindowConnect extends JFrame
 
 	private void initLayout()
 	{
-		final ResourceBundle messages = ResourceBundle.getBundle("values/strings");
-
 		// create UI
 		final JBackgroundPanel myToolWindowContent = new JBackgroundPanel("drawable/img_background.png", JBackgroundPanel.JBackgroundPanelType.BACKGROUND_REPEAT);
 		final ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
@@ -103,7 +104,7 @@ public class ABMToolWindowConnect extends JFrame
 		myToolWindowContent.add(bottomPanel);
 
 		// Connect label
-		final JLabel infoText = new JLabel("<html><center>" + messages.getString("connect_header") + "</center></html>");
+		final JLabel infoText = new JLabel("<html><center>" + mMessages.getString("connect_header") + "</center></html>");
 		infoText.setForeground(Color.WHITE);
 		infoText.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_LARGE)));
 		infoText.setHorizontalAlignment(SwingConstants.CENTER);
@@ -118,27 +119,27 @@ public class ABMToolWindowConnect extends JFrame
 		typePanel.setMaximumSize(new Dimension(Utils.reDimension(600), Integer.MAX_VALUE));
 
 		// Chose type label
-		final JLabel labelType = new JLabel("<html><center>" + messages.getString("connect_type") + "</center></html>");
+		final JLabel labelType = new JLabel("<html><center>" + mMessages.getString("connect_type") + "</center></html>");
 		labelType.setForeground(Color.WHITE);
 		labelType.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM)));
 		labelType.setHorizontalAlignment(SwingConstants.CENTER);
 
 		// Create the radio buttons.
-		final JRadioButton radBtnApiaryDoc = new JRadioButton(messages.getString("connect_radio_documentation"));
-		radBtnApiaryDoc.setActionCommand(messages.getString("connect_radio_documentation"));
+		final JRadioButton radBtnApiaryDoc = new JRadioButton(mMessages.getString("connect_radio_documentation"));
+		radBtnApiaryDoc.setActionCommand(mMessages.getString("connect_radio_documentation"));
 		radBtnApiaryDoc.setMargin(new Insets(0, 0, 0, 0));
 		radBtnApiaryDoc.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_SMALL)));
 		radBtnApiaryDoc.setOpaque(false);
 		radBtnApiaryDoc.setSelected(true);
 
-		final JRadioButton radBtnWebUrl = new JRadioButton(messages.getString("connect_radio_web_url"));
-		radBtnWebUrl.setActionCommand(messages.getString("connect_radio_web_url"));
+		final JRadioButton radBtnWebUrl = new JRadioButton(mMessages.getString("connect_radio_web_url"));
+		radBtnWebUrl.setActionCommand(mMessages.getString("connect_radio_web_url"));
 		radBtnWebUrl.setMargin(new Insets(0, 0, 0, 0));
 		radBtnWebUrl.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_SMALL)));
 		radBtnWebUrl.setOpaque(false);
 
-		final JRadioButton radBtnLocal = new JRadioButton(messages.getString("connect_radio_local_file"));
-		radBtnLocal.setActionCommand(messages.getString("connect_radio_local_file"));
+		final JRadioButton radBtnLocal = new JRadioButton(mMessages.getString("connect_radio_local_file"));
+		radBtnLocal.setActionCommand(mMessages.getString("connect_radio_local_file"));
 		radBtnLocal.setMargin(new Insets(0, 0, 0, 0));
 		radBtnLocal.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_SMALL)));
 		radBtnLocal.setOpaque(false);
@@ -171,7 +172,7 @@ public class ABMToolWindowConnect extends JFrame
 		cardDocumentation.setOpaque(false);
 		cardDocumentation.setMaximumSize(new Dimension(Utils.reDimension(600), Integer.MAX_VALUE));
 
-		final JLabel labelDocumentationUrl = new JLabel("<html><center>" + messages.getString("connect_message_documentation_url") + "</center></html>");
+		final JLabel labelDocumentationUrl = new JLabel("<html><center>" + mMessages.getString("connect_message_documentation_url") + "</center></html>");
 		labelDocumentationUrl.setForeground(Color.WHITE);
 		labelDocumentationUrl.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM)));
 		labelDocumentationUrl.setHorizontalAlignment(SwingConstants.CENTER);
@@ -179,7 +180,7 @@ public class ABMToolWindowConnect extends JFrame
 		final JTextField textFieldDocumentationUrl = new JTextField();
 		textFieldDocumentationUrl.setText("tuxilero"); // FIXME
 
-		final JLabel labelDocumentationToken = new JLabel("<html><center>" + messages.getString("connect_message_documentation_token") + "</center></html>");
+		final JLabel labelDocumentationToken = new JLabel("<html><center>" + mMessages.getString("connect_message_documentation_token") + "</center></html>");
 		labelDocumentationToken.setForeground(Color.WHITE);
 		labelDocumentationToken.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM)));
 		labelDocumentationToken.setHorizontalAlignment(SwingConstants.CENTER);
@@ -200,7 +201,7 @@ public class ABMToolWindowConnect extends JFrame
 		cardWebUrl.setOpaque(false);
 		cardWebUrl.setMaximumSize(new Dimension(Utils.reDimension(600), Integer.MAX_VALUE));
 
-		final JLabel labelWebUrlMessage = new JLabel("<html><center>" + messages.getString("connect_message_web_url") + "</center></html>");
+		final JLabel labelWebUrlMessage = new JLabel("<html><center>" + mMessages.getString("connect_message_web_url") + "</center></html>");
 		labelWebUrlMessage.setForeground(Color.WHITE);
 		labelWebUrlMessage.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM)));
 		labelWebUrlMessage.setHorizontalAlignment(SwingConstants.CENTER);
@@ -219,7 +220,7 @@ public class ABMToolWindowConnect extends JFrame
 		cardLocalFile.setOpaque(false);
 		cardLocalFile.setMaximumSize(new Dimension(Utils.reDimension(600), Integer.MAX_VALUE));
 
-		final JLabel labelLocalMessage = new JLabel("<html><center>" + messages.getString("connect_message_local_file") + "</center></html>");
+		final JLabel labelLocalMessage = new JLabel("<html><center>" + mMessages.getString("connect_message_local_file") + "</center></html>");
 		labelLocalMessage.setForeground(Color.WHITE);
 		labelLocalMessage.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM)));
 		labelLocalMessage.setHorizontalAlignment(SwingConstants.CENTER);
@@ -236,15 +237,6 @@ public class ABMToolWindowConnect extends JFrame
 		cards.add(cardLocalFile, CARD_LOCAL_FILE);
 		contentPanel.add(cards);
 		middlePanel.add(contentPanel);
-
-		// error label
-		final JLabel labelError = new JLabel();
-		labelError.setForeground(Color.RED);
-		labelError.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM)));
-		labelError.setHorizontalAlignment(SwingConstants.CENTER);
-		labelError.setText("<html><center>" + messages.getString("connect_message_error") + "</html></center>");
-		labelError.setVisible(false);
-		middlePanel.add(labelError);
 
 
 		//Register a listener for the radio buttons.
@@ -318,6 +310,7 @@ public class ABMToolWindowConnect extends JFrame
 					public void run()
 					{
 						boolean error = false;
+						String errorText = "";
 						if(radBtnApiaryDoc.isSelected())
 						{
 							try
@@ -325,13 +318,14 @@ public class ABMToolWindowConnect extends JFrame
 								String output = Network.requestBlueprintFromApiary(textFieldDocumentationUrl.getText(), textFieldDocumentationToken.getText());
 								DocResponseEntity response = Utils.parseJsonDoc(output);
 
-								if(response==null) throw new Exception("Gson parsing problem!");
+								if(response==null) throw new Exception(mMessages.getString("connect_message_error_gson"));
 
 								if(response.getError() || response.getCode()==null) throw new Exception(response.getMessage());
 
-								if(!Network.isBlueprintValid(response.getCode())) throw new Exception("Error in parsing blueprint!");
+								if(!Network.isBlueprintValid(response.getCode()))
+									throw new Exception(mMessages.getString("connect_message_error_parsing"));
 
-								String tmpFilePath = Utils.saveStringToTmpFile("blueprint", response.getCode());
+								String tmpFilePath = Utils.saveStringToTmpFile(ABMConfig.FILE_BLUEPRINT, response.getCode());
 								Preferences preferences = new Preferences();
 								preferences.setBlueprintConnectionType(ConnectionTypeEnum.CONNECTION_TYPE_DOC);
 								preferences.setBlueprintConnectionPath(textFieldDocumentationUrl.getText());
@@ -340,6 +334,7 @@ public class ABMToolWindowConnect extends JFrame
 							}
 							catch(Exception e1)
 							{
+								errorText = e1.getMessage();
 								Log.e("Exception message: " + e1.getMessage());
 								e1.printStackTrace();
 								error = true;
@@ -351,11 +346,12 @@ public class ABMToolWindowConnect extends JFrame
 							{
 								String output = Network.requestBlueprintFromURL(textFieldWebUrl.getText());
 
-								if(output==null) throw new Exception("Could not get valid web file!");
+								if(output==null) throw new Exception(mMessages.getString("connect_message_error_web"));
 
-								if(!Network.isBlueprintValid(output)) throw new Exception("Error in parsing blueprint!");
+								if(!Network.isBlueprintValid(output))
+									throw new Exception(mMessages.getString("connect_message_error_parsing"));
 
-								String tmpFilePath = Utils.saveStringToTmpFile("blueprint", output);
+								String tmpFilePath = Utils.saveStringToTmpFile(ABMConfig.FILE_BLUEPRINT, output);
 								Preferences preferences = new Preferences();
 								preferences.setBlueprintConnectionType(ConnectionTypeEnum.CONNECTION_TYPE_WEB_URL);
 								preferences.setBlueprintConnectionPath(textFieldWebUrl.getText());
@@ -363,6 +359,7 @@ public class ABMToolWindowConnect extends JFrame
 							}
 							catch(Exception e1)
 							{
+								errorText = e1.getMessage();
 								Log.e("Exception message: " + e1.getMessage());
 								e1.printStackTrace();
 								error = true;
@@ -374,11 +371,12 @@ public class ABMToolWindowConnect extends JFrame
 							{
 								String output = Utils.readFileAsString(textFieldLocalPath.getText(), Charset.forName("UTF-8"));
 
-								if(output==null) throw new Exception("Could not read the file!");
+								if(output==null) throw new Exception(mMessages.getString("connect_message_error_file"));
 
-								if(!Network.isBlueprintValid(output)) throw new Exception("Error in parsing blueprint!");
+								if(!Network.isBlueprintValid(output))
+									throw new Exception(mMessages.getString("connect_message_error_parsing"));
 
-								String tmpFilePath = Utils.saveStringToTmpFile("blueprint", output);
+								String tmpFilePath = Utils.saveStringToTmpFile(ABMConfig.FILE_BLUEPRINT, output);
 								Preferences preferences = new Preferences();
 								preferences.setBlueprintConnectionType(ConnectionTypeEnum.CONNECTION_TYPE_FILE);
 								preferences.setBlueprintConnectionPath(textFieldLocalPath.getText());
@@ -386,6 +384,7 @@ public class ABMToolWindowConnect extends JFrame
 							}
 							catch(Exception e1)
 							{
+								errorText = e1.getMessage();
 								Log.e("Exception message: " + e1.getMessage());
 								e1.printStackTrace();
 								error = true;
@@ -395,11 +394,11 @@ public class ABMToolWindowConnect extends JFrame
 						if(error)
 						{
 							connecting = false;
+							JOptionPane.showMessageDialog(null, errorText, mMessages.getString("global_error_title"), JOptionPane.ERROR_MESSAGE);
 							SwingUtilities.invokeLater(new Runnable()
 							{
 								public void run()
 								{
-									labelError.setVisible(true);
 									button.setImage("drawable/img_button_connect.png");
 								}
 							});

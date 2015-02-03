@@ -26,6 +26,8 @@ public class ParametersEntity
 	//	@SerializedName("values")
 	//	private List mValues;
 
+	private String mTypeOfParam;
+
 
 	public String getName()
 	{
@@ -67,4 +69,16 @@ public class ParametersEntity
 	//	{
 	//		return mValues;
 	//	}
+
+
+	public String getTypeOfParam()
+	{
+		return mTypeOfParam;
+	}
+
+
+	public void setTypeOfParam(String mTypeOfParam)
+	{
+		this.mTypeOfParam = mTypeOfParam;
+	}
 }

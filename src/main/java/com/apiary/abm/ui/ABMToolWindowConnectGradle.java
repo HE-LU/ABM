@@ -20,6 +20,7 @@ import java.util.ResourceBundle;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -28,6 +29,7 @@ import javax.swing.SwingUtilities;
 public class ABMToolWindowConnectGradle extends JFrame
 {
 	private ToolWindow mToolWindow;
+	private final ResourceBundle mMessages = ResourceBundle.getBundle("values/strings");
 
 
 	public ABMToolWindowConnectGradle(ToolWindow toolWindow)
@@ -41,8 +43,6 @@ public class ABMToolWindowConnectGradle extends JFrame
 
 	private void initLayout()
 	{
-		final ResourceBundle messages = ResourceBundle.getBundle("values/strings");
-
 		// create UI
 		final JBackgroundPanel myToolWindowContent = new JBackgroundPanel("drawable/img_background.png", JBackgroundPanel.JBackgroundPanelType.BACKGROUND_REPEAT);
 		final ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
@@ -83,31 +83,18 @@ public class ABMToolWindowConnectGradle extends JFrame
 		myToolWindowContent.add(bottomPanel);
 
 		// Connect label
-		final JLabel infoText = new JLabel("<html><center>" + messages.getString("connect_gradle_header") + "</center></html>");
+		final JLabel infoText = new JLabel("<html><center>" + mMessages.getString("connect_gradle_header") + "</center></html>");
 		infoText.setForeground(Color.WHITE);
 		infoText.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_LARGE)));
 		infoText.setHorizontalAlignment(SwingConstants.CENTER);
 		topPanel.add(infoText);
 
-		// spacerText
-		final JLabel spacerText = new JLabel("<html><center></center></html>");
-		middlePanel.add(spacerText);
-
 		// message
-		final JLabel nameText = new JLabel("<html><center>" + messages.getString("connect_gradle_message") + "</center></html>");
+		final JLabel nameText = new JLabel("<html><center>" + mMessages.getString("connect_gradle_message") + "</center></html>");
 		nameText.setForeground(Color.WHITE);
 		nameText.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM)));
 		nameText.setHorizontalAlignment(SwingConstants.CENTER);
 		middlePanel.add(nameText);
-
-		// error label
-		final JLabel labelError = new JLabel();
-		labelError.setForeground(Color.RED);
-		labelError.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM)));
-		labelError.setHorizontalAlignment(SwingConstants.CENTER);
-		labelError.setText("<html><center>" + messages.getString("connect_gradle_message_error") + "</html></center>");
-		labelError.setVisible(false);
-		middlePanel.add(labelError);
 
 		// connect button
 		final ImageButton button = new ImageButton();
@@ -131,6 +118,7 @@ public class ABMToolWindowConnectGradle extends JFrame
 					public void run()
 					{
 						boolean error = false;
+						String errorText = "";
 
 						if(Utils.isGradleWithRetrofit())
 						{
@@ -145,16 +133,17 @@ public class ABMToolWindowConnectGradle extends JFrame
 						else
 						{
 							error = true;
+							errorText = mMessages.getString("connect_gradle_message_error");
 						}
 
 						if(error)
 						{
 							connecting = false;
+							JOptionPane.showMessageDialog(null, errorText, mMessages.getString("global_error_title"), JOptionPane.ERROR_MESSAGE);
 							SwingUtilities.invokeLater(new Runnable()
 							{
 								public void run()
 								{
-									labelError.setVisible(true);
 									button.setImage("drawable/img_button_next.png");
 								}
 							});

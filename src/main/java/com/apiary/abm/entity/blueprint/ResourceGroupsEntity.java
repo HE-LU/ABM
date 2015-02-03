@@ -24,7 +24,7 @@ public class ResourceGroupsEntity
 	//	}
 
 
-	//	public String getName()
+	//	public String getMethodName()
 	//	{
 	//		return this.mName;
 	//	}

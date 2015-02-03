@@ -4,6 +4,8 @@ package com.apiary.abm;
 public class ABMConfig
 {
 	public static final boolean LOGS = true;
+	public static final String FILE_BLUEPRINT_JSON = "blueprint_json";
+	public static final String FILE_BLUEPRINT = "blueprint";
 }
 
 
@@ -67,7 +69,7 @@ public interface MockAPI
 	void getNote(Callback<NoteEntity> getNoteCallback);
 
 	@GET("/noteSecond")
-	void getNoteSecond(Callback<NoteSecondEntity> getNoteSecondCallback);
+	void getNoteSecond(Callback<NoteSecondEntity> getNoteSecondCallback, NejakaEntita entita);
 }
 
 

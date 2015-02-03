@@ -6,10 +6,10 @@ import com.google.gson.annotations.SerializedName;
 public class HeadersEntity
 {
 
-	@SerializedName("description")
+	@SerializedName("name")
 	private String mName;
 
-	@SerializedName("description")
+	@SerializedName("value")
 	private String mValue;
 
 

@@ -3,7 +3,6 @@ apply plugin: "idea"
 
 repositories {
 	jcenter()
-	maven {	url "http://my.repository.url"}
 }
 
 dependencies {
@@ -18,7 +17,7 @@ dependencies {
 	compile 'org.apache.httpcomponents:httpasyncclient:4.0.2'
 	compile 'org.apache.httpcomponents:httpmime:4.3.6'
 	compile 'org.apache.httpcomponents:httpcore-nio:4.3.3'
-	compile 'com.google.code.gson:gson:1.7.2'
+	compile 'com.google.code.gson:gson:2.2.4'
 }
 
 defaultTasks 'makeJar'

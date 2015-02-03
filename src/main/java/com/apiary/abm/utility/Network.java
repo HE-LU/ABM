@@ -1,6 +1,7 @@
 package com.apiary.abm.utility;
 
 
+import com.apiary.abm.ABMConfig;
 import com.apiary.abm.entity.DocResponseEntity;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
@@ -56,7 +57,7 @@ public class Network
 
 			try
 			{
-				prefs.setBlueprintJsonTmpFileLocation(Utils.saveStringToTmpFile("blueprint_json", json));
+				prefs.setBlueprintJsonTmpFileLocation(Utils.saveStringToTmpFile(ABMConfig.FILE_BLUEPRINT_JSON, json));
 			}
 			catch(IOException e)
 			{
@@ -89,7 +90,7 @@ public class Network
 			Preferences prefs = new Preferences();
 			try
 			{
-				prefs.setBlueprintJsonTmpFileLocation(Utils.saveStringToTmpFile("blueprint_json", request.getBody()));
+				prefs.setBlueprintJsonTmpFileLocation(Utils.saveStringToTmpFile(ABMConfig.FILE_BLUEPRINT_JSON, request.getBody()));
 			}
 			catch(IOException e)
 			{
@@ -123,7 +124,7 @@ public class Network
 
 					if(!Network.isBlueprintValid(response.getCode())) throw new Exception("Error in parsing blueprint!");
 
-					tmpFilePath = Utils.saveStringToTmpFile("blueprint", response.getCode());
+					tmpFilePath = Utils.saveStringToTmpFile(ABMConfig.FILE_BLUEPRINT, response.getCode());
 					preferences.setBlueprintTmpFileLocation(tmpFilePath);
 				}
 				catch(Exception e1)
@@ -141,7 +142,7 @@ public class Network
 
 					if(!Network.isBlueprintValid(output)) throw new Exception("Error in parsing blueprint!");
 
-					tmpFilePath = Utils.saveStringToTmpFile("blueprint", output);
+					tmpFilePath = Utils.saveStringToTmpFile(ABMConfig.FILE_BLUEPRINT, output);
 					preferences.setBlueprintTmpFileLocation(tmpFilePath);
 				}
 				catch(Exception e1)
@@ -159,7 +160,7 @@ public class Network
 
 					if(!Network.isBlueprintValid(output)) throw new Exception("Error in parsing blueprint!");
 
-					tmpFilePath = Utils.saveStringToTmpFile("blueprint", output);
+					tmpFilePath = Utils.saveStringToTmpFile(ABMConfig.FILE_BLUEPRINT, output);
 					preferences.setBlueprintTmpFileLocation(tmpFilePath);
 				}
 				catch(Exception e1)

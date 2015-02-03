@@ -1,5 +1,6 @@
 package com.apiary.abm.utility;
 
+import com.apiary.abm.entity.BodyObjectEntity;
 import com.apiary.abm.entity.DocResponseEntity;
 import com.apiary.abm.entity.blueprint.ABMEntity;
 import com.apiary.abm.ui.ABMToolWindow;
@@ -18,6 +19,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 
@@ -156,5 +158,40 @@ public class Utils
 			e.printStackTrace();
 		}
 		return false;
+	}
+
+
+	public static String firstLetterUpperCase(String string)
+	{
+		if(string==null) return string;
+		if(string.length()==1) return string.toUpperCase();
+		return string.substring(0, 1).toUpperCase() + string.substring(1, string.length());
+	}
+
+
+	public static String firstLetterLowerCase(String string)
+	{
+		if(string==null) return string;
+		if(string.length()==1) return string.toLowerCase();
+		return string.substring(0, 1).toLowerCase() + string.substring(1, string.length());
+	}
+
+
+	public static String cleanUpString(String string)
+	{
+		return string.replaceAll("[^a-zA-Z]", "");
+	}
+
+
+	public static String findEntityNameInBodyObjectList(List<BodyObjectEntity> list, String serializableName)
+	{
+		for(BodyObjectEntity ent : list)
+		{
+			if(ent.getSerializableName().equals(serializableName))
+			{
+				return ent.getEntityName();
+			}
+		}
+		return null;
 	}
 }

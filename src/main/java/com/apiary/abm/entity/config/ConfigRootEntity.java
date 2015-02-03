@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
 
-@XmlRootElement
+@XmlRootElement(name = "ABMConfigRoot")
 public class ConfigRootEntity
 {
 	String mName;
@@ -21,7 +22,7 @@ public class ConfigRootEntity
 	}
 
 
-	@XmlElement
+	@XmlElement(name = "Name")
 	public void setName(String mName)
 	{
 		this.mName = mName;
@@ -34,7 +35,7 @@ public class ConfigRootEntity
 	}
 
 
-	@XmlElement
+	@XmlElement(name = "Configuration")
 	public void setConfigurationEntity(ConfigConfigurationEntity mConfigurationEntity)
 	{
 		this.mConfigurationEntity = mConfigurationEntity;
@@ -47,7 +48,8 @@ public class ConfigRootEntity
 	}
 
 
-	@XmlElement
+	@XmlElementWrapper(name = "ClassInfoList")
+	@XmlElement(name = "ClassInfo")
 	public void setClassInfoList(List<ConfigClassInfoEntity> mClassInfoList)
 	{
 		this.mClassInfoList = mClassInfoList;

@@ -30,7 +30,7 @@ public class ConfigConfigurationEntity
 	}
 
 
-	@XmlElement
+	@XmlElement(name = "Host")
 	public void setHost(String mHost)
 	{
 		this.mHost = mHost;
@@ -43,7 +43,7 @@ public class ConfigConfigurationEntity
 	}
 
 
-	@XmlElement
+	@XmlElement(name = "ProjectModule")
 	public void setModule(String mApiModule)
 	{
 		this.mModule = mApiModule;
@@ -56,7 +56,7 @@ public class ConfigConfigurationEntity
 	}
 
 
-	@XmlElement
+	@XmlElement(name = "InterfaceClassName")
 	public void setInterfaceClass(String mInterfaceFile)
 	{
 		this.mInterfaceClass = mInterfaceFile;
@@ -69,7 +69,7 @@ public class ConfigConfigurationEntity
 	}
 
 
-	@XmlElement
+	@XmlElement(name = "EntityPackage")
 	public void setEntityPackage(String mEntityPackage)
 	{
 		this.mEntityPackage = mEntityPackage;
@@ -82,7 +82,7 @@ public class ConfigConfigurationEntity
 	}
 
 
-	@XmlElement
+	@XmlElement(name = "ManagerClassName")
 	public void setManagerClass(String mApiManagerFile)
 	{
 		this.mManagerClass = mApiManagerFile;
