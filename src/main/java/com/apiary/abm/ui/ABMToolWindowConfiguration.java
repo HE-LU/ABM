@@ -158,43 +158,6 @@ public class ABMToolWindowConfiguration extends JFrame
 		modulePanel.add(moduleComboBox);
 
 
-		// Panel API Entity package
-		final JBackgroundPanel entityPackagePanel = new JBackgroundPanel("drawable/img_background_panel.9.png", JBackgroundPanel.JBackgroundPanelType.NINE_PATCH);
-		entityPackagePanel.setLayout(new MigLayout("insets " + Utils.reDimension(12) + " " + Utils.reDimension(12) + " " + Utils.reDimension(18) + " " + Utils.reDimension(19) + ", flowx, fillx, filly", "[][fill,grow][][]", "[]"));
-		entityPackagePanel.setOpaque(false);
-		middlePanel.add(entityPackagePanel);
-
-		// Label API Entity package
-		final JLabel entityPackageLabel = new JLabel("<html><center>" + messages.getString("configuration_message_api_entity_package_red") + "</center></html>");
-		entityPackageLabel.setForeground(Color.WHITE);
-		entityPackageLabel.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM)));
-		entityPackageLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		entityPackagePanel.add(entityPackageLabel);
-
-		// TextField API Entity package
-		final JTextField entityPackageTextField = new JTextField();
-		entityPackageTextField.setMinimumSize(new Dimension(Utils.reDimension(160), 0));
-		entityPackageTextField.setText(mConfigurationEntity.getEntityPackage());
-		entityPackagePanel.add(entityPackageTextField);
-
-		// Button entity package
-		final JButton entityPackageFileButton = new JButton("<html><center>" + messages.getString("configuration_button_check") + "</center></html>");
-		entityPackageFileButton.setOpaque(false);
-		entityPackageFileButton.setForeground(Color.WHITE);
-		entityPackageFileButton.setFont(new Font("Ariel", Font.PLAIN, Utils.fontSize(Utils.FONT_SMALL)));
-		entityPackageFileButton.setHorizontalAlignment(SwingConstants.CENTER);
-		if(mProjectManager.getPackage(entityPackageTextField.getText())!=null)
-			entityPackageLabel.setText("<html><center>" + messages.getString("configuration_message_api_entity_package_green") + "</center></html>");
-		entityPackagePanel.add(entityPackageFileButton, "wrap");
-
-		// Label API Entity package note
-		final JLabel entityPackageNoteLabel = new JLabel("<html><center>" + messages.getString("configuration_message_api_entity_package_note") + "</center></html>");
-		entityPackageNoteLabel.setForeground(Color.WHITE);
-		entityPackageNoteLabel.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_SMALL)));
-		entityPackageNoteLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		entityPackagePanel.add(entityPackageNoteLabel, "span, grow");
-
-
 		// Panel Interface file
 		final JBackgroundPanel interfaceClassPanel = new JBackgroundPanel("drawable/img_background_panel.9.png", JBackgroundPanel.JBackgroundPanelType.NINE_PATCH);
 		interfaceClassPanel.setLayout(new MigLayout("insets " + Utils.reDimension(12) + " " + Utils.reDimension(12) + " " + Utils.reDimension(18) + " " + Utils.reDimension(19) + ", flowx, fillx, filly", "[][fill,grow][][]", "[]"));
@@ -294,7 +257,6 @@ public class ABMToolWindowConfiguration extends JFrame
 					{
 						mConfigurationEntity.setManagerClass(managerClassTextField.getText());
 						mConfigurationEntity.setModule((String) moduleComboBox.getSelectedItem());
-						mConfigurationEntity.setEntityPackage(entityPackageTextField.getText());
 						mConfigurationEntity.setHost(hostTextField.getText());
 						mConfigurationEntity.setInterfaceClass(interfaceClassTextField.getText());
 						mConfigPreferences.saveConfigurationEntity(mConfigurationEntity);
@@ -329,16 +291,6 @@ public class ABMToolWindowConfiguration extends JFrame
 		});
 		bottomPanel.add(buttonSave);
 
-		entityPackageFileButton.addMouseListener(new MouseAdapter()
-		{
-			public void mouseClicked(MouseEvent e)
-			{
-				if(mProjectManager.getPackage(entityPackageTextField.getText())!=null)
-					entityPackageLabel.setText("<html><center>" + messages.getString("configuration_message_api_entity_package_green") + "</center></html>");
-				else
-					entityPackageLabel.setText("<html><center>" + messages.getString("configuration_message_api_entity_package_red") + "</center></html>");
-			}
-		});
 
 		interfaceClassButton.addMouseListener(new MouseAdapter()
 		{

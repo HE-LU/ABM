@@ -2,6 +2,7 @@ package com.apiary.abm.utility;
 
 import com.apiary.abm.entity.BodyObjectEntity;
 import com.apiary.abm.entity.DocResponseEntity;
+import com.apiary.abm.entity.TreeNodeEntity;
 import com.apiary.abm.entity.blueprint.ABMEntity;
 import com.apiary.abm.ui.ABMToolWindow;
 import com.google.gson.Gson;
@@ -186,12 +187,22 @@ public class Utils
 	public static String findEntityNameInBodyObjectList(List<BodyObjectEntity> list, String serializableName)
 	{
 		for(BodyObjectEntity ent : list)
+			if(ent.getSerializableName().equals(serializableName)) return ent.getEntityName();
+		return null;
+	}
+
+
+	public static boolean entityContainParameter(TreeNodeEntity entity, String parameterName)
+	{
+		if(entity.getRequestBody()==null) return false;
+
+		for(BodyObjectEntity ent : entity.getRequestBody())
 		{
-			if(ent.getSerializableName().equals(serializableName))
+			if(ent.getEntityName().equals(parameterName))
 			{
-				return ent.getEntityName();
+				return true;
 			}
 		}
-		return null;
+		return false;
 	}
 }

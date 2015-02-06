@@ -410,7 +410,7 @@ public class ABMToolWindowImplementationSecond extends JFrame
 			{
 				if(entity.getSerializableName().equals("ROOT"))
 				{
-					output += "\t@Body " + entity.getEntityName() + " " + Utils.firstLetterLowerCase(entity.getEntityName()) + ", \n";
+					output += "\t@Body " + entity.getEntityName() + " param" + Utils.firstLetterUpperCase(entity.getEntityName()) + ", \n";
 					break;
 				}
 			}

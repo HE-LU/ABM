@@ -2,6 +2,7 @@ package com.apiary.abm.ui;
 
 import com.apiary.abm.entity.BodyObjectEntity;
 import com.apiary.abm.entity.BodyVariableEntity;
+import com.apiary.abm.entity.ProblemEntity;
 import com.apiary.abm.entity.TreeNodeEntity;
 import com.apiary.abm.entity.blueprint.ABMEntity;
 import com.apiary.abm.entity.blueprint.ActionsEntity;
@@ -15,6 +16,7 @@ import com.apiary.abm.enums.TreeNodeTypeEnum;
 import com.apiary.abm.enums.VariableEnum;
 import com.apiary.abm.renderer.ABMTreeCellRenderer;
 import com.apiary.abm.utility.ConfigPreferences;
+import com.apiary.abm.utility.Log;
 import com.apiary.abm.utility.Network;
 import com.apiary.abm.utility.Preferences;
 import com.apiary.abm.utility.ProjectManager;
@@ -24,7 +26,6 @@ import com.apiary.abm.view.JBackgroundPanel;
 import com.google.gson.Gson;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.psi.PsiClass;
-import com.intellij.psi.PsiPackage;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
@@ -454,6 +455,12 @@ public class ABMToolWindowMain extends JFrame
 				responses.addAll(deDupleResponses);
 			}
 
+			item.setRequestBody(requests);
+			item.setResponseBody(responses);
+
+			// complete information from config.
+			configPreferences.tryToFillTreeNodeEntity(item);
+
 			// Fill type names
 			if(requests!=null)
 			{
@@ -489,12 +496,6 @@ public class ABMToolWindowMain extends JFrame
 						else if(entVar.getType()==VariableEnum.NONE) entVar.setTypeName("NONE");
 				}
 			}
-
-			item.setRequestBody(requests);
-			item.setResponseBody(responses);
-
-			// complete information from config.
-			configPreferences.tryToFillTreeNodeEntity(item);
 		}
 
 		return outputList;
@@ -569,50 +570,36 @@ public class ABMToolWindowMain extends JFrame
 	}
 
 
-	private List<TreeNodeEntity> analyzeTreeNodeList(List<TreeNodeEntity> list)
+	private List<TreeNodeEntity> analyzeTreeNodeList(List<TreeNodeEntity> inputTreeNodeList)
 	{
-		ConfigPreferences configPreferences = new ConfigPreferences();
+		PsiClass interfaceClass = ProjectManager.getInterfaceClass();
+		PsiClass managerClass = ProjectManager.getManagerClass();
+		List<TreeNodeEntity> outputTreeNodeList = new ArrayList<TreeNodeEntity>(inputTreeNodeList);
 
-		ProjectManager projectManager = new ProjectManager();
-		PsiPackage entityPackage = projectManager.getPackage(configPreferences.getConfigurationEntity().getEntityPackage());
-		List<PsiClass> interfaceClassList = projectManager.getClasses(configPreferences.getConfigurationEntity().getModule(), configPreferences.getConfigurationEntity().getInterfaceClass());
-		List<PsiClass> managerClassList = projectManager.getClasses(configPreferences.getConfigurationEntity().getModule(), configPreferences.getConfigurationEntity().getManagerClass());
-
-		if(!(entityPackage!=null && interfaceClassList!=null && interfaceClassList.size()==1 && managerClassList!=null && managerClassList.size()==1))
+		if(!(interfaceClass!=null && managerClass!=null))
 		{
-			list.clear();
+			outputTreeNodeList.clear();
 
-			if(entityPackage==null)
-			{
-				TreeNodeEntity entity = new TreeNodeEntity();
-				entity.setText("Entity package is not configured properly");
-				entity.setTreeNodeType(TreeNodeTypeEnum.CONFIGURATION_PROBLEM);
-				list.add(entity);
-			}
-
-			if(!(interfaceClassList!=null && interfaceClassList.size()>0))
+			if(interfaceClass==null)
 			{
 				TreeNodeEntity entity = new TreeNodeEntity();
 				entity.setText("Interface class is not configured properly");
 				entity.setTreeNodeType(TreeNodeTypeEnum.CONFIGURATION_PROBLEM);
-				list.add(entity);
+				outputTreeNodeList.add(entity);
 			}
 
-			if(!(managerClassList!=null && managerClassList.size()>0))
+			if(managerClass==null)
 			{
 				TreeNodeEntity entity = new TreeNodeEntity();
 				entity.setText("Manager class is not configured properly");
 				entity.setTreeNodeType(TreeNodeTypeEnum.CONFIGURATION_PROBLEM);
-				list.add(entity);
+				outputTreeNodeList.add(entity);
 			}
-			return list;
+			return outputTreeNodeList;
 		}
 
-		PsiClass interfaceClass = interfaceClassList.get(0);
-		PsiClass managerClass = managerClassList.get(0);
-
 		// TODO check status of each entity
-		for(TreeNodeEntity entity : list)
+		for(TreeNodeEntity entity : inputTreeNodeList)
 		{
 			if(entity.getTreeNodeType()!=null) continue;
 
@@ -623,19 +610,68 @@ public class ABMToolWindowMain extends JFrame
 					entity.setTreeNodeType(TreeNodeTypeEnum.NOT_IMPLEMENTED);
 				else
 				{
-					entity.setTreeNodeType(TreeNodeTypeEnum.MODIFIED);
+					boolean ok = true;
+
+					// check if method is ok
+					List<ProblemEntity> methodProblems = ProjectManager.checkMethodForProblems(entity);
+
+					if(!methodProblems.isEmpty())
+					{
+						ok=false;
+						Log.d("BEGIN");
+						for(ProblemEntity problemEntity : methodProblems)
+							Log.d("Problem: " + problemEntity.getName() + "\tText: " + problemEntity.getText());
+
+						Log.d("END");
+					}
+
+					// check if all entities are ok
+					if(entity.getRequestBody()!=null) for(BodyObjectEntity bodyEntity : entity.getRequestBody())
+					{
+						List<ProblemEntity> entityProblems = ProjectManager.checkEntityForProblems(bodyEntity);
+
+						if(!entityProblems.isEmpty())
+						{
+							ok=false;
+							Log.d("BEGIN");
+							for(ProblemEntity problemEntity : entityProblems)
+								Log.d("Problem: " + problemEntity.getName() + "\tText: " + problemEntity.getText());
+
+							Log.d("END");
+						}
+					}
+
+					if(entity.getResponseBody()!=null) for(BodyObjectEntity bodyEntity : entity.getResponseBody())
+					{
+						List<ProblemEntity> entityProblems = ProjectManager.checkEntityForProblems(bodyEntity);
+
+						if(!entityProblems.isEmpty())
+						{
+							ok=false;
+							Log.d("BEGIN");
+							for(ProblemEntity problemEntity : entityProblems)
+								Log.d("Problem: " + problemEntity.getName() + "\tText: " + problemEntity.getText());
+
+							Log.d("END");
+						}
+					}
+
+					if(ok)
+//						entity.setTreeNodeType(TreeNodeTypeEnum.MODIFIED); // todo remove entity
+						outputTreeNodeList.remove(entity);
+					else entity.setTreeNodeType(TreeNodeTypeEnum.MODIFIED);
 				}
 			}
 		}
 
-		Iterator<TreeNodeEntity> iterator = list.iterator();
+		Iterator<TreeNodeEntity> iterator = outputTreeNodeList.iterator();
 		while(iterator.hasNext())
 		{
 			TreeNodeEntity entity = iterator.next();
 			if(entity.getTreeNodeType()==null) iterator.remove();
 		}
 
-		return list;
+		return outputTreeNodeList;
 	}
 
 
