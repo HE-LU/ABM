@@ -442,6 +442,53 @@ public class ABMToolWindowMain extends JFrame
 			List<BodyObjectEntity> responses = parseBodyJson(item.getResponseBodyJson());
 
 			// remove duplicates
+			//			if(requests!=null)
+			//			{
+			//				Set<BodyObjectEntity> deDupleRequests = new LinkedHashSet<BodyObjectEntity>(requests);
+			//				requests.clear();
+			//				requests.addAll(deDupleRequests);
+			//			}
+			//			if(responses!=null)
+			//			{
+			//				Set<BodyObjectEntity> deDupleResponses = new LinkedHashSet<BodyObjectEntity>(responses);
+			//				responses.clear();
+			//				responses.addAll(deDupleResponses);
+			//			}
+
+			// todo join requests of same name
+			if(requests!=null)
+			{
+				for(BodyObjectEntity entity1 : requests)
+				{
+					List<BodyVariableEntity> varList = new ArrayList<BodyVariableEntity>();
+					varList.addAll(entity1.getVariables());
+					for(BodyObjectEntity entity2 : requests)
+					{
+						if(entity1.getSerializableName().equals(entity2.getSerializableName()))
+							for(BodyVariableEntity varEntity : entity2.getVariables())
+								if(!BodyVariableEntity.existInVariableList(varList, varEntity)) varList.add(varEntity);
+					}
+					entity1.setVariables(varList);
+				}
+			}
+			if(responses!=null)
+			{
+				for(BodyObjectEntity entity1 : responses)
+				{
+					List<BodyVariableEntity> varList = new ArrayList<BodyVariableEntity>();
+					varList.addAll(entity1.getVariables());
+					for(BodyObjectEntity entity2 : responses)
+					{
+						if(entity1.getSerializableName().equals(entity2.getSerializableName()))
+							for(BodyVariableEntity varEntity : entity2.getVariables())
+								if(!BodyVariableEntity.existInVariableList(varList, varEntity)) varList.add(varEntity);
+					}
+					entity1.setVariables(varList);
+				}
+			}
+
+
+			// remove duplicates
 			if(requests!=null)
 			{
 				Set<BodyObjectEntity> deDupleRequests = new LinkedHashSet<BodyObjectEntity>(requests);
@@ -454,6 +501,7 @@ public class ABMToolWindowMain extends JFrame
 				responses.clear();
 				responses.addAll(deDupleResponses);
 			}
+
 
 			item.setRequestBody(requests);
 			item.setResponseBody(responses);
@@ -503,6 +551,23 @@ public class ABMToolWindowMain extends JFrame
 						else entVar.setTypeName("WTF");
 				}
 			}
+
+			//			if(requests!=null)
+			//			{
+			//				for(BodyObjectEntity ent : requests)
+			//				{
+			//					for(BodyVariableEntity entVar : ent.getVariables())
+			//						Log.d("ent: " + ent.getSerializableName()+"\tVar: " + entVar.getName()+"\tType: " + entVar.getTypeName());
+			//				}
+			//			}
+			//			if(responses!=null)
+			//			{
+			//				for(BodyObjectEntity ent : responses)
+			//				{
+			//					for(BodyVariableEntity entVar : ent.getVariables())
+			//						Log.d("ent: " + ent.getSerializableName()+"\tVar: " + entVar.getName()+"\tType: " + entVar.getTypeName());
+			//				}
+			//			}
 		}
 
 		return outputList;

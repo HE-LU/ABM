@@ -1,6 +1,9 @@
 package com.apiary.abm.entity;
 
 
+import java.util.List;
+
+
 public class BodyVariableEntity
 {
 	private String mName;
@@ -21,6 +24,14 @@ public class BodyVariableEntity
 		this.mName = mName;
 		this.mType = mType;
 		this.mTypeName = mTypeName;
+	}
+
+
+	public static boolean existInVariableList(List<BodyVariableEntity> list, BodyVariableEntity entity)
+	{
+		for(BodyVariableEntity listEntity : list)
+			if(listEntity.equals(entity)) return true;
+		return false;
 	}
 
 

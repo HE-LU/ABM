@@ -161,8 +161,6 @@ public class ProjectManager
 		PsiParameterList parameterList = method.getParameterList();
 		for(int i = 0; i<parameterList.getParametersCount(); i++)
 		{
-			Log.d("Parameter " + i + " is: " + parameterList.getParameters()[i].getName() + " and parameter type: " + parameterList.getParameters()[i].getType().getPresentableText());
-
 			// Callback for async task
 			if(entity.isAsync() && parameterList.getParameters()[i].getName().equals(entity.getMethodName() + "Callback"))
 			{
