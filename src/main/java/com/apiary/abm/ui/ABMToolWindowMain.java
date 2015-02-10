@@ -16,7 +16,6 @@ import com.apiary.abm.enums.TreeNodeTypeEnum;
 import com.apiary.abm.enums.VariableEnum;
 import com.apiary.abm.renderer.ABMTreeCellRenderer;
 import com.apiary.abm.utility.ConfigPreferences;
-import com.apiary.abm.utility.Log;
 import com.apiary.abm.utility.Network;
 import com.apiary.abm.utility.Preferences;
 import com.apiary.abm.utility.ProjectManager;
@@ -702,50 +701,24 @@ public class ABMToolWindowMain extends JFrame
 					// check if method is ok
 					List<ProblemEntity> methodProblems = ProjectManager.checkMethodForProblems(entity);
 
-					if(!methodProblems.isEmpty())
-					{
-						ok = false;
-						Log.d("BEGIN");
-						for(ProblemEntity problemEntity : methodProblems)
-							Log.d("Problem: " + problemEntity.getName() + "\tText: " + problemEntity.getText());
-
-						Log.d("END");
-					}
+					if(!methodProblems.isEmpty()) ok = false;
 
 					// check if all entities are ok
 					if(entity.getRequestBody()!=null) for(BodyObjectEntity bodyEntity : entity.getRequestBody())
 					{
 						List<ProblemEntity> entityProblems = ProjectManager.checkEntityForProblems(bodyEntity);
 
-						if(!entityProblems.isEmpty())
-						{
-							ok = false;
-							Log.d("BEGIN");
-							for(ProblemEntity problemEntity : entityProblems)
-								Log.d("Problem: " + problemEntity.getName() + "\tText: " + problemEntity.getText());
-
-							Log.d("END");
-						}
+						if(!entityProblems.isEmpty()) ok = false;
 					}
 
 					if(entity.getResponseBody()!=null) for(BodyObjectEntity bodyEntity : entity.getResponseBody())
 					{
 						List<ProblemEntity> entityProblems = ProjectManager.checkEntityForProblems(bodyEntity);
 
-						if(!entityProblems.isEmpty())
-						{
-							ok = false;
-							Log.d("BEGIN");
-							for(ProblemEntity problemEntity : entityProblems)
-								Log.d("Problem: " + problemEntity.getName() + "\tText: " + problemEntity.getText());
-
-							Log.d("END");
-						}
+						if(!entityProblems.isEmpty()) ok = false;
 					}
 
-					if(ok)
-						//						entity.setTreeNodeType(TreeNodeTypeEnum.MODIFIED);
-						outputTreeNodeList.remove(entity);
+					if(ok) outputTreeNodeList.remove(entity);
 					else entity.setTreeNodeType(TreeNodeTypeEnum.MODIFIED);
 				}
 			}

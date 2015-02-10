@@ -94,6 +94,7 @@ public class ProjectManager
 		boolean callbackFound = false;
 		boolean uriFound = false;
 
+
 		// 1) Check if method exists
 		PsiMethod method;
 		try
@@ -105,6 +106,7 @@ public class ProjectManager
 			problems.add(new ProblemEntity("Method missing", "Method could not be found!"));
 			return problems;
 		}
+
 
 		// 2) Check if method Headers exists
 		PsiAnnotation[] annotations = method.getModifierList().getAnnotations();
@@ -140,7 +142,7 @@ public class ProjectManager
 			{
 				uriFound = true;
 				if(!annotation.getParameterList().getAttributes()[0].getValue().getText().equals("\"" + entity.getUri() + "\""))
-					problems.add(new ProblemEntity("Method URI", "Method and API URI do not match. 1:" + annotation.getParameterList().getAttributes()[0].getValue().getText() + "\t2:" + entity.getUri()));
+					problems.add(new ProblemEntity("Method URI", "Method and API URI do not match."));
 			}
 		}
 
@@ -151,7 +153,7 @@ public class ProjectManager
 		else if(entity.getResponseBody()!=null) methodReturnType += entity.getResponseBody().get(0).getEntityName();
 		else methodReturnType += "Response";
 		if(!method.getReturnType().getPresentableText().equals(methodReturnType))
-			problems.add(new ProblemEntity("Method return type", "Method and API return type do not match. 1:" + method.getReturnType().getPresentableText() + "\t2:" + methodReturnType));
+			problems.add(new ProblemEntity("Method return type", "Method and API return type do not match."));
 
 
 		// 5) Check method parameters
@@ -184,7 +186,7 @@ public class ProjectManager
 				if(parameterList.getParameters()[i].getName().equals("param" + Utils.firstLetterUpperCase(bodyEntity.getEntityName())))
 				{
 					if(!parameterList.getParameters()[i].getType().getPresentableText().equals(bodyEntity.getEntityName()))
-						problems.add(new ProblemEntity("Body request entity", "Request have bad type."));
+						problems.add(new ProblemEntity("Method body request", "Method body request: " + bodyEntity.getSerializableName() + " have bad type."));
 					requestsList.remove(bodyEntity);
 					break;
 				}
@@ -198,12 +200,13 @@ public class ProjectManager
 					if(entity.getUri().contains(paramEntity.getName()))
 					{
 						if(!parameterList.getParameters()[i].getType().getPresentableText().equals(Utils.firstLetterUpperCase(paramEntity.getType())))
-							problems.add(new ProblemEntity("Parameters", "Parameter have bad type."));
+							problems.add(new ProblemEntity("Method parameters", "Method parameter: " + paramEntity.getName() + " have bad type."));
 
 						if(!parameterList.getParameters()[i].getModifierList().getAnnotations()[0].getQualifiedName().equals(paramEntity.getTypeOfParam()))
-							problems.add(new ProblemEntity("Parameters", "Parameter have bad annotation"));
+							problems.add(new ProblemEntity("Method parameters", "Method parameter: " + paramEntity.getName() + " have bad annotation"));
 					}
-					else problems.add(new ProblemEntity("Parameters", "URI does not contain this parameter."));
+					else
+						problems.add(new ProblemEntity("Method parameters", "URI does not contain this parameter: " + paramEntity.getName() + "."));
 
 					paramList.remove(paramEntity);
 					break;
@@ -212,10 +215,10 @@ public class ProjectManager
 		}
 
 		if(requestsList!=null) for(BodyObjectEntity bodyEntity : requestsList)
-			problems.add(new ProblemEntity("Body request entity", "This body item is not implemented. 1:" + bodyEntity.getEntityName()));
+			problems.add(new ProblemEntity("Method body request", "This body item is not implemented: " + bodyEntity.getEntityName() + "."));
 
 		if(paramList!=null) for(ParametersEntity paramEntity : paramList)
-			problems.add(new ProblemEntity("Parameters", "This parameter is not implemented. 1:" + paramEntity.getName()));
+			problems.add(new ProblemEntity("Method parameters", "This parameter is not implemented:" + paramEntity.getName() + "."));
 
 		if(entity.isAsync() && !callbackFound) problems.add(new ProblemEntity("Callback missing", "Method missing callback."));
 
@@ -237,7 +240,7 @@ public class ProjectManager
 		}
 		catch(Exception e)
 		{
-			problems.add(new ProblemEntity("Entity missing", "Entity could not be found: " + entity.getEntityName()));
+			problems.add(new ProblemEntity("Entity missing", "Entity: " + entity.getEntityName() + " could not be found."));
 			return problems;
 		}
 
@@ -252,7 +255,7 @@ public class ProjectManager
 					// check type
 					// private String mDescription;
 					if(!field.getType().getPresentableText().equals(variable.getTypeName()))
-						problems.add(new ProblemEntity("Entity variable bad type", "Variable: " + variable.getName() + " : " + variable.getTypeName() + " variable have bad type: " + field.getType().getPresentableText()));
+						problems.add(new ProblemEntity("Entity variable bad type", "Variable: " + variable.getName() + " have bad type."));
 					// check annotation
 					// @SerializedName("description")
 					PsiAnnotation[] annotations = field.getModifierList().getAnnotations();
@@ -263,7 +266,7 @@ public class ProjectManager
 							headersString = annotation.getParameterList().getAttributes()[0].getValue().getText();
 					}
 					if(!headersString.equals("\"" + variable.getName() + "\""))
-						problems.add(new ProblemEntity("Entity variable bad type", "Entity variable have bad serializable name: " + headersString));
+						problems.add(new ProblemEntity("Entity variable bad type", "Variable: " + headersString + " have bad serialized name."));
 
 					variablesList.remove(variable);
 					break;
@@ -272,7 +275,7 @@ public class ProjectManager
 		}
 
 		for(BodyVariableEntity variable : variablesList)
-			problems.add(new ProblemEntity("Entity variable", "This variable is not implemented. 1:" + "m" + Utils.firstLetterUpperCase(Utils.cleanUpString(variable.getName()))));
+			problems.add(new ProblemEntity("Entity variable", "Variable: m" + Utils.firstLetterUpperCase(Utils.cleanUpString(variable.getName())) + " is not implemented."));
 
 		return problems;
 	}

@@ -128,6 +128,11 @@ public class ABMToolWindowImplementationSecond extends JFrame
 		methodHeaderText.setHorizontalAlignment(SwingConstants.CENTER);
 		methodPanel.add(methodHeaderText);
 
+		List<ProblemEntity> methodProblems = ProjectManager.checkMethodForProblems(mEntity);
+		if(!methodProblems.isEmpty())
+			methodHeaderText.setText("<html><center><a style=\"color: red\">" + mEntity.getMethodName() + "</a></center></html>");
+		else methodHeaderText.setText("<html><center><a style=\"color: green\">" + mEntity.getMethodName() + "</a></center></html>");
+
 		// TextArea method
 		final JTextArea methodTextArea = new JTextArea(generateMethodExample());
 		methodTextArea.setForeground(Color.WHITE);
@@ -163,7 +168,8 @@ public class ABMToolWindowImplementationSecond extends JFrame
 
 					String problemList = "";
 					for(ProblemEntity problemEntity : methodProblems)
-						problemList += "Problem: " + problemEntity.getName() + " \tText: " + problemEntity.getText();
+						problemList += problemEntity.getText() + "\n\n";
+					//						problemList += problemEntity.getName() + " \n\t" + problemEntity.getText()+"\n";
 
 					JOptionPane pane = new JOptionPane(problemList);
 					Object[] options = new String[]{mMessages.getString("global_ok")};
@@ -201,6 +207,11 @@ public class ABMToolWindowImplementationSecond extends JFrame
 				entityHeaderText.setHorizontalAlignment(SwingConstants.CENTER);
 				entityPanel.add(entityHeaderText);
 
+				List<ProblemEntity> entityProblem = ProjectManager.checkEntityForProblems(entity);
+				if(!entityProblem.isEmpty())
+					entityHeaderText.setText("<html><center><a style=\"color: red\">" + entity.getEntityName() + "</a></center></html>");
+				else entityHeaderText.setText("<html><center><a style=\"color: green\">" + entity.getEntityName() + "</a></center></html>");
+
 				// TextArea method
 				final JTextArea entityTextArea = new JTextArea(generateEntityExample(entity));
 				entityTextArea.setForeground(Color.WHITE);
@@ -236,7 +247,8 @@ public class ABMToolWindowImplementationSecond extends JFrame
 
 							String problemList = "";
 							for(ProblemEntity problemEntity : entityProblems)
-								problemList += "Problem: " + problemEntity.getName() + " \tText: " + problemEntity.getText();
+								problemList += problemEntity.getText() + "\n\n";
+							//								problemList += problemEntity.getName() + " \n\t" + problemEntity.getText()+"\n";
 
 							JOptionPane pane = new JOptionPane(problemList);
 							Object[] options = new String[]{mMessages.getString("global_ok")};
@@ -277,6 +289,10 @@ public class ABMToolWindowImplementationSecond extends JFrame
 				entityHeaderText.setHorizontalAlignment(SwingConstants.CENTER);
 				entityPanel.add(entityHeaderText);
 
+				List<ProblemEntity> entityProblem = ProjectManager.checkEntityForProblems(entity);
+				if(!entityProblem.isEmpty())
+					entityHeaderText.setText("<html><center><a style=\"color: red\">" + entity.getEntityName() + "</a></center></html>");
+				else entityHeaderText.setText("<html><center><a style=\"color: green\">" + entity.getEntityName() + "</a></center></html>");
 
 				// TextArea response
 				final JTextArea entityTextArea = new JTextArea(generateEntityExample(entity));
@@ -314,7 +330,8 @@ public class ABMToolWindowImplementationSecond extends JFrame
 
 							String problemList = "";
 							for(ProblemEntity problemEntity : entityProblems)
-								problemList += "Problem: " + problemEntity.getName() + " \tText: " + problemEntity.getText();
+								problemList += problemEntity.getText() + "\n\n";
+							//								problemList += problemEntity.getName() + " \n\t" + problemEntity.getText()+"\n";
 
 							JOptionPane pane = new JOptionPane(problemList);
 							Object[] options = new String[]{mMessages.getString("global_ok")};
