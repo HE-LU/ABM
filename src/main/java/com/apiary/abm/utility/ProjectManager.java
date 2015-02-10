@@ -179,7 +179,7 @@ public class ProjectManager
 			}
 
 			// All request parameters
-			for(BodyObjectEntity bodyEntity : requestsList)
+			if(requestsList!=null) for(BodyObjectEntity bodyEntity : requestsList)
 			{
 				if(parameterList.getParameters()[i].getName().equals("param" + Utils.firstLetterUpperCase(bodyEntity.getEntityName())))
 				{
@@ -191,7 +191,7 @@ public class ProjectManager
 			}
 
 			// All parameters
-			for(ParametersEntity paramEntity : paramList)
+			if(paramList!=null) for(ParametersEntity paramEntity : paramList)
 			{
 				if(parameterList.getParameters()[i].getName().equals("param" + Utils.firstLetterUpperCase(paramEntity.getName())))
 				{
@@ -237,12 +237,11 @@ public class ProjectManager
 		}
 		catch(Exception e)
 		{
-			e.printStackTrace();
 			problems.add(new ProblemEntity("Entity missing", "Entity could not be found: " + entity.getEntityName()));
 			return problems;
 		}
 
-		List<BodyVariableEntity> variablesList = entity.getVariables();
+		List<BodyVariableEntity> variablesList = new ArrayList<BodyVariableEntity>(entity.getVariables());
 		// check variables
 		for(PsiField field : entityClass.getFields())
 		{
@@ -252,8 +251,8 @@ public class ProjectManager
 				{
 					// check type
 					// private String mDescription;
-					if(!field.getType().getPresentableText().equals(variable.getTypeName()))
-						problems.add(new ProblemEntity("Entity variable bad type", "Entity: " + variable.getType().toString() + ":" + variable.getTypeName() + " variable have bad type: " + field.getType().getPresentableText()));
+					if(!field.getType().getCanonicalText().equals(variable.getTypeName()))
+						problems.add(new ProblemEntity("Entity variable bad type", "Variable: " + variable.getName() + " : " + variable.getTypeName() + " variable have bad type: " + field.getType().getCanonicalText()));
 
 					// check annotation
 					// @SerializedName("description")

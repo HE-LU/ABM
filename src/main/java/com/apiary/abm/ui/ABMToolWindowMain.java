@@ -528,6 +528,7 @@ public class ABMToolWindowMain extends JFrame
 						else if(entVar.getType()==VariableEnum.MAP)
 							entVar.setTypeName(Utils.findEntityNameInBodyObjectList(requests, entVar.getName()));
 						else if(entVar.getType()==VariableEnum.NONE) entVar.setTypeName("NONE");
+						else entVar.setTypeName("ERROR");
 				}
 			}
 			if(responses!=null)
@@ -548,7 +549,7 @@ public class ABMToolWindowMain extends JFrame
 						else if(entVar.getType()==VariableEnum.MAP)
 							entVar.setTypeName(Utils.findEntityNameInBodyObjectList(responses, entVar.getName()));
 						else if(entVar.getType()==VariableEnum.NONE) entVar.setTypeName("NONE");
-						else entVar.setTypeName("WTF");
+						else entVar.setTypeName("ERROR");
 				}
 			}
 
@@ -557,7 +558,7 @@ public class ABMToolWindowMain extends JFrame
 			//				for(BodyObjectEntity ent : requests)
 			//				{
 			//					for(BodyVariableEntity entVar : ent.getVariables())
-			//						Log.d("ent: " + ent.getSerializableName()+"\tVar: " + entVar.getName()+"\tType: " + entVar.getTypeName());
+			//						Log.d("ent: " + ent.getSerializableName() + "\tVar: " + entVar.getName() + "\tType: " + entVar.getTypeName());
 			//				}
 			//			}
 			//			if(responses!=null)
@@ -565,7 +566,7 @@ public class ABMToolWindowMain extends JFrame
 			//				for(BodyObjectEntity ent : responses)
 			//				{
 			//					for(BodyVariableEntity entVar : ent.getVariables())
-			//						Log.d("ent: " + ent.getSerializableName()+"\tVar: " + entVar.getName()+"\tType: " + entVar.getTypeName());
+			//						Log.d("ent: " + ent.getSerializableName() + "\tVar: " + entVar.getName() + "\tType: " + entVar.getTypeName());
 			//				}
 			//			}
 		}
@@ -739,7 +740,7 @@ public class ABMToolWindowMain extends JFrame
 					}
 
 					if(ok)
-						//						entity.setTreeNodeType(TreeNodeTypeEnum.MODIFIED); // todo remove entity
+						//						entity.setTreeNodeType(TreeNodeTypeEnum.MODIFIED);
 						outputTreeNodeList.remove(entity);
 					else entity.setTreeNodeType(TreeNodeTypeEnum.MODIFIED);
 				}

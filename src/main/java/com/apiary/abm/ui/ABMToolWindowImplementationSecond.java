@@ -3,10 +3,12 @@ package com.apiary.abm.ui;
 
 import com.apiary.abm.entity.BodyObjectEntity;
 import com.apiary.abm.entity.BodyVariableEntity;
+import com.apiary.abm.entity.ProblemEntity;
 import com.apiary.abm.entity.TreeNodeEntity;
 import com.apiary.abm.entity.blueprint.HeadersEntity;
 import com.apiary.abm.entity.blueprint.ParametersEntity;
 import com.apiary.abm.utility.ConfigPreferences;
+import com.apiary.abm.utility.ProjectManager;
 import com.apiary.abm.utility.Utils;
 import com.apiary.abm.view.ImageButton;
 import com.apiary.abm.view.JBackgroundPanel;
@@ -20,11 +22,16 @@ import net.miginfocom.swing.MigLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -138,6 +145,36 @@ public class ABMToolWindowImplementationSecond extends JFrame
 
 		methodPanel.add(methodScrollPanel);
 
+		final JButton methodCheckButton = new JButton(mMessages.getString("implementation_second_button_check"));
+		methodCheckButton.setMaximumSize(new Dimension(Utils.reDimension(120), Integer.MAX_VALUE));
+		methodCheckButton.setMinimumSize(new Dimension(Utils.reDimension(120), 0));
+		methodCheckButton.setOpaque(false);
+		methodPanel.add(methodCheckButton);
+
+		methodCheckButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				List<ProblemEntity> methodProblems = ProjectManager.checkMethodForProblems(mEntity);
+
+				if(!methodProblems.isEmpty())
+				{
+					methodHeaderText.setText("<html><center><a style=\"color: red\">" + mEntity.getMethodName() + "</a></center></html>");
+
+					String problemList = "";
+					for(ProblemEntity problemEntity : methodProblems)
+						problemList += "Problem: " + problemEntity.getName() + " \tText: " + problemEntity.getText();
+
+					JOptionPane pane = new JOptionPane(problemList);
+					Object[] options = new String[]{mMessages.getString("global_ok")};
+					pane.setOptions(options);
+					JDialog dialog = pane.createDialog(new JFrame(), mMessages.getString("implementation_dialog_check_header"));
+					dialog.setVisible(true);
+				}
+				else
+					methodHeaderText.setText("<html><center><a style=\"color: green\">" + mEntity.getMethodName() + "</a></center></html>");
+			}
+		});
 
 		if(mEntity.getRequestBody()!=null)
 		{
@@ -148,7 +185,7 @@ public class ABMToolWindowImplementationSecond extends JFrame
 			requestHeaderText.setHorizontalAlignment(SwingConstants.CENTER);
 			middlePanel.add(requestHeaderText);
 
-			for(BodyObjectEntity entity : mEntity.getRequestBody())
+			for(final BodyObjectEntity entity : mEntity.getRequestBody())
 			{
 				// Panel method
 				final JBackgroundPanel entityPanel = new JBackgroundPanel("drawable/img_background_panel.9.png", JBackgroundPanel.JBackgroundPanelType.NINE_PATCH);
@@ -180,6 +217,37 @@ public class ABMToolWindowImplementationSecond extends JFrame
 				scrollPanel.removeMouseWheelListener(scrollPanel.getMouseWheelListeners()[0]);
 
 				entityPanel.add(scrollPanel);
+
+				final JButton entityCheckButton = new JButton(mMessages.getString("implementation_second_button_check"));
+				entityCheckButton.setMaximumSize(new Dimension(Utils.reDimension(120), Integer.MAX_VALUE));
+				entityCheckButton.setMinimumSize(new Dimension(Utils.reDimension(120), 0));
+				entityCheckButton.setOpaque(false);
+				entityPanel.add(entityCheckButton);
+
+				entityCheckButton.addActionListener(new ActionListener()
+				{
+					public void actionPerformed(ActionEvent e)
+					{
+						List<ProblemEntity> entityProblems = ProjectManager.checkEntityForProblems(entity);
+
+						if(!entityProblems.isEmpty())
+						{
+							entityHeaderText.setText("<html><center><a style=\"color: red\">" + entity.getEntityName() + "</a></center></html>");
+
+							String problemList = "";
+							for(ProblemEntity problemEntity : entityProblems)
+								problemList += "Problem: " + problemEntity.getName() + " \tText: " + problemEntity.getText();
+
+							JOptionPane pane = new JOptionPane(problemList);
+							Object[] options = new String[]{mMessages.getString("global_ok")};
+							pane.setOptions(options);
+							JDialog dialog = pane.createDialog(new JFrame(), mMessages.getString("implementation_dialog_check_header"));
+							dialog.setVisible(true);
+						}
+						else
+							entityHeaderText.setText("<html><center><a style=\"color: green\">" + entity.getEntityName() + "</a></center></html>");
+					}
+				});
 			}
 		}
 
@@ -193,7 +261,7 @@ public class ABMToolWindowImplementationSecond extends JFrame
 			responseHeaderText.setHorizontalAlignment(SwingConstants.CENTER);
 			middlePanel.add(responseHeaderText);
 
-			for(BodyObjectEntity entity : mEntity.getResponseBody())
+			for(final BodyObjectEntity entity : mEntity.getResponseBody())
 			{
 				// Panel response
 				final JBackgroundPanel entityPanel = new JBackgroundPanel("drawable/img_background_panel.9.png", JBackgroundPanel.JBackgroundPanelType.NINE_PATCH);
@@ -226,6 +294,38 @@ public class ABMToolWindowImplementationSecond extends JFrame
 				scrollPanel.removeMouseWheelListener(scrollPanel.getMouseWheelListeners()[0]);
 
 				entityPanel.add(scrollPanel);
+
+
+				final JButton entityCheckButton = new JButton(mMessages.getString("implementation_second_button_check"));
+				entityCheckButton.setMaximumSize(new Dimension(Utils.reDimension(120), Integer.MAX_VALUE));
+				entityCheckButton.setMinimumSize(new Dimension(Utils.reDimension(120), 0));
+				entityCheckButton.setOpaque(false);
+				entityPanel.add(entityCheckButton);
+
+				entityCheckButton.addActionListener(new ActionListener()
+				{
+					public void actionPerformed(ActionEvent e)
+					{
+						List<ProblemEntity> entityProblems = ProjectManager.checkEntityForProblems(entity);
+
+						if(!entityProblems.isEmpty())
+						{
+							entityHeaderText.setText("<html><center><a style=\"color: red\">" + entity.getEntityName() + "</a></center></html>");
+
+							String problemList = "";
+							for(ProblemEntity problemEntity : entityProblems)
+								problemList += "Problem: " + problemEntity.getName() + " \tText: " + problemEntity.getText();
+
+							JOptionPane pane = new JOptionPane(problemList);
+							Object[] options = new String[]{mMessages.getString("global_ok")};
+							pane.setOptions(options);
+							JDialog dialog = pane.createDialog(new JFrame(), mMessages.getString("implementation_dialog_check_header"));
+							dialog.setVisible(true);
+						}
+						else
+							entityHeaderText.setText("<html><center><a style=\"color: green\">" + entity.getEntityName() + "</a></center></html>");
+					}
+				});
 			}
 		}
 

@@ -575,7 +575,7 @@ public class ABMToolWindowImplementationFirst extends JFrame
 							mEntity.setMethodName(methodNameTextField.getText());
 							mEntity.setAsync(methodAsyncCheckBox.isSelected());
 
-							for(Pair<String, JTextField> entity : mRequestTextFields)
+							if(mEntity.getRequestBody()!=null) for(Pair<String, JTextField> entity : mRequestTextFields)
 							{
 								for(BodyObjectEntity bodyEntity : mEntity.getRequestBody())
 									if(entity.getFirst().equals(bodyEntity.getSerializableName()))
@@ -585,7 +585,7 @@ public class ABMToolWindowImplementationFirst extends JFrame
 									}
 							}
 
-							for(Pair<String, JTextField> entity : mResponseTextFields)
+							if(mEntity.getResponseBody()!=null) for(Pair<String, JTextField> entity : mResponseTextFields)
 							{
 								for(BodyObjectEntity bodyEntity : mEntity.getResponseBody())
 								{
