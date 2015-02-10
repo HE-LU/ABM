@@ -531,7 +531,7 @@ public class ABMToolWindowImplementationFirst extends JFrame
 						String errorText = "";
 
 						// check method name
-						if(methodNameTextField.getText().equals(""))
+						if(methodNameTextField.getText().isEmpty())
 						{
 							error = true;
 							errorText = mMessages.getString("implementation_message_error_method");
@@ -540,7 +540,7 @@ public class ABMToolWindowImplementationFirst extends JFrame
 						// check all request entity names
 						if(!error) for(Pair<String, JTextField> entity : mRequestTextFields)
 						{
-							if(entity.getSecond().getText().equals(""))
+							if(entity.getSecond().getText().isEmpty())
 							{
 								error = true;
 								errorText = mMessages.getString("implementation_message_error_request");
@@ -550,7 +550,7 @@ public class ABMToolWindowImplementationFirst extends JFrame
 						// check all response entity names
 						if(!error) for(Pair<String, JTextField> entity : mResponseTextFields)
 						{
-							if(entity.getSecond().getText().equals(""))
+							if(entity.getSecond().getText().isEmpty())
 							{
 								error = true;
 								errorText = mMessages.getString("implementation_message_error_response");
@@ -607,9 +607,10 @@ public class ABMToolWindowImplementationFirst extends JFrame
 									else if(entVar.getType()==VariableEnum.ENUM) entVar.setTypeName("ENUM");
 									else if(entVar.getType()==VariableEnum.COLLECTION)
 									{
-										if(!entVar.getTypeName().equals("")) entVar.setTypeName(entVar.getTypeName());
-										else
-											entVar.setTypeName("List<" + Utils.findEntityNameInBodyObjectList(mEntity.getResponseBody(), entVar.getName()) + ">");
+										if(Utils.findEntityNameInBodyObjectList(mEntity.getRequestBody(), entVar.getName())!=null)
+											entVar.setTypeName("List<" + Utils.findEntityNameInBodyObjectList(mEntity.getRequestBody(), entVar.getName()) + ">");
+										else if(!entVar.getTypeName().isEmpty()) entVar.setTypeName(entVar.getTypeName());
+										else entVar.setTypeName("ERROR");
 									}
 									else if(entVar.getType()==VariableEnum.MAP)
 										entVar.setTypeName(Utils.findEntityNameInBodyObjectList(mEntity.getRequestBody(), entVar.getName()));
@@ -626,9 +627,10 @@ public class ABMToolWindowImplementationFirst extends JFrame
 									else if(entVar.getType()==VariableEnum.ENUM) entVar.setTypeName("ENUM");
 									else if(entVar.getType()==VariableEnum.COLLECTION)
 									{
-										if(!entVar.getTypeName().equals("")) entVar.setTypeName(entVar.getTypeName());
-										else
+										if(Utils.findEntityNameInBodyObjectList(mEntity.getResponseBody(), entVar.getName())!=null)
 											entVar.setTypeName("List<" + Utils.findEntityNameInBodyObjectList(mEntity.getResponseBody(), entVar.getName()) + ">");
+										else if(!entVar.getTypeName().isEmpty()) entVar.setTypeName(entVar.getTypeName());
+										else entVar.setTypeName("ERROR");
 									}
 									else if(entVar.getType()==VariableEnum.MAP)
 										entVar.setTypeName(Utils.findEntityNameInBodyObjectList(mEntity.getResponseBody(), entVar.getName()));

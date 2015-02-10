@@ -251,9 +251,8 @@ public class ProjectManager
 				{
 					// check type
 					// private String mDescription;
-					if(!field.getType().getCanonicalText().equals(variable.getTypeName()))
-						problems.add(new ProblemEntity("Entity variable bad type", "Variable: " + variable.getName() + " : " + variable.getTypeName() + " variable have bad type: " + field.getType().getCanonicalText()));
-
+					if(!field.getType().getPresentableText().equals(variable.getTypeName()))
+						problems.add(new ProblemEntity("Entity variable bad type", "Variable: " + variable.getName() + " : " + variable.getTypeName() + " variable have bad type: " + field.getType().getPresentableText()));
 					// check annotation
 					// @SerializedName("description")
 					PsiAnnotation[] annotations = field.getModifierList().getAnnotations();

@@ -522,8 +522,10 @@ public class ABMToolWindowMain extends JFrame
 						else if(entVar.getType()==VariableEnum.ENUM) entVar.setTypeName("ENUM");
 						else if(entVar.getType()==VariableEnum.COLLECTION)
 						{
-							if(!entVar.getTypeName().equals("")) entVar.setTypeName("List<" + entVar.getTypeName() + ">");
-							else entVar.setTypeName("List<" + Utils.findEntityNameInBodyObjectList(responses, entVar.getName()) + ">");
+							if(Utils.findEntityNameInBodyObjectList(responses, entVar.getName())!=null)
+								entVar.setTypeName("List<" + Utils.findEntityNameInBodyObjectList(responses, entVar.getName()) + ">");
+							else if(!entVar.getTypeName().isEmpty()) entVar.setTypeName("List<" + entVar.getTypeName() + ">");
+							else entVar.setTypeName("");
 						}
 						else if(entVar.getType()==VariableEnum.MAP)
 							entVar.setTypeName(Utils.findEntityNameInBodyObjectList(requests, entVar.getName()));
@@ -543,8 +545,10 @@ public class ABMToolWindowMain extends JFrame
 						else if(entVar.getType()==VariableEnum.ENUM) entVar.setTypeName("ENUM");
 						else if(entVar.getType()==VariableEnum.COLLECTION)
 						{
-							if(!entVar.getTypeName().equals("")) entVar.setTypeName("List<" + entVar.getTypeName() + ">");
-							else entVar.setTypeName("List<" + Utils.findEntityNameInBodyObjectList(responses, entVar.getName()) + ">");
+							if(Utils.findEntityNameInBodyObjectList(responses, entVar.getName())!=null)
+								entVar.setTypeName("List<" + Utils.findEntityNameInBodyObjectList(responses, entVar.getName()) + ">");
+							else if(!entVar.getTypeName().isEmpty()) entVar.setTypeName("List<" + entVar.getTypeName() + ">");
+							else entVar.setTypeName("");
 						}
 						else if(entVar.getType()==VariableEnum.MAP)
 							entVar.setTypeName(Utils.findEntityNameInBodyObjectList(responses, entVar.getName()));
