@@ -597,7 +597,7 @@ public class ABMToolWindowImplementationFirst extends JFrame
 								}
 							}
 
-							for(BodyObjectEntity ent : mEntity.getRequestBody())
+							if(mEntity.getRequestBody()!=null) for(BodyObjectEntity ent : mEntity.getRequestBody())
 							{
 								for(BodyVariableEntity entVar : ent.getVariables())
 									if(entVar.getType()==VariableEnum.STRING) entVar.setTypeName("String");
@@ -606,13 +606,17 @@ public class ABMToolWindowImplementationFirst extends JFrame
 									else if(entVar.getType()==VariableEnum.BOOLEAN) entVar.setTypeName("Boolean");
 									else if(entVar.getType()==VariableEnum.ENUM) entVar.setTypeName("ENUM");
 									else if(entVar.getType()==VariableEnum.COLLECTION)
-										entVar.setTypeName("List<" + Utils.findEntityNameInBodyObjectList(mEntity.getRequestBody(), entVar.getName()) + ">");
+									{
+										if(!entVar.getTypeName().equals("")) entVar.setTypeName(entVar.getTypeName());
+										else
+											entVar.setTypeName("List<" + Utils.findEntityNameInBodyObjectList(mEntity.getResponseBody(), entVar.getName()) + ">");
+									}
 									else if(entVar.getType()==VariableEnum.MAP)
 										entVar.setTypeName(Utils.findEntityNameInBodyObjectList(mEntity.getRequestBody(), entVar.getName()));
 									else if(entVar.getType()==VariableEnum.NONE) entVar.setTypeName("NONE");
 							}
 
-							for(BodyObjectEntity ent : mEntity.getResponseBody())
+							if(mEntity.getResponseBody()!=null) for(BodyObjectEntity ent : mEntity.getResponseBody())
 							{
 								for(BodyVariableEntity entVar : ent.getVariables())
 									if(entVar.getType()==VariableEnum.STRING) entVar.setTypeName("String");
@@ -621,7 +625,11 @@ public class ABMToolWindowImplementationFirst extends JFrame
 									else if(entVar.getType()==VariableEnum.BOOLEAN) entVar.setTypeName("Boolean");
 									else if(entVar.getType()==VariableEnum.ENUM) entVar.setTypeName("ENUM");
 									else if(entVar.getType()==VariableEnum.COLLECTION)
-										entVar.setTypeName("List<" + Utils.findEntityNameInBodyObjectList(mEntity.getResponseBody(), entVar.getName()) + ">");
+									{
+										if(!entVar.getTypeName().equals("")) entVar.setTypeName(entVar.getTypeName());
+										else
+											entVar.setTypeName("List<" + Utils.findEntityNameInBodyObjectList(mEntity.getResponseBody(), entVar.getName()) + ">");
+									}
 									else if(entVar.getType()==VariableEnum.MAP)
 										entVar.setTypeName(Utils.findEntityNameInBodyObjectList(mEntity.getResponseBody(), entVar.getName()));
 									else if(entVar.getType()==VariableEnum.NONE) entVar.setTypeName("NONE");

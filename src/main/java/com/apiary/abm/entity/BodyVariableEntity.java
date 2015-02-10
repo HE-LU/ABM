@@ -12,6 +12,15 @@ public class BodyVariableEntity
 	{
 		this.mName = mName;
 		this.mType = mType;
+		this.mTypeName = "";
+	}
+
+
+	public BodyVariableEntity(String mName, Object mType, String mTypeName)
+	{
+		this.mName = mName;
+		this.mType = mType;
+		this.mTypeName = mTypeName;
 	}
 
 

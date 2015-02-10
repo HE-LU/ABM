@@ -382,7 +382,7 @@ public class ABMToolWindowImplementationSecond extends JFrame
 		//		Log.d("\n1\n" + output + "\n");
 
 		if(mEntity.isAsync()) if(mEntity.getResponseBody()!=null)
-			output += "\tCallback<" + mEntity.getResponseBody().get(0).getEntityName() + "> " + mEntity.getMethodName() + "Callback, \n";
+			output += "\tCallback<" + BodyObjectEntity.findBySerializableName(mEntity.getResponseBody(), "ROOT").getEntityName() + "> " + mEntity.getMethodName() + "Callback, \n";
 		else output += "\tCallback<Response> " + mEntity.getMethodName() + "Callback, \n";
 
 		//		Log.d("\n2\n" + output + "\n");

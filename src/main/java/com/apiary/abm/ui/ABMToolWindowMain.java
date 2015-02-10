@@ -473,7 +473,10 @@ public class ABMToolWindowMain extends JFrame
 						else if(entVar.getType()==VariableEnum.BOOLEAN) entVar.setTypeName("Boolean");
 						else if(entVar.getType()==VariableEnum.ENUM) entVar.setTypeName("ENUM");
 						else if(entVar.getType()==VariableEnum.COLLECTION)
-							entVar.setTypeName("List<" + Utils.findEntityNameInBodyObjectList(requests, entVar.getName()) + ">");
+						{
+							if(!entVar.getTypeName().equals("")) entVar.setTypeName("List<" + entVar.getTypeName() + ">");
+							else entVar.setTypeName("List<" + Utils.findEntityNameInBodyObjectList(responses, entVar.getName()) + ">");
+						}
 						else if(entVar.getType()==VariableEnum.MAP)
 							entVar.setTypeName(Utils.findEntityNameInBodyObjectList(requests, entVar.getName()));
 						else if(entVar.getType()==VariableEnum.NONE) entVar.setTypeName("NONE");
@@ -490,10 +493,14 @@ public class ABMToolWindowMain extends JFrame
 						else if(entVar.getType()==VariableEnum.BOOLEAN) entVar.setTypeName("Boolean");
 						else if(entVar.getType()==VariableEnum.ENUM) entVar.setTypeName("ENUM");
 						else if(entVar.getType()==VariableEnum.COLLECTION)
-							entVar.setTypeName("List<" + Utils.findEntityNameInBodyObjectList(responses, entVar.getName()) + ">");
+						{
+							if(!entVar.getTypeName().equals("")) entVar.setTypeName("List<" + entVar.getTypeName() + ">");
+							else entVar.setTypeName("List<" + Utils.findEntityNameInBodyObjectList(responses, entVar.getName()) + ">");
+						}
 						else if(entVar.getType()==VariableEnum.MAP)
 							entVar.setTypeName(Utils.findEntityNameInBodyObjectList(responses, entVar.getName()));
 						else if(entVar.getType()==VariableEnum.NONE) entVar.setTypeName("NONE");
+						else entVar.setTypeName("WTF");
 				}
 			}
 		}
@@ -510,9 +517,9 @@ public class ABMToolWindowMain extends JFrame
 
 		try
 		{
-			Object things = new Gson().fromJson(json, Object.class);
+			Object object = new Gson().fromJson(json, Object.class);
 
-			parseBodyJsonValues(list, things, "");
+			parseBodyJsonValues(list, object, "");
 
 			for(BodyObjectEntity ent : list)
 			{
@@ -540,7 +547,7 @@ public class ABMToolWindowMain extends JFrame
 	}
 
 
-	private void parseBodyJsonValues(List<BodyObjectEntity> list, Object object, String rootName)
+	private String parseBodyJsonValues(List<BodyObjectEntity> list, Object object, String rootName)
 	{
 		if(object instanceof Map)
 		{
@@ -550,22 +557,32 @@ public class ABMToolWindowMain extends JFrame
 			for(Object o : map.entrySet())
 			{
 				Map.Entry thisEntry = (Map.Entry) o;
-				variablesList.add(new BodyVariableEntity(thisEntry.getKey().toString(), thisEntry.getValue()));
+				String var = parseBodyJsonValues(list, thisEntry.getValue(), thisEntry.getKey().toString());
+				variablesList.add(new BodyVariableEntity(thisEntry.getKey().toString(), thisEntry.getValue(), var));
 			}
 
 			BodyObjectEntity entity = new BodyObjectEntity(rootName, "", variablesList);
-			list.add(entity);
+			list.add(0, entity);
 
-			for(Object o : map.entrySet())
-			{
-				Map.Entry thisEntry = (Map.Entry) o;
-				parseBodyJsonValues(list, thisEntry.getValue(), thisEntry.getKey().toString());
-			}
+			return "";
 		}
 		else if(object instanceof Collection)
 		{
+			String var = "";
 			for(Object value : (Collection) object)
-				parseBodyJsonValues(list, value, rootName);
+			{
+				var = parseBodyJsonValues(list, value, rootName);
+			}
+			return var;
+		}
+		else
+		{
+			if(object instanceof String) return "String";
+			else if(object instanceof Number) if(((Number) object).intValue()==((Number) object).doubleValue()) return "Integer";
+			else return "Double";
+			else if(object instanceof Boolean) return "Boolean";
+			else if(object instanceof Enum) return "ENUM";
+			else return "";
 		}
 	}
 
@@ -617,7 +634,7 @@ public class ABMToolWindowMain extends JFrame
 
 					if(!methodProblems.isEmpty())
 					{
-						ok=false;
+						ok = false;
 						Log.d("BEGIN");
 						for(ProblemEntity problemEntity : methodProblems)
 							Log.d("Problem: " + problemEntity.getName() + "\tText: " + problemEntity.getText());
@@ -632,7 +649,7 @@ public class ABMToolWindowMain extends JFrame
 
 						if(!entityProblems.isEmpty())
 						{
-							ok=false;
+							ok = false;
 							Log.d("BEGIN");
 							for(ProblemEntity problemEntity : entityProblems)
 								Log.d("Problem: " + problemEntity.getName() + "\tText: " + problemEntity.getText());
@@ -647,7 +664,7 @@ public class ABMToolWindowMain extends JFrame
 
 						if(!entityProblems.isEmpty())
 						{
-							ok=false;
+							ok = false;
 							Log.d("BEGIN");
 							for(ProblemEntity problemEntity : entityProblems)
 								Log.d("Problem: " + problemEntity.getName() + "\tText: " + problemEntity.getText());
@@ -657,7 +674,7 @@ public class ABMToolWindowMain extends JFrame
 					}
 
 					if(ok)
-//						entity.setTreeNodeType(TreeNodeTypeEnum.MODIFIED); // todo remove entity
+						//						entity.setTreeNodeType(TreeNodeTypeEnum.MODIFIED); // todo remove entity
 						outputTreeNodeList.remove(entity);
 					else entity.setTreeNodeType(TreeNodeTypeEnum.MODIFIED);
 				}

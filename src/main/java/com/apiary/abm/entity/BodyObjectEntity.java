@@ -20,6 +20,14 @@ public class BodyObjectEntity
 	}
 
 
+	public static BodyObjectEntity findBySerializableName(List<BodyObjectEntity> list, String name)
+	{
+		for(BodyObjectEntity entity : list)
+			if(entity.getSerializableName().equals(name)) return entity;
+		return null;
+	}
+
+
 	@Override
 	public int hashCode()
 	{

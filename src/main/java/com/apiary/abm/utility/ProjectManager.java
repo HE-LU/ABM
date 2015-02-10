@@ -62,14 +62,28 @@ public class ProjectManager
 	public static PsiClass getInterfaceClass()
 	{
 		ConfigPreferences configPreferences = new ConfigPreferences();
-		return getClasses(configPreferences.getConfigurationEntity().getModule(), configPreferences.getConfigurationEntity().getInterfaceClass()).get(0);
+		try
+		{
+			return getClasses(configPreferences.getConfigurationEntity().getModule(), configPreferences.getConfigurationEntity().getInterfaceClass()).get(0);
+		}
+		catch(Exception e)
+		{
+			return null;
+		}
 	}
 
 
 	public static PsiClass getManagerClass()
 	{
 		ConfigPreferences configPreferences = new ConfigPreferences();
-		return getClasses(configPreferences.getConfigurationEntity().getModule(), configPreferences.getConfigurationEntity().getManagerClass()).get(0);
+		try
+		{
+			return getClasses(configPreferences.getConfigurationEntity().getModule(), configPreferences.getConfigurationEntity().getManagerClass()).get(0);
+		}
+		catch(Exception e)
+		{
+			return null;
+		}
 	}
 
 
@@ -199,10 +213,10 @@ public class ProjectManager
 			}
 		}
 
-		for(BodyObjectEntity bodyEntity : requestsList)
+		if(requestsList!=null) for(BodyObjectEntity bodyEntity : requestsList)
 			problems.add(new ProblemEntity("Body request entity", "This body item is not implemented. 1:" + bodyEntity.getEntityName()));
 
-		for(ParametersEntity paramEntity : paramList)
+		if(paramList!=null) for(ParametersEntity paramEntity : paramList)
 			problems.add(new ProblemEntity("Parameters", "This parameter is not implemented. 1:" + paramEntity.getName()));
 
 		if(entity.isAsync() && !callbackFound) problems.add(new ProblemEntity("Callback missing", "Method missing callback."));
