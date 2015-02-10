@@ -7,8 +7,19 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLContextBuilder;
+import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+
+import javax.swing.JOptionPane;
 
 
 public class Network
@@ -86,23 +97,21 @@ public class Network
 		try
 		{
 			String url = "https://api.apiblueprint.org/parser";
+			Unirest.setHttpClient(makeClient());
 			HttpResponse<String> request = Unirest.post(url).body(blueprint).asString();
 			Preferences prefs = new Preferences();
-			try
-			{
-				prefs.setBlueprintJsonTmpFileLocation(Utils.saveStringToTmpFile(ABMConfig.FILE_BLUEPRINT_JSON, request.getBody()));
-			}
-			catch(IOException e)
-			{
-				e.printStackTrace();
-			}
+			prefs.setBlueprintJsonTmpFileLocation(Utils.saveStringToTmpFile(ABMConfig.FILE_BLUEPRINT_JSON, request.getBody()));
 			return Utils.parseJsonBlueprint(request.getBody()).getError()==null;
 		}
 		catch(UnirestException e)
 		{
 			e.printStackTrace();
-			return false;
 		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 
@@ -174,5 +183,31 @@ public class Network
 		}
 
 		return tmpFilePath;
+	}
+
+
+	public static CloseableHttpClient makeClient()
+	{
+		SSLContextBuilder builder = new SSLContextBuilder();
+		CloseableHttpClient httpclient = null;
+		try
+		{
+			builder.loadTrustMaterial(null, new TrustSelfSignedStrategy());
+			SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(builder.build(), SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+			httpclient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
+		}
+		catch(NoSuchAlgorithmException e)
+		{
+			e.printStackTrace();
+		}
+		catch(KeyStoreException e)
+		{
+			e.printStackTrace();
+		}
+		catch(KeyManagementException e)
+		{
+			e.printStackTrace();
+		}
+		return httpclient;
 	}
 }
