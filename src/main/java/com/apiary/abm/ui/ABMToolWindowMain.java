@@ -34,6 +34,7 @@ import net.miginfocom.swing.MigLayout;
 
 import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -61,6 +62,7 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
 
 
 public class ABMToolWindowMain extends JFrame
@@ -158,6 +160,7 @@ public class ABMToolWindowMain extends JFrame
 		tree.setRootVisible(false);
 		tree.setOpaque(false);
 		tree.setCellRenderer(new ABMTreeCellRenderer());
+		tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 
 		middleTreePanel.add(tree);
 		middlePanel.add(middleTreePanel);
@@ -214,13 +217,36 @@ public class ABMToolWindowMain extends JFrame
 									tree.setRootVisible(false);
 									tree.setOpaque(false);
 									tree.setCellRenderer(new ABMTreeCellRenderer());
+									tree.addKeyListener(new java.awt.event.KeyAdapter()
+									{
+										public void keyPressed(KeyEvent e)
+										{
+											try
+											{
+												int keyCode = e.getKeyCode();
+
+												TreePath path = tree.getSelectionPath();
+
+												if(keyCode==KeyEvent.VK_ENTER)
+												{
+													onTreeNodeDoubleClick((TreeNodeEntity) ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject());
+												}
+											}
+											catch(NullPointerException ex)
+											{//exception}
+											}
+										}
+									});
 									tree.addMouseListener(new MouseAdapter()
 									{
 										public void mousePressed(MouseEvent e)
 										{
-											int row = tree.getRowForLocation(e.getX(), e.getY());
-											TreePath path = tree.getPathForLocation(e.getX(), e.getY());
-											if(row!=-1 && e.getClickCount()==2)
+											//											int row = tree.getRowForLocation(e.getX(), e.getY());
+											//											TreePath path = tree.getPathForLocation(e.getX(), e.getY());
+											//											if(row!=-1 && e.getClickCount()==2)
+											//												onTreeNodeDoubleClick((TreeNodeEntity) ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject());
+											TreePath path = tree.getSelectionPath();
+											if(e.getClickCount()==2)
 												onTreeNodeDoubleClick((TreeNodeEntity) ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject());
 										}
 									});
@@ -299,14 +325,37 @@ public class ABMToolWindowMain extends JFrame
 		topPanel.add(buttonConfig, "right, gap 0px " + Utils.reDimension(10) + "px " + Utils.reDimension(10) + "px 0px ");
 
 
+		tree.addKeyListener(new java.awt.event.KeyAdapter()
+		{
+			public void keyPressed(KeyEvent e)
+			{
+				try
+				{
+					int keyCode = e.getKeyCode();
+
+					TreePath path = tree.getSelectionPath();
+
+					if(keyCode==KeyEvent.VK_ENTER)
+					{
+						onTreeNodeDoubleClick((TreeNodeEntity) ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject());
+					}
+				}
+				catch(NullPointerException ex)
+				{//exception}
+				}
+			}
+		});
+
 		// Tree click listener
 		tree.addMouseListener(new MouseAdapter()
 		{
 			public void mousePressed(MouseEvent e)
 			{
-				int row = tree.getRowForLocation(e.getX(), e.getY());
-				TreePath path = tree.getPathForLocation(e.getX(), e.getY());
-				if(row!=-1 && e.getClickCount()==2)
+				//				int row = tree.getRowForLocation(e.getX(), e.getY());
+				//				TreePath path = tree.getPathForLocation(e.getX(), e.getY());
+				//				if(row!=-1 && e.getClickCount()==2 && path != null)
+				TreePath path = tree.getSelectionPath();
+				if(e.getClickCount()==2)
 					onTreeNodeDoubleClick((TreeNodeEntity) ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject());
 			}
 		});
