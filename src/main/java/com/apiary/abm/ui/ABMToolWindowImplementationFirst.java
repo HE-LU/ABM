@@ -116,6 +116,8 @@ public class ABMToolWindowImplementationFirst extends JFrame
 		infoText.setHorizontalAlignment(SwingConstants.CENTER);
 		topPanel.add(infoText);
 
+		if(!mEntity.getMethodName().equals(""))
+			infoText.setText("<html><center>" + mMessages.getString("implementation_header_modify") + "</center></html>");
 
 		// Panel identification
 		final JBackgroundPanel identificationPanel = new JBackgroundPanel("drawable/img_background_panel.9.png", JBackgroundPanel.JBackgroundPanelType.NINE_PATCH);

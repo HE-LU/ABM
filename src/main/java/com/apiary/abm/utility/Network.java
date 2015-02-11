@@ -19,8 +19,6 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 
-import javax.swing.JOptionPane;
-
 
 public class Network
 {

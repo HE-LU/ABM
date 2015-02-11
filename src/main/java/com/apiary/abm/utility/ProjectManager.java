@@ -138,7 +138,11 @@ public class ProjectManager
 		// 3) Check method URI
 		for(PsiAnnotation annotation : annotations)
 		{
-			if(annotation.getQualifiedName().toUpperCase().equals(entity.getMethod().toUpperCase()))
+			String annotationString = annotation.getQualifiedName();
+			if(annotationString.lastIndexOf(".")!=-1)
+				annotationString = annotationString.substring(annotationString.lastIndexOf(".") + 1, annotationString.length());
+
+			if(annotationString.toUpperCase().equals(entity.getMethod().toUpperCase()))
 			{
 				uriFound = true;
 				if(!annotation.getParameterList().getAttributes()[0].getValue().getText().equals("\"" + entity.getUri() + "\""))
@@ -253,20 +257,23 @@ public class ProjectManager
 				if(field.getNameIdentifier().getText().equals("m" + Utils.firstLetterUpperCase(Utils.cleanUpString(variable.getName()))))
 				{
 					// check type
-					// private String mDescription;
 					if(!field.getType().getPresentableText().equals(variable.getTypeName()))
 						problems.add(new ProblemEntity("Entity variable bad type", "Variable: " + variable.getName() + " have bad type."));
+
 					// check annotation
-					// @SerializedName("description")
 					PsiAnnotation[] annotations = field.getModifierList().getAnnotations();
 					String headersString = "";
 					for(PsiAnnotation annotation : annotations)
 					{
-						if(annotation.getQualifiedName().equals("SerializedName"))
+						String annotationString = annotation.getQualifiedName();
+						if(annotationString.lastIndexOf(".")!=-1)
+							annotationString = annotationString.substring(annotationString.lastIndexOf(".") + 1, annotationString.length());
+
+						if(annotationString.equals("SerializedName"))
 							headersString = annotation.getParameterList().getAttributes()[0].getValue().getText();
 					}
 					if(!headersString.equals("\"" + variable.getName() + "\""))
-						problems.add(new ProblemEntity("Entity variable bad type", "Variable: " + headersString + " have bad serialized name."));
+						problems.add(new ProblemEntity("Entity variable bad type", "Variable: " + variable.getName() + " have bad serialized name."));
 
 					variablesList.remove(variable);
 					break;

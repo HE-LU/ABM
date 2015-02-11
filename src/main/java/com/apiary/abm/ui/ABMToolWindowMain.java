@@ -246,8 +246,14 @@ public class ABMToolWindowMain extends JFrame
 											//											if(row!=-1 && e.getClickCount()==2)
 											//												onTreeNodeDoubleClick((TreeNodeEntity) ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject());
 											TreePath path = tree.getSelectionPath();
-											if(e.getClickCount()==2)
+											if(e.getClickCount()==2) try
+											{
 												onTreeNodeDoubleClick((TreeNodeEntity) ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject());
+											}
+											catch(Exception ex)
+											{
+												// nothing
+											}
 										}
 									});
 
