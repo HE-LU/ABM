@@ -126,7 +126,7 @@ public class NinePatch
 	 */
 	public static NinePatch load(BufferedImage image, boolean is9Patch, boolean convert)
 	{
-		if(is9Patch==false)
+		if(is9Patch == false)
 		{
 			if(convert)
 			{
@@ -149,28 +149,28 @@ public class NinePatch
 	{
 		int width = image.getWidth();
 		int height = image.getHeight();
-		for(int i = 0; i<width; i++)
+		for(int i = 0; i < width; i++)
 		{
 			int pixel = image.getRGB(i, 0);
-			if(pixel!=0 && pixel!=0xFF000000)
+			if(pixel != 0 && pixel != 0xFF000000)
 			{
 				image.setRGB(i, 0, 0);
 			}
 			pixel = image.getRGB(i, height - 1);
-			if(pixel!=0 && pixel!=0xFF000000)
+			if(pixel != 0 && pixel != 0xFF000000)
 			{
 				image.setRGB(i, height - 1, 0);
 			}
 		}
-		for(int i = 0; i<height; i++)
+		for(int i = 0; i < height; i++)
 		{
 			int pixel = image.getRGB(0, i);
-			if(pixel!=0 && pixel!=0xFF000000)
+			if(pixel != 0 && pixel != 0xFF000000)
 			{
 				image.setRGB(0, i, 0);
 			}
 			pixel = image.getRGB(width - 1, i);
-			if(pixel!=0 && pixel!=0xFF000000)
+			if(pixel != 0 && pixel != 0xFF000000)
 			{
 				image.setRGB(width - 1, i, 0);
 			}

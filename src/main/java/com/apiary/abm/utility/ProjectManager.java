@@ -54,7 +54,7 @@ public class ProjectManager
 
 	public static List<PsiClass> getClasses(Module module, String name)
 	{
-		if(module==null) return null;
+		if(module == null) return null;
 		return Arrays.asList(PsiShortNamesCache.getInstance(ABMToolWindow.getProject()).getClassesByName(name, GlobalSearchScope.moduleScope(module)));
 	}
 
@@ -117,7 +117,7 @@ public class ProjectManager
 				headersString = annotation.getParameterList().getAttributes()[0].getValue().getText();
 		}
 
-		if(headersString!=null && entity.getRequestHeaders()!=null)
+		if(headersString != null && entity.getRequestHeaders() != null)
 		{
 			String checkString = "\"";
 			for(HeadersEntity headersEntity : entity.getRequestHeaders())
@@ -129,9 +129,9 @@ public class ProjectManager
 			if(!checkString.equals(headersString))
 				problems.add(new ProblemEntity("Method headers", "Headers in method and on API do not match."));
 		}
-		else if(headersString==null && entity.getRequestHeaders()!=null)
+		else if(headersString == null && entity.getRequestHeaders() != null)
 			problems.add(new ProblemEntity("Method headers", "There are headers on API that are not implemented in code."));
-		else if(headersString!=null && entity.getRequestHeaders()==null)
+		else if(headersString != null && entity.getRequestHeaders() == null)
 			problems.add(new ProblemEntity("Method headers", "There are headers implemented in code that are not supported by API."));
 
 
@@ -139,7 +139,7 @@ public class ProjectManager
 		for(PsiAnnotation annotation : annotations)
 		{
 			String annotationString = annotation.getQualifiedName();
-			if(annotationString.lastIndexOf(".")!=-1)
+			if(annotationString.lastIndexOf(".") != -1)
 				annotationString = annotationString.substring(annotationString.lastIndexOf(".") + 1, annotationString.length());
 
 			if(annotationString.toUpperCase().equals(entity.getMethod().toUpperCase()))
@@ -154,7 +154,7 @@ public class ProjectManager
 		// 4) Check method return type
 		String methodReturnType = "";
 		if(entity.isAsync()) methodReturnType += "void";
-		else if(entity.getResponseBody()!=null) methodReturnType += entity.getResponseBody().get(0).getEntityName();
+		else if(entity.getResponseBody() != null) methodReturnType += entity.getResponseBody().get(0).getEntityName();
 		else methodReturnType += "Response";
 		if(!method.getReturnType().getPresentableText().equals(methodReturnType))
 			problems.add(new ProblemEntity("Method return type", "Method and API return type do not match."));
@@ -165,13 +165,13 @@ public class ProjectManager
 		List<ParametersEntity> paramList = entity.getParameters();
 
 		PsiParameterList parameterList = method.getParameterList();
-		for(int i = 0; i<parameterList.getParametersCount(); i++)
+		for(int i = 0; i < parameterList.getParametersCount(); i++)
 		{
 			// Callback for async task
 			if(entity.isAsync() && parameterList.getParameters()[i].getName().equals(entity.getMethodName() + "Callback"))
 			{
 				callbackFound = true;
-				if(entity.getResponseBody()!=null)
+				if(entity.getResponseBody() != null)
 				{
 					if(parameterList.getParameters()[i].getType().getPresentableText().equals("Callback<" + entity.getResponseBody().get(0).getEntityName() + ">"))
 						continue;
@@ -185,7 +185,7 @@ public class ProjectManager
 			}
 
 			// All request parameters
-			if(requestsList!=null) for(BodyObjectEntity bodyEntity : requestsList)
+			if(requestsList != null) for(BodyObjectEntity bodyEntity : requestsList)
 			{
 				if(parameterList.getParameters()[i].getName().equals("param" + Utils.firstLetterUpperCase(bodyEntity.getEntityName())))
 				{
@@ -197,7 +197,7 @@ public class ProjectManager
 			}
 
 			// All parameters
-			if(paramList!=null) for(ParametersEntity paramEntity : paramList)
+			if(paramList != null) for(ParametersEntity paramEntity : paramList)
 			{
 				if(parameterList.getParameters()[i].getName().equals("param" + Utils.firstLetterUpperCase(paramEntity.getName())))
 				{
@@ -218,10 +218,10 @@ public class ProjectManager
 			}
 		}
 
-		if(requestsList!=null) for(BodyObjectEntity bodyEntity : requestsList)
+		if(requestsList != null) for(BodyObjectEntity bodyEntity : requestsList)
 			problems.add(new ProblemEntity("Method body request", "This body item is not implemented: " + bodyEntity.getEntityName() + "."));
 
-		if(paramList!=null) for(ParametersEntity paramEntity : paramList)
+		if(paramList != null) for(ParametersEntity paramEntity : paramList)
 			problems.add(new ProblemEntity("Method parameters", "This parameter is not implemented:" + paramEntity.getName() + "."));
 
 		if(entity.isAsync() && !callbackFound) problems.add(new ProblemEntity("Callback missing", "Method missing callback."));
@@ -266,7 +266,7 @@ public class ProjectManager
 					for(PsiAnnotation annotation : annotations)
 					{
 						String annotationString = annotation.getQualifiedName();
-						if(annotationString.lastIndexOf(".")!=-1)
+						if(annotationString.lastIndexOf(".") != -1)
 							annotationString = annotationString.substring(annotationString.lastIndexOf(".") + 1, annotationString.length());
 
 						if(annotationString.equals("SerializedName"))
@@ -292,8 +292,7 @@ public class ProjectManager
 	{
 		for(TreeNodeEntity item : list)
 		{
-			if(entity.getMethod().equals(item.getMethod()) && entity.getUri().equals(item.getUri()))
-				return true;
+			if(entity.getMethod().equals(item.getMethod()) && entity.getUri().equals(item.getUri())) return true;
 		}
 		return false;
 	}

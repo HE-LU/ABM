@@ -119,7 +119,7 @@ public class NeuQuant
 		samplefac = sample;
 
 		network = new int[netsize][];
-		for(i = 0; i<netsize; i++)
+		for(i = 0; i < netsize; i++)
 		{
 			network[i] = new int[4];
 			p = network[i];
@@ -134,10 +134,10 @@ public class NeuQuant
 	{
 		byte[] map = new byte[3 * netsize];
 		int[] index = new int[netsize];
-		for(int i = 0; i<netsize; i++)
+		for(int i = 0; i < netsize; i++)
 			index[network[i][3]] = i;
 		int k = 0;
-		for(int i = 0; i<netsize; i++)
+		for(int i = 0; i < netsize; i++)
 		{
 			int j = index[i];
 			map[k++] = (byte) (network[j][0]);
@@ -160,16 +160,16 @@ public class NeuQuant
 
 		previouscol = 0;
 		startpos = 0;
-		for(i = 0; i<netsize; i++)
+		for(i = 0; i < netsize; i++)
 		{
 			p = network[i];
 			smallpos = i;
 			smallval = p[1]; /* index on g */
 			/* find smallest in i..netsize-1 */
-			for(j = i + 1; j<netsize; j++)
+			for(j = i + 1; j < netsize; j++)
 			{
 				q = network[j];
-				if(q[1]<smallval)
+				if(q[1] < smallval)
 				{ /* index on g */
 					smallpos = j;
 					smallval = q[1]; /* index on g */
@@ -177,7 +177,7 @@ public class NeuQuant
 			}
 			q = network[smallpos];
 			/* swap p (i) and q (smallpos) entries */
-			if(i!=smallpos)
+			if(i != smallpos)
 			{
 				j = q[0];
 				q[0] = p[0];
@@ -193,17 +193,17 @@ public class NeuQuant
 				p[3] = j;
 			}
 			/* smallval entry is now in position i */
-			if(smallval!=previouscol)
+			if(smallval != previouscol)
 			{
 				netindex[previouscol] = (startpos + i) >> 1;
-				for(j = previouscol + 1; j<smallval; j++)
+				for(j = previouscol + 1; j < smallval; j++)
 					netindex[j] = i;
 				previouscol = smallval;
 				startpos = i;
 			}
 		}
 		netindex[previouscol] = (startpos + maxnetpos) >> 1;
-		for(j = previouscol + 1; j<256; j++)
+		for(j = previouscol + 1; j < 256; j++)
 			netindex[j] = maxnetpos; /* really 256 */
 	}
 
@@ -218,7 +218,7 @@ public class NeuQuant
 		byte[] p;
 		int pix, lim;
 
-		if(lengthcount<minpicturebytes) samplefac = 1;
+		if(lengthcount < minpicturebytes) samplefac = 1;
 		alphadec = 30 + ((samplefac - 1) / 3);
 		p = thepicture;
 		pix = 0;
@@ -229,26 +229,26 @@ public class NeuQuant
 		radius = initradius;
 
 		rad = radius >> radiusbiasshift;
-		if(rad<=1) rad = 0;
-		for(i = 0; i<rad; i++)
+		if(rad <= 1) rad = 0;
+		for(i = 0; i < rad; i++)
 			radpower[i] = alpha * (((rad * rad - i * i) * radbias) / (rad * rad));
 
 		//fprintf(stderr,"beginning 1D learning: initial radius=%d\n", rad);
 
-		if(lengthcount<minpicturebytes) step = 3;
-		else if((lengthcount % prime1)!=0) step = 3 * prime1;
+		if(lengthcount < minpicturebytes) step = 3;
+		else if((lengthcount % prime1) != 0) step = 3 * prime1;
 		else
 		{
-			if((lengthcount % prime2)!=0) step = 3 * prime2;
+			if((lengthcount % prime2) != 0) step = 3 * prime2;
 			else
 			{
-				if((lengthcount % prime3)!=0) step = 3 * prime3;
+				if((lengthcount % prime3) != 0) step = 3 * prime3;
 				else step = 3 * prime4;
 			}
 		}
 
 		i = 0;
-		while(i<samplepixels)
+		while(i < samplepixels)
 		{
 			b = (p[pix + 0] & 0xff) << netbiasshift;
 			g = (p[pix + 1] & 0xff) << netbiasshift;
@@ -256,20 +256,20 @@ public class NeuQuant
 			j = contest(b, g, r);
 
 			altersingle(alpha, j, b, g, r);
-			if(rad!=0) alterneigh(rad, j, b, g, r); /* alter neighbours */
+			if(rad != 0) alterneigh(rad, j, b, g, r); /* alter neighbours */
 
 			pix += step;
-			if(pix>=lim) pix -= lengthcount;
+			if(pix >= lim) pix -= lengthcount;
 
 			i++;
-			if(delta==0) delta = 1;
-			if(i % delta==0)
+			if(delta == 0) delta = 1;
+			if(i % delta == 0)
 			{
 				alpha -= alpha / alphadec;
 				radius -= radius / radiusdec;
 				rad = radius >> radiusbiasshift;
-				if(rad<=1) rad = 0;
-				for(j = 0; j<rad; j++)
+				if(rad <= 1) rad = 0;
+				for(j = 0; j < rad; j++)
 					radpower[j] = alpha * (((rad * rad - j * j) * radbias) / (rad * rad));
 			}
 		}
@@ -291,26 +291,26 @@ public class NeuQuant
 		i = netindex[g]; /* index on g */
 		j = i - 1; /* start at netindex[g] and work outwards */
 
-		while((i<netsize) || (j>=0))
+		while((i < netsize) || (j >= 0))
 		{
-			if(i<netsize)
+			if(i < netsize)
 			{
 				p = network[i];
 				dist = p[1] - g; /* inx key */
-				if(dist>=bestd) i = netsize; /* stop iter */
+				if(dist >= bestd) i = netsize; /* stop iter */
 				else
 				{
 					i++;
-					if(dist<0) dist = -dist;
+					if(dist < 0) dist = -dist;
 					a = p[0] - b;
-					if(a<0) a = -a;
+					if(a < 0) a = -a;
 					dist += a;
-					if(dist<bestd)
+					if(dist < bestd)
 					{
 						a = p[2] - r;
-						if(a<0) a = -a;
+						if(a < 0) a = -a;
 						dist += a;
-						if(dist<bestd)
+						if(dist < bestd)
 						{
 							bestd = dist;
 							best = p[3];
@@ -318,24 +318,24 @@ public class NeuQuant
 					}
 				}
 			}
-			if(j>=0)
+			if(j >= 0)
 			{
 				p = network[j];
 				dist = g - p[1]; /* inx key - reverse dif */
-				if(dist>=bestd) j = -1; /* stop iter */
+				if(dist >= bestd) j = -1; /* stop iter */
 				else
 				{
 					j--;
-					if(dist<0) dist = -dist;
+					if(dist < 0) dist = -dist;
 					a = p[0] - b;
-					if(a<0) a = -a;
+					if(a < 0) a = -a;
 					dist += a;
-					if(dist<bestd)
+					if(dist < bestd)
 					{
 						a = p[2] - r;
-						if(a<0) a = -a;
+						if(a < 0) a = -a;
 						dist += a;
-						if(dist<bestd)
+						if(dist < bestd)
 						{
 							bestd = dist;
 							best = p[3];
@@ -364,7 +364,7 @@ public class NeuQuant
 
 		int i, j;
 
-		for(i = 0; i<netsize; i++)
+		for(i = 0; i < netsize; i++)
 		{
 			network[i][0] >>= netbiasshift;
 			network[i][1] >>= netbiasshift;
@@ -383,17 +383,17 @@ public class NeuQuant
 		int[] p;
 
 		lo = i - rad;
-		if(lo<-1) lo = -1;
+		if(lo < -1) lo = -1;
 		hi = i + rad;
-		if(hi>netsize) hi = netsize;
+		if(hi > netsize) hi = netsize;
 
 		j = i + 1;
 		k = i - 1;
 		m = 1;
-		while((j<hi) || (k>lo))
+		while((j < hi) || (k > lo))
 		{
 			a = radpower[m++];
-			if(j<hi)
+			if(j < hi)
 			{
 				p = network[j++];
 				try
@@ -406,7 +406,7 @@ public class NeuQuant
 				{
 				} // prevents 1.3 miscompilation
 			}
-			if(k>lo)
+			if(k > lo)
 			{
 				p = network[k--];
 				try
@@ -455,24 +455,24 @@ public class NeuQuant
 		bestpos = -1;
 		bestbiaspos = bestpos;
 
-		for(i = 0; i<netsize; i++)
+		for(i = 0; i < netsize; i++)
 		{
 			n = network[i];
 			dist = n[0] - b;
-			if(dist<0) dist = -dist;
+			if(dist < 0) dist = -dist;
 			a = n[1] - g;
-			if(a<0) a = -a;
+			if(a < 0) a = -a;
 			dist += a;
 			a = n[2] - r;
-			if(a<0) a = -a;
+			if(a < 0) a = -a;
 			dist += a;
-			if(dist<bestd)
+			if(dist < bestd)
 			{
 				bestd = dist;
 				bestpos = i;
 			}
 			biasdist = dist - ((bias[i]) >> (intbiasshift - netbiasshift));
-			if(biasdist<bestbiasd)
+			if(biasdist < bestbiasd)
 			{
 				bestbiasd = biasdist;
 				bestbiaspos = i;

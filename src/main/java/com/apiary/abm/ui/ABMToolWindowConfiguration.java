@@ -170,7 +170,7 @@ public class ABMToolWindowConfiguration extends JFrame
 		interfaceClassLabel.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM)));
 		interfaceClassLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		List<PsiClass> psiClassInterface = mProjectManager.getClasses(mConfigurationEntity.getModule(), mConfigurationEntity.getInterfaceClass());
-		if(psiClassInterface!=null && psiClassInterface.size()>0)
+		if(psiClassInterface != null && psiClassInterface.size() > 0)
 			interfaceClassLabel.setText("<html><center>" + messages.getString("configuration_message_api_interface_green") + "</center></html>");
 		interfaceClassPanel.add(interfaceClassLabel);
 
@@ -208,7 +208,7 @@ public class ABMToolWindowConfiguration extends JFrame
 		managerClassLabel.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM)));
 		managerClassLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		List<PsiClass> psiClassManager = mProjectManager.getClasses(mConfigurationEntity.getModule(), mConfigurationEntity.getManagerClass());
-		if(psiClassManager!=null && psiClassManager.size()>0)
+		if(psiClassManager != null && psiClassManager.size() > 0)
 			managerClassLabel.setText("<html><center>" + messages.getString("configuration_message_api_manager_green") + "</center></html>");
 		managerClassPanel.add(managerClassLabel);
 
@@ -298,7 +298,7 @@ public class ABMToolWindowConfiguration extends JFrame
 			{
 				List<PsiClass> cl = mProjectManager.getClasses((String) moduleComboBox.getSelectedItem(), interfaceClassTextField.getText());
 
-				if(cl!=null && cl.size()>0)
+				if(cl != null && cl.size() > 0)
 					interfaceClassLabel.setText("<html><center>" + messages.getString("configuration_message_api_interface_green") + "</center></html>");
 				else
 					interfaceClassLabel.setText("<html><center>" + messages.getString("configuration_message_api_interface_red") + "</center></html>");
@@ -311,7 +311,7 @@ public class ABMToolWindowConfiguration extends JFrame
 			{
 				List<PsiClass> cl = mProjectManager.getClasses((String) moduleComboBox.getSelectedItem(), managerClassTextField.getText());
 
-				if(cl!=null && cl.size()>0)
+				if(cl != null && cl.size() > 0)
 
 					managerClassLabel.setText("<html><center>" + messages.getString("configuration_message_api_manager_green") + "</center></html>");
 

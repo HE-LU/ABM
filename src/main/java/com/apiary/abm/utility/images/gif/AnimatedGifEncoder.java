@@ -77,7 +77,7 @@ public class AnimatedGifEncoder
 	 */
 	public void setDispose(int code)
 	{
-		if(code>=0)
+		if(code >= 0)
 		{
 			dispose = code;
 		}
@@ -95,7 +95,7 @@ public class AnimatedGifEncoder
 	 */
 	public void setRepeat(int iter)
 	{
-		if(iter>=0)
+		if(iter >= 0)
 		{
 			repeat = iter;
 		}
@@ -131,7 +131,7 @@ public class AnimatedGifEncoder
 	 */
 	public boolean addFrame(BufferedImage im)
 	{
-		if((im==null) || !started)
+		if((im == null) || !started)
 		{
 			return false;
 		}
@@ -150,7 +150,7 @@ public class AnimatedGifEncoder
 			{
 				writeLSD(); // logical screen descriptior
 				writePalette(); // global color table
-				if(repeat>=0)
+				if(repeat >= 0)
 				{
 					// use NS app extension to indicate reps
 					writeNetscapeExt();
@@ -220,7 +220,7 @@ public class AnimatedGifEncoder
 	 */
 	public void setFrameRate(float fps)
 	{
-		if(fps!=0f)
+		if(fps != 0f)
 		{
 			delay = Math.round(100f / fps);
 		}
@@ -240,7 +240,7 @@ public class AnimatedGifEncoder
 	 */
 	public void setQuality(int quality)
 	{
-		if(quality<1) quality = 1;
+		if(quality < 1) quality = 1;
 		sample = quality;
 	}
 
@@ -258,8 +258,8 @@ public class AnimatedGifEncoder
 		if(started && !firstFrame) return;
 		width = w;
 		height = h;
-		if(width<1) width = 320;
-		if(height<1) height = 240;
+		if(width < 1) width = 320;
+		if(height < 1) height = 240;
 		sizeSet = true;
 	}
 
@@ -273,7 +273,7 @@ public class AnimatedGifEncoder
 	 */
 	public boolean start(OutputStream os)
 	{
-		if(os==null) return false;
+		if(os == null) return false;
 		boolean ok = true;
 		closeStream = false;
 		out = os;
@@ -324,7 +324,7 @@ public class AnimatedGifEncoder
 		// initialize quantizer
 		colorTab = nq.process(); // create reduced palette
 		// convert map from BGR to RGB
-		for(int i = 0; i<colorTab.length; i += 3)
+		for(int i = 0; i < colorTab.length; i += 3)
 		{
 			byte temp = colorTab[i];
 			colorTab[i] = colorTab[i + 2];
@@ -333,7 +333,7 @@ public class AnimatedGifEncoder
 		}
 		// map image pixels to new palette
 		int k = 0;
-		for(int i = 0; i<nPix; i++)
+		for(int i = 0; i < nPix; i++)
 		{
 			int index = nq.map(pixels[k++] & 0xff, pixels[k++] & 0xff, pixels[k++] & 0xff);
 			usedEntry[index] = true;
@@ -343,7 +343,7 @@ public class AnimatedGifEncoder
 		colorDepth = 8;
 		palSize = 7;
 		// get closest match to transparent color if specified
-		if(transparent!=null)
+		if(transparent != null)
 		{
 			transIndex = findClosest(transparent);
 		}
@@ -355,21 +355,21 @@ public class AnimatedGifEncoder
 	 */
 	protected int findClosest(Color c)
 	{
-		if(colorTab==null) return -1;
+		if(colorTab == null) return -1;
 		int r = c.getRed();
 		int g = c.getGreen();
 		int b = c.getBlue();
 		int minpos = 0;
 		int dmin = 256 * 256 * 256;
 		int len = colorTab.length;
-		for(int i = 0; i<len; )
+		for(int i = 0; i < len; )
 		{
 			int dr = r - (colorTab[i++] & 0xff);
 			int dg = g - (colorTab[i++] & 0xff);
 			int db = b - (colorTab[i] & 0xff);
 			int d = dr * dr + dg * dg + db * db;
 			int index = i / 3;
-			if(usedEntry[index] && (d<dmin))
+			if(usedEntry[index] && (d < dmin))
 			{
 				dmin = d;
 				minpos = index;
@@ -388,7 +388,7 @@ public class AnimatedGifEncoder
 		int w = image.getWidth();
 		int h = image.getHeight();
 		int type = image.getType();
-		if((w!=width) || (h!=height) || (type!=BufferedImage.TYPE_3BYTE_BGR))
+		if((w != width) || (h != height) || (type != BufferedImage.TYPE_3BYTE_BGR))
 		{
 			// create new image with right size/format
 			BufferedImage temp = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
@@ -409,7 +409,7 @@ public class AnimatedGifEncoder
 		out.write(0xf9); // GCE label
 		out.write(4); // data block size
 		int transp, disp;
-		if(transparent==null)
+		if(transparent == null)
 		{
 			transp = 0;
 			disp = 0; // dispose = no action
@@ -419,7 +419,7 @@ public class AnimatedGifEncoder
 			transp = 1;
 			disp = 2; // force clear if using transparent color
 		}
-		if(dispose>=0)
+		if(dispose >= 0)
 		{
 			disp = dispose & 7; // user override
 		}
@@ -508,7 +508,7 @@ public class AnimatedGifEncoder
 	{
 		out.write(colorTab, 0, colorTab.length);
 		int n = (3 * 256) - colorTab.length;
-		for(int i = 0; i<n; i++)
+		for(int i = 0; i < n; i++)
 		{
 			out.write(0);
 		}
@@ -540,7 +540,7 @@ public class AnimatedGifEncoder
 	 */
 	protected void writeString(String s) throws IOException
 	{
-		for(int i = 0; i<s.length(); i++)
+		for(int i = 0; i < s.length(); i++)
 		{
 			out.write((byte) s.charAt(i));
 		}

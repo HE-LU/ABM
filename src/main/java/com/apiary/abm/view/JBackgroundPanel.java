@@ -49,9 +49,9 @@ public class JBackgroundPanel extends JPanel
 				graphics.drawImage(mImg, 0, 0, getWidth(), getHeight(), this);
 				break;
 			case BACKGROUND_REPEAT:
-				for(int i = 0; i<getWidth(); i = i + mImg.getWidth())
+				for(int i = 0; i < getWidth(); i = i + mImg.getWidth())
 				{
-					for(int j = 0; j<getHeight(); j = j + mImg.getHeight())
+					for(int j = 0; j < getHeight(); j = j + mImg.getHeight())
 					{
 						graphics.drawImage(mImg, i, j, mImg.getWidth(), mImg.getHeight(), this);
 					}

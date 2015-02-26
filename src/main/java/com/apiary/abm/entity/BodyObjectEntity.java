@@ -38,7 +38,7 @@ public class BodyObjectEntity
 	@Override
 	public boolean equals(Object object)
 	{
-		if(object==this) return true;
+		if(object == this) return true;
 		if(!(object instanceof BodyObjectEntity)) return false;
 		BodyObjectEntity entity = (BodyObjectEntity) object;
 		if(mEntityName.equals(entity.getEntityName()) && mSerializableName.equals(entity.getSerializableName()))

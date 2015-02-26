@@ -47,7 +47,7 @@ public class ImageButton extends JButton
 			@Override
 			public void componentResized(ComponentEvent e)
 			{
-				if(getWidth()!=0 && getHeight()!=0 && mImage!=null)
+				if(getWidth() != 0 && getHeight() != 0 && mImage != null)
 				{
 					ImageIcon icon = resizeImage(getWidth(), getHeight());
 					setIcon(icon);
@@ -93,7 +93,7 @@ public class ImageButton extends JButton
 					iis = ImageIO.createImageInputStream(Utils.getResourceInputStream(image));
 					is.setInput(iis);
 					int images = is.getNumImages(true);
-					if(images>=0 && images<=1) mAnimatedGif = false;
+					if(images >= 0 && images <= 1) mAnimatedGif = false;
 				}
 				catch(IOException e)
 				{
@@ -101,11 +101,11 @@ public class ImageButton extends JButton
 				}
 				finally
 				{
-					if(iis!=null) iis.close();
+					if(iis != null) iis.close();
 				}
 			}
 
-			if(getWidth()!=0 && getHeight()!=0)
+			if(getWidth() != 0 && getHeight() != 0)
 			{
 				ImageIcon icon = resizeImage(getWidth(), getHeight());
 				setIcon(icon);

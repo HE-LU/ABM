@@ -182,7 +182,7 @@ public class ABMToolWindowImplementationSecond extends JFrame
 			}
 		});
 
-		if(mEntity.getRequestBody()!=null)
+		if(mEntity.getRequestBody() != null)
 		{
 			// Label request header
 			final JLabel requestHeaderText = new JLabel("<html><center><br />" + mMessages.getString("implementation_second_category_requests_entity") + "</center></html>");
@@ -264,7 +264,7 @@ public class ABMToolWindowImplementationSecond extends JFrame
 		}
 
 
-		if(mEntity.getResponseBody()!=null)
+		if(mEntity.getResponseBody() != null)
 		{
 			// Label response header
 			final JLabel responseHeaderText = new JLabel("<html><center><br />" + mMessages.getString("implementation_second_category_response_entity") + "</center></html>");
@@ -474,7 +474,7 @@ public class ABMToolWindowImplementationSecond extends JFrame
 		String output = "";
 
 		// step 1) Add all request headers
-		if(mEntity.getRequestHeaders()!=null)
+		if(mEntity.getRequestHeaders() != null)
 		{
 			output += "@Headers(\"";
 			for(HeadersEntity entity : mEntity.getRequestHeaders())
@@ -491,14 +491,14 @@ public class ABMToolWindowImplementationSecond extends JFrame
 		// step 3) add method
 		output += "public ";
 		if(mEntity.isAsync()) output += "void ";
-		else if(mEntity.getResponseBody()!=null) output += mEntity.getResponseBody().get(0).getEntityName() + " ";
+		else if(mEntity.getResponseBody() != null) output += mEntity.getResponseBody().get(0).getEntityName() + " ";
 		else output += "Response ";
 
 		output += mEntity.getMethodName() + "(\n";
 
 		//		Log.d("\n1\n" + output + "\n");
 
-		if(mEntity.isAsync()) if(mEntity.getResponseBody()!=null)
+		if(mEntity.isAsync()) if(mEntity.getResponseBody() != null)
 			output += "\tCallback<" + BodyObjectEntity.findBySerializableName(mEntity.getResponseBody(), "ROOT").getEntityName() + "> " + mEntity.getMethodName() + "Callback, \n";
 		else output += "\tCallback<Response> " + mEntity.getMethodName() + "Callback, \n";
 
@@ -506,7 +506,7 @@ public class ABMToolWindowImplementationSecond extends JFrame
 
 		// step 4) add path and query = parameters
 		// public String getWithPath(@Path("id") String id);
-		if(mEntity.getParameters()!=null)
+		if(mEntity.getParameters() != null)
 		{
 			for(ParametersEntity entity : mEntity.getParameters())
 			{
@@ -521,7 +521,7 @@ public class ABMToolWindowImplementationSecond extends JFrame
 
 		// add body
 		// public String getWithBody(@Body String id);
-		if(mEntity.getRequestBody()!=null)
+		if(mEntity.getRequestBody() != null)
 		{
 			for(BodyObjectEntity entity : mEntity.getRequestBody())
 			{

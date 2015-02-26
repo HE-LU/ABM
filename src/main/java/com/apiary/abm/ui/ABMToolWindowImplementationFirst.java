@@ -225,7 +225,7 @@ public class ABMToolWindowImplementationFirst extends JFrame
 		methodAsyncPanel.add(methodAsyncCheckBox, "wrap");
 
 
-		if(mEntity.getParameters()!=null && mEntity.getParameters().size()>0)
+		if(mEntity.getParameters() != null && mEntity.getParameters().size() > 0)
 		{
 			// Panel parameters
 			final JBackgroundPanel parametersPanel = new JBackgroundPanel("drawable/img_background_panel.9.png", JBackgroundPanel.JBackgroundPanelType.NINE_PATCH);
@@ -276,7 +276,7 @@ public class ABMToolWindowImplementationFirst extends JFrame
 		}
 
 
-		if(mEntity.getRequestHeaders()!=null)
+		if(mEntity.getRequestHeaders() != null)
 		{
 			// Panel request
 			final JBackgroundPanel requestHeadersPanel = new JBackgroundPanel("drawable/img_background_panel.9.png", JBackgroundPanel.JBackgroundPanelType.NINE_PATCH);
@@ -374,7 +374,7 @@ public class ABMToolWindowImplementationFirst extends JFrame
 			}
 		}
 
-		if(mEntity.getResponseHeaders()!=null)
+		if(mEntity.getResponseHeaders() != null)
 		{
 			// Panel response
 			final JBackgroundPanel responseHeadersPanel = new JBackgroundPanel("drawable/img_background_panel.9.png", JBackgroundPanel.JBackgroundPanelType.NINE_PATCH);
@@ -577,7 +577,7 @@ public class ABMToolWindowImplementationFirst extends JFrame
 							mEntity.setMethodName(methodNameTextField.getText());
 							mEntity.setAsync(methodAsyncCheckBox.isSelected());
 
-							if(mEntity.getRequestBody()!=null) for(Pair<String, JTextField> entity : mRequestTextFields)
+							if(mEntity.getRequestBody() != null) for(Pair<String, JTextField> entity : mRequestTextFields)
 							{
 								for(BodyObjectEntity bodyEntity : mEntity.getRequestBody())
 									if(entity.getFirst().equals(bodyEntity.getSerializableName()))
@@ -587,7 +587,7 @@ public class ABMToolWindowImplementationFirst extends JFrame
 									}
 							}
 
-							if(mEntity.getResponseBody()!=null) for(Pair<String, JTextField> entity : mResponseTextFields)
+							if(mEntity.getResponseBody() != null) for(Pair<String, JTextField> entity : mResponseTextFields)
 							{
 								for(BodyObjectEntity bodyEntity : mEntity.getResponseBody())
 								{
@@ -599,44 +599,44 @@ public class ABMToolWindowImplementationFirst extends JFrame
 								}
 							}
 
-							if(mEntity.getRequestBody()!=null) for(BodyObjectEntity ent : mEntity.getRequestBody())
+							if(mEntity.getRequestBody() != null) for(BodyObjectEntity ent : mEntity.getRequestBody())
 							{
 								for(BodyVariableEntity entVar : ent.getVariables())
-									if(entVar.getType()==VariableEnum.STRING) entVar.setTypeName("String");
-									else if(entVar.getType()==VariableEnum.INTEGER) entVar.setTypeName("Integer");
-									else if(entVar.getType()==VariableEnum.DOUBLE) entVar.setTypeName("Double");
-									else if(entVar.getType()==VariableEnum.BOOLEAN) entVar.setTypeName("Boolean");
-									else if(entVar.getType()==VariableEnum.ENUM) entVar.setTypeName("ENUM");
-									else if(entVar.getType()==VariableEnum.COLLECTION)
+									if(entVar.getType() == VariableEnum.STRING) entVar.setTypeName("String");
+									else if(entVar.getType() == VariableEnum.INTEGER) entVar.setTypeName("Integer");
+									else if(entVar.getType() == VariableEnum.DOUBLE) entVar.setTypeName("Double");
+									else if(entVar.getType() == VariableEnum.BOOLEAN) entVar.setTypeName("Boolean");
+									else if(entVar.getType() == VariableEnum.ENUM) entVar.setTypeName("ENUM");
+									else if(entVar.getType() == VariableEnum.COLLECTION)
 									{
-										if(Utils.findEntityNameInBodyObjectList(mEntity.getRequestBody(), entVar.getName())!=null)
+										if(Utils.findEntityNameInBodyObjectList(mEntity.getRequestBody(), entVar.getName()) != null)
 											entVar.setTypeName("List<" + Utils.findEntityNameInBodyObjectList(mEntity.getRequestBody(), entVar.getName()) + ">");
 										else if(!entVar.getTypeName().isEmpty()) entVar.setTypeName(entVar.getTypeName());
 										else entVar.setTypeName("ERROR");
 									}
-									else if(entVar.getType()==VariableEnum.MAP)
+									else if(entVar.getType() == VariableEnum.MAP)
 										entVar.setTypeName(Utils.findEntityNameInBodyObjectList(mEntity.getRequestBody(), entVar.getName()));
-									else if(entVar.getType()==VariableEnum.NONE) entVar.setTypeName("NONE");
+									else if(entVar.getType() == VariableEnum.NONE) entVar.setTypeName("NONE");
 							}
 
-							if(mEntity.getResponseBody()!=null) for(BodyObjectEntity ent : mEntity.getResponseBody())
+							if(mEntity.getResponseBody() != null) for(BodyObjectEntity ent : mEntity.getResponseBody())
 							{
 								for(BodyVariableEntity entVar : ent.getVariables())
-									if(entVar.getType()==VariableEnum.STRING) entVar.setTypeName("String");
-									else if(entVar.getType()==VariableEnum.INTEGER) entVar.setTypeName("Integer");
-									else if(entVar.getType()==VariableEnum.DOUBLE) entVar.setTypeName("Double");
-									else if(entVar.getType()==VariableEnum.BOOLEAN) entVar.setTypeName("Boolean");
-									else if(entVar.getType()==VariableEnum.ENUM) entVar.setTypeName("ENUM");
-									else if(entVar.getType()==VariableEnum.COLLECTION)
+									if(entVar.getType() == VariableEnum.STRING) entVar.setTypeName("String");
+									else if(entVar.getType() == VariableEnum.INTEGER) entVar.setTypeName("Integer");
+									else if(entVar.getType() == VariableEnum.DOUBLE) entVar.setTypeName("Double");
+									else if(entVar.getType() == VariableEnum.BOOLEAN) entVar.setTypeName("Boolean");
+									else if(entVar.getType() == VariableEnum.ENUM) entVar.setTypeName("ENUM");
+									else if(entVar.getType() == VariableEnum.COLLECTION)
 									{
-										if(Utils.findEntityNameInBodyObjectList(mEntity.getResponseBody(), entVar.getName())!=null)
+										if(Utils.findEntityNameInBodyObjectList(mEntity.getResponseBody(), entVar.getName()) != null)
 											entVar.setTypeName("List<" + Utils.findEntityNameInBodyObjectList(mEntity.getResponseBody(), entVar.getName()) + ">");
 										else if(!entVar.getTypeName().isEmpty()) entVar.setTypeName(entVar.getTypeName());
 										else entVar.setTypeName("ERROR");
 									}
-									else if(entVar.getType()==VariableEnum.MAP)
+									else if(entVar.getType() == VariableEnum.MAP)
 										entVar.setTypeName(Utils.findEntityNameInBodyObjectList(mEntity.getResponseBody(), entVar.getName()));
-									else if(entVar.getType()==VariableEnum.NONE) entVar.setTypeName("NONE");
+									else if(entVar.getType() == VariableEnum.NONE) entVar.setTypeName("NONE");
 							}
 
 							SwingUtilities.invokeLater(new Runnable()
@@ -683,9 +683,9 @@ public class ABMToolWindowImplementationFirst extends JFrame
 				dialog.setVisible(true);
 				Object obj = pane.getValue();
 				int result = -1;
-				for(int k = 0; k<options.length; k++)
+				for(int k = 0; k < options.length; k++)
 					if(options[k].equals(obj)) result = k;
-				if(result==0)
+				if(result == 0)
 				{
 					mEntity.setHidden(TreeNodeEntity.STATE_HIDDEN);
 					ConfigPreferences configPreferences = new ConfigPreferences();

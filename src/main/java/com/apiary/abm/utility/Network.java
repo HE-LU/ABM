@@ -42,7 +42,7 @@ public class Network
 		try
 		{
 			HttpResponse<String> request = Unirest.get(url).asString();
-			if(request.getStatus()!=200) return null;
+			if(request.getStatus() != 200) return null;
 			return request.getBody();
 		}
 		catch(UnirestException e)
@@ -99,7 +99,7 @@ public class Network
 			HttpResponse<String> request = Unirest.post(url).body(blueprint).asString();
 			Preferences prefs = new Preferences();
 			prefs.setBlueprintJsonTmpFileLocation(Utils.saveStringToTmpFile(ABMConfig.FILE_BLUEPRINT_JSON, request.getBody()));
-			return Utils.parseJsonBlueprint(request.getBody()).getError()==null;
+			return Utils.parseJsonBlueprint(request.getBody()).getError() == null;
 		}
 		catch(UnirestException e)
 		{
@@ -125,9 +125,9 @@ public class Network
 					String output = Network.requestBlueprintFromApiary(preferences.getBlueprintConnectionPath(), preferences.getBlueprintConnectionDocKey());
 					DocResponseEntity response = Utils.parseJsonDoc(output);
 
-					if(response==null) throw new Exception("Gson parsing problem!");
+					if(response == null) throw new Exception("Gson parsing problem!");
 
-					if(response.getError() || response.getCode()==null) throw new Exception(response.getMessage());
+					if(response.getError() || response.getCode() == null) throw new Exception(response.getMessage());
 
 					if(!Network.isBlueprintValid(response.getCode())) throw new Exception("Error in parsing blueprint!");
 
@@ -145,7 +145,7 @@ public class Network
 				{
 					String output = Network.requestBlueprintFromURL(preferences.getBlueprintConnectionPath());
 
-					if(output==null) throw new Exception("Could not get valid web file!");
+					if(output == null) throw new Exception("Could not get valid web file!");
 
 					if(!Network.isBlueprintValid(output)) throw new Exception("Error in parsing blueprint!");
 
@@ -163,7 +163,7 @@ public class Network
 				{
 					String output = Utils.readFileAsString(preferences.getBlueprintConnectionPath(), Charset.forName("UTF-8"));
 
-					if(output==null) throw new Exception("Could not read the file!");
+					if(output == null) throw new Exception("Could not read the file!");
 
 					if(!Network.isBlueprintValid(output)) throw new Exception("Error in parsing blueprint!");
 

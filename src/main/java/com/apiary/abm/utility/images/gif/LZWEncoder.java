@@ -116,7 +116,7 @@ class LZWEncoder
 	void char_out(byte c, OutputStream outs) throws IOException
 	{
 		accum[a_count++] = c;
-		if(a_count>=254) flush_char(outs);
+		if(a_count >= 254) flush_char(outs);
 	}
 
 	// Clear out the hash table
@@ -136,7 +136,7 @@ class LZWEncoder
 	// reset code table
 	void cl_hash(int hsize)
 	{
-		for(int i = 0; i<hsize; ++i)
+		for(int i = 0; i < hsize; ++i)
 			htab[i] = -1;
 	}
 
@@ -168,7 +168,7 @@ class LZWEncoder
 		ent = nextPixel();
 
 		hshift = 0;
-		for(fcode = hsize; fcode<65536; fcode *= 2)
+		for(fcode = hsize; fcode < 65536; fcode *= 2)
 			++hshift;
 		hshift = 8 - hshift; // set hash code range bound
 
@@ -178,34 +178,34 @@ class LZWEncoder
 		output(ClearCode, outs);
 
 		outer_loop:
-		while((c = nextPixel())!=EOF)
+		while((c = nextPixel()) != EOF)
 		{
 			fcode = (c << maxbits) + ent;
 			i = (c << hshift) ^ ent; // xor hashing
 
-			if(htab[i]==fcode)
+			if(htab[i] == fcode)
 			{
 				ent = codetab[i];
 				continue;
 			}
-			else if(htab[i]>=0) // non-empty slot
+			else if(htab[i] >= 0) // non-empty slot
 			{
 				disp = hsize_reg - i; // secondary hash (after G. Knott)
-				if(i==0) disp = 1;
+				if(i == 0) disp = 1;
 				do
 				{
-					if((i -= disp)<0) i += hsize_reg;
+					if((i -= disp) < 0) i += hsize_reg;
 
-					if(htab[i]==fcode)
+					if(htab[i] == fcode)
 					{
 						ent = codetab[i];
 						continue outer_loop;
 					}
-				} while(htab[i]>=0);
+				} while(htab[i] >= 0);
 			}
 			output(ent, outs);
 			ent = c;
-			if(free_ent<maxmaxcode)
+			if(free_ent < maxmaxcode)
 			{
 				codetab[i] = free_ent++; // code -> hashtable
 				htab[i] = fcode;
@@ -235,7 +235,7 @@ class LZWEncoder
 	// Flush the packet to disk, and reset the accumulator
 	void flush_char(OutputStream outs) throws IOException
 	{
-		if(a_count>0)
+		if(a_count > 0)
 		{
 			outs.write(a_count);
 			outs.write(accum, 0, a_count);
@@ -255,7 +255,7 @@ class LZWEncoder
 	//----------------------------------------------------------------------------
 	private int nextPixel()
 	{
-		if(remaining==0) return EOF;
+		if(remaining == 0) return EOF;
 
 		--remaining;
 
@@ -269,12 +269,12 @@ class LZWEncoder
 	{
 		cur_accum &= masks[cur_bits];
 
-		if(cur_bits>0) cur_accum |= (code << cur_bits);
+		if(cur_bits > 0) cur_accum |= (code << cur_bits);
 		else cur_accum = code;
 
 		cur_bits += n_bits;
 
-		while(cur_bits>=8)
+		while(cur_bits >= 8)
 		{
 			char_out((byte) (cur_accum & 0xff), outs);
 			cur_accum >>= 8;
@@ -283,7 +283,7 @@ class LZWEncoder
 
 		// If the next entry is going to be too big for the code size,
 		// then increase it, if possible.
-		if(free_ent>maxcode || clear_flg)
+		if(free_ent > maxcode || clear_flg)
 		{
 			if(clear_flg)
 			{
@@ -293,15 +293,15 @@ class LZWEncoder
 			else
 			{
 				++n_bits;
-				if(n_bits==maxbits) maxcode = maxmaxcode;
+				if(n_bits == maxbits) maxcode = maxmaxcode;
 				else maxcode = MAXCODE(n_bits);
 			}
 		}
 
-		if(code==EOFCode)
+		if(code == EOFCode)
 		{
 			// At EOF, write the rest of the buffer.
-			while(cur_bits>0)
+			while(cur_bits > 0)
 			{
 				char_out((byte) (cur_accum & 0xff), outs);
 				cur_accum >>= 8;

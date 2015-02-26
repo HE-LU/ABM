@@ -178,8 +178,7 @@ public class ABMToolWindowConnect extends JFrame
 		labelDocumentationUrl.setHorizontalAlignment(SwingConstants.CENTER);
 
 		final JTextField textFieldDocumentationUrl = new JTextField();
-		if(ABMConfig.DEBUG)
-			textFieldDocumentationUrl.setText("tuxilero");
+		if(ABMConfig.DEBUG) textFieldDocumentationUrl.setText("tuxilero");
 
 		final JLabel labelDocumentationToken = new JLabel("<html><center>" + mMessages.getString("connect_message_documentation_token") + "</center></html>");
 		labelDocumentationToken.setForeground(Color.WHITE);
@@ -187,8 +186,7 @@ public class ABMToolWindowConnect extends JFrame
 		labelDocumentationToken.setHorizontalAlignment(SwingConstants.CENTER);
 
 		final JTextField textFieldDocumentationToken = new JTextField();
-		if(ABMConfig.DEBUG)
-			textFieldDocumentationToken.setText("824b074bb727d3242fd960f8c5c4cfa9");
+		if(ABMConfig.DEBUG) textFieldDocumentationToken.setText("824b074bb727d3242fd960f8c5c4cfa9");
 
 		cardDocumentation.add(labelDocumentationUrl);
 		cardDocumentation.add(textFieldDocumentationUrl);
@@ -278,10 +276,10 @@ public class ABMToolWindowConnect extends JFrame
 			{
 				JFileChooser fileChooser = new JFileChooser();
 				File lastFile = new File(textFieldLocalPath.getText());
-				if(lastFile!=null && lastFile.exists()) fileChooser.setCurrentDirectory(lastFile);
+				if(lastFile != null && lastFile.exists()) fileChooser.setCurrentDirectory(lastFile);
 				else fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
 				int result = fileChooser.showOpenDialog(ABMToolWindowConnect.this);
-				if(result==JFileChooser.APPROVE_OPTION)
+				if(result == JFileChooser.APPROVE_OPTION)
 				{
 					File selectedFile = fileChooser.getSelectedFile();
 					Log.d("Selected file: " + selectedFile.getAbsolutePath());
@@ -320,9 +318,9 @@ public class ABMToolWindowConnect extends JFrame
 								String output = Network.requestBlueprintFromApiary(textFieldDocumentationUrl.getText(), textFieldDocumentationToken.getText());
 								DocResponseEntity response = Utils.parseJsonDoc(output);
 
-								if(response==null) throw new Exception(mMessages.getString("connect_message_error_gson"));
+								if(response == null) throw new Exception(mMessages.getString("connect_message_error_gson"));
 
-								if(response.getError() || response.getCode()==null) throw new Exception(response.getMessage());
+								if(response.getError() || response.getCode() == null) throw new Exception(response.getMessage());
 
 								if(!Network.isBlueprintValid(response.getCode()))
 									throw new Exception(mMessages.getString("connect_message_error_parsing"));
@@ -348,7 +346,7 @@ public class ABMToolWindowConnect extends JFrame
 							{
 								String output = Network.requestBlueprintFromURL(textFieldWebUrl.getText());
 
-								if(output==null) throw new Exception(mMessages.getString("connect_message_error_web"));
+								if(output == null) throw new Exception(mMessages.getString("connect_message_error_web"));
 
 								if(!Network.isBlueprintValid(output))
 									throw new Exception(mMessages.getString("connect_message_error_parsing"));
@@ -373,7 +371,7 @@ public class ABMToolWindowConnect extends JFrame
 							{
 								String output = Utils.readFileAsString(textFieldLocalPath.getText(), Charset.forName("UTF-8"));
 
-								if(output==null) throw new Exception(mMessages.getString("connect_message_error_file"));
+								if(output == null) throw new Exception(mMessages.getString("connect_message_error_file"));
 
 								if(!Network.isBlueprintValid(output))
 									throw new Exception(mMessages.getString("connect_message_error_parsing"));

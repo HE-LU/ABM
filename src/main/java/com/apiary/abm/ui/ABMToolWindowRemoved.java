@@ -2,7 +2,6 @@ package com.apiary.abm.ui;
 
 import com.apiary.abm.entity.TreeNodeEntity;
 import com.apiary.abm.utility.ConfigPreferences;
-import com.apiary.abm.utility.Log;
 import com.apiary.abm.utility.Utils;
 import com.apiary.abm.view.ImageButton;
 import com.apiary.abm.view.JBackgroundPanel;
@@ -152,7 +151,7 @@ public class ABMToolWindowRemoved extends JFrame
 
 		// Panel hide
 		final JBackgroundPanel hidePanel = new JBackgroundPanel("drawable/img_background_panel.9.png", JBackgroundPanel.JBackgroundPanelType.NINE_PATCH);
-		hidePanel.setLayout(new MigLayout("insets " + Utils.reDimension(12) + " " + Utils.reDimension(12) + " " + Utils.reDimension(18) + " " + Utils.reDimension(19) + ", flowx, fillx, filly", "[fill, grow][fill, grow]", "[]"+Utils.reDimension(15)+"[]"));
+		hidePanel.setLayout(new MigLayout("insets " + Utils.reDimension(12) + " " + Utils.reDimension(12) + " " + Utils.reDimension(18) + " " + Utils.reDimension(19) + ", flowx, fillx, filly", "[fill, grow][fill, grow]", "[]" + Utils.reDimension(15) + "[]"));
 		hidePanel.setOpaque(false);
 		hidePanel.setMaximumSize(new Dimension(Utils.reDimension(330), Integer.MAX_VALUE));
 		middlePanel.add(hidePanel);
@@ -181,7 +180,7 @@ public class ABMToolWindowRemoved extends JFrame
 
 		// Panel method and URI
 		final JBackgroundPanel requestEditPanel = new JBackgroundPanel("drawable/img_background_panel.9.png", JBackgroundPanel.JBackgroundPanelType.NINE_PATCH);
-		requestEditPanel.setLayout(new MigLayout("insets " + Utils.reDimension(13) + " " + Utils.reDimension(12) + " " + Utils.reDimension(18) + " " + Utils.reDimension(19) + ", flowx, fillx, filly", "[fill, grow][fill, grow]", "[][]"+Utils.reDimension(15)+"[]"));
+		requestEditPanel.setLayout(new MigLayout("insets " + Utils.reDimension(13) + " " + Utils.reDimension(12) + " " + Utils.reDimension(18) + " " + Utils.reDimension(19) + ", flowx, fillx, filly", "[fill, grow][fill, grow]", "[][]" + Utils.reDimension(15) + "[]"));
 		requestEditPanel.setOpaque(false);
 		requestEditPanel.setMaximumSize(new Dimension(Utils.reDimension(600), Integer.MAX_VALUE));
 		middlePanel.add(requestEditPanel);
@@ -212,7 +211,7 @@ public class ABMToolWindowRemoved extends JFrame
 			public void keyTyped(KeyEvent e)
 			{
 				char ch = e.getKeyChar();
-				if(!Character.isAlphabetic(ch) && ch!='/') e.consume();
+				if(!Character.isAlphabetic(ch) && ch != '/') e.consume();
 			}
 		});
 
@@ -372,9 +371,9 @@ public class ABMToolWindowRemoved extends JFrame
 				dialog.setVisible(true);
 				Object obj = pane.getValue();
 				int result = -1;
-				for(int k = 0; k<options.length; k++)
+				for(int k = 0; k < options.length; k++)
 					if(options[k].equals(obj)) result = k;
-				if(result==0)
+				if(result == 0)
 				{
 					mEntity.setHidden(TreeNodeEntity.STATE_REMOVED);
 					ConfigPreferences configPreferences = new ConfigPreferences();

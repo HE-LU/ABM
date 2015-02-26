@@ -111,20 +111,20 @@ public class GraphicsUtilities
 
 	public static int[] getPixels(BufferedImage img, int x, int y, int w, int h, int[] pixels)
 	{
-		if(w==0 || h==0)
+		if(w == 0 || h == 0)
 		{
 			return new int[0];
 		}
-		if(pixels==null)
+		if(pixels == null)
 		{
 			pixels = new int[w * h];
 		}
-		else if(pixels.length<w * h)
+		else if(pixels.length < w * h)
 		{
 			throw new IllegalArgumentException("Pixels array must have a length >= w * h");
 		}
 		int imageType = img.getType();
-		if(imageType==BufferedImage.TYPE_INT_ARGB || imageType==BufferedImage.TYPE_INT_RGB)
+		if(imageType == BufferedImage.TYPE_INT_ARGB || imageType == BufferedImage.TYPE_INT_RGB)
 		{
 			Raster raster = img.getRaster();
 			return (int[]) raster.getDataElements(x, y, w, h, pixels);
@@ -156,7 +156,7 @@ public class GraphicsUtilities
 		encoder.start(fileOutputStream);
 
 		//read frames with encoder and push scaled frames oin encoder
-		for(int i = 0; i<decoder.getFrameCount(); i++)
+		for(int i = 0; i < decoder.getFrameCount(); i++)
 		{
 			BufferedImage bufferedImage = decoder.getFrame(i);
 
@@ -165,9 +165,9 @@ public class GraphicsUtilities
 			int width = bufferedImage.getWidth();
 			int height = bufferedImage.getHeight();
 			float scaleFactor = 1;
-			if(width>toWidth || height>toHeight)
+			if(width > toWidth || height > toHeight)
 			{
-				if(width>height)
+				if(width > height)
 				{
 					scaleFactor = (float) toWidth / width;
 				}
@@ -180,7 +180,7 @@ public class GraphicsUtilities
 			//final values for height and width
 			width = (int) (width * scaleFactor);
 			height = (int) (height * scaleFactor);
-			if(scaleFactor!=1)
+			if(scaleFactor != 1)
 			{
 				Image image = bufferedImage.getScaledInstance(width, height, Image.SCALE_AREA_AVERAGING);
 				bufferedImage = toBufferedImage(image);
@@ -188,7 +188,7 @@ public class GraphicsUtilities
 			encoder.addFrame(bufferedImage);
 
 			//change delay frame for those that have 0
-			if(decoder.getDelay(i)==0)
+			if(decoder.getDelay(i) == 0)
 			{
 				encoder.setDelay(100);
 			}
@@ -239,7 +239,7 @@ public class GraphicsUtilities
 			// The system does not have a screen
 		}
 
-		if(bimage==null)
+		if(bimage == null)
 		{
 			// Create a buffered image using the default color model
 			int type = BufferedImage.TYPE_INT_RGB;

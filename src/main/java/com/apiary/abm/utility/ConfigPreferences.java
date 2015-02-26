@@ -93,7 +93,7 @@ public class ConfigPreferences
 
 	public ConfigConfigurationEntity getConfigurationEntity()
 	{
-		if(mConfig.getConfigurationEntity()!=null) return mConfig.getConfigurationEntity();
+		if(mConfig.getConfigurationEntity() != null) return mConfig.getConfigurationEntity();
 		else return new ConfigConfigurationEntity();
 	}
 
@@ -104,10 +104,10 @@ public class ConfigPreferences
 		List<ConfigEntityNameEntity> requests = new ArrayList<ConfigEntityNameEntity>();
 		List<ConfigEntityNameEntity> responses = new ArrayList<ConfigEntityNameEntity>();
 
-		if(entity.getRequestBody()!=null) for(BodyObjectEntity body : entity.getRequestBody())
+		if(entity.getRequestBody() != null) for(BodyObjectEntity body : entity.getRequestBody())
 			requests.add(new ConfigEntityNameEntity(body.getSerializableName(), body.getEntityName()));
 
-		if(entity.getResponseBody()!=null) for(BodyObjectEntity body : entity.getResponseBody())
+		if(entity.getResponseBody() != null) for(BodyObjectEntity body : entity.getResponseBody())
 			responses.add(new ConfigEntityNameEntity(body.getSerializableName(), body.getEntityName()));
 
 		classInfoEntity.setUri(entity.getUri());
@@ -118,8 +118,7 @@ public class ConfigPreferences
 		classInfoEntity.setRequests(requests);
 		classInfoEntity.setResponses(responses);
 
-		if(!mConfig.setClassInfoItem(classInfoEntity, oldUri, oldMethod))
-			mConfig.addClassInfoItem(classInfoEntity);
+		if(!mConfig.setClassInfoItem(classInfoEntity, oldUri, oldMethod)) mConfig.addClassInfoItem(classInfoEntity);
 
 		saveConfig();
 	}
@@ -140,15 +139,15 @@ public class ConfigPreferences
 				List<BodyObjectEntity> requests = entity.getRequestBody();
 				List<BodyObjectEntity> responses = entity.getResponseBody();
 
-				if(requests!=null) for(ConfigEntityNameEntity bodyItem : item.getRequests())
+				if(requests != null) for(ConfigEntityNameEntity bodyItem : item.getRequests())
 					for(BodyObjectEntity bodyEntity : requests)
-						if(bodyItem.getSerializableName()!=null && bodyEntity.getSerializableName()!=null && bodyItem.getSerializableName().equals(bodyEntity.getSerializableName()))
+						if(bodyItem.getSerializableName() != null && bodyEntity.getSerializableName() != null && bodyItem.getSerializableName().equals(bodyEntity.getSerializableName()))
 						{
 							bodyEntity.setEntityName(bodyItem.getEntityName());
 							break;
 						}
 
-				if(responses!=null) for(ConfigEntityNameEntity bodyItem : item.getResponses())
+				if(responses != null) for(ConfigEntityNameEntity bodyItem : item.getResponses())
 					for(BodyObjectEntity bodyEntity : responses)
 						if(bodyItem.getSerializableName().equals(bodyEntity.getSerializableName()))
 						{
@@ -165,6 +164,7 @@ public class ConfigPreferences
 		}
 	}
 
+
 	public List<TreeNodeEntity> getAllConfigEntities()
 	{
 		List<TreeNodeEntity> list = new ArrayList<TreeNodeEntity>();
@@ -178,23 +178,23 @@ public class ConfigPreferences
 			entity.setHidden(item.getHidden());
 			entity.setAsync(item.isAsync());
 
-			if( item.getRequests() != null)
+			if(item.getRequests() != null)
 			{
 				List<BodyObjectEntity> requestList = new ArrayList<BodyObjectEntity>();
 				for(ConfigEntityNameEntity nameItem : item.getRequests())
 				{
-					BodyObjectEntity bodyEntity = new BodyObjectEntity(nameItem.getSerializableName(),nameItem.getEntityName(),null);
+					BodyObjectEntity bodyEntity = new BodyObjectEntity(nameItem.getSerializableName(), nameItem.getEntityName(), null);
 					requestList.add(bodyEntity);
 				}
 				entity.setRequestBody(requestList);
 			}
 
-			if( item.getResponses() != null)
+			if(item.getResponses() != null)
 			{
 				List<BodyObjectEntity> responsesList = new ArrayList<BodyObjectEntity>();
 				for(ConfigEntityNameEntity nameItem : item.getResponses())
 				{
-					BodyObjectEntity bodyEntity = new BodyObjectEntity(nameItem.getSerializableName(),nameItem.getEntityName(),null);
+					BodyObjectEntity bodyEntity = new BodyObjectEntity(nameItem.getSerializableName(), nameItem.getEntityName(), null);
 					responsesList.add(bodyEntity);
 				}
 				entity.setResponseBody(responsesList);

@@ -45,7 +45,7 @@ public class BodyVariableEntity
 	@Override
 	public boolean equals(Object object)
 	{
-		if(object==this) return true;
+		if(object == this) return true;
 		if(!(object instanceof BodyVariableEntity)) return false;
 		BodyVariableEntity entity = (BodyVariableEntity) object;
 		return mName.equals(entity.getName()) && mType.equals(entity.getType()) && mTypeName.equals(entity.getTypeName());

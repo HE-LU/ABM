@@ -64,7 +64,7 @@ public class Utils
 
 	public static BufferedImage getResourceBufferedImage(String filePath) throws IOException
 	{
-		if(Utils.class.getClassLoader().getResourceAsStream(filePath)!=null)
+		if(Utils.class.getClassLoader().getResourceAsStream(filePath) != null)
 			return ImageIO.read(Utils.class.getClassLoader().getResourceAsStream(filePath));
 		return null;
 	}
@@ -164,16 +164,16 @@ public class Utils
 
 	public static String firstLetterUpperCase(String string)
 	{
-		if(string==null) return string;
-		if(string.length()==1) return string.toUpperCase();
+		if(string == null) return string;
+		if(string.length() == 1) return string.toUpperCase();
 		return string.substring(0, 1).toUpperCase() + string.substring(1, string.length());
 	}
 
 
 	public static String firstLetterLowerCase(String string)
 	{
-		if(string==null) return string;
-		if(string.length()==1) return string.toLowerCase();
+		if(string == null) return string;
+		if(string.length() == 1) return string.toLowerCase();
 		return string.substring(0, 1).toLowerCase() + string.substring(1, string.length());
 	}
 
@@ -194,7 +194,7 @@ public class Utils
 
 	public static boolean entityContainParameter(TreeNodeEntity entity, String parameterName)
 	{
-		if(entity.getRequestBody()==null) return false;
+		if(entity.getRequestBody() == null) return false;
 
 		for(BodyObjectEntity ent : entity.getRequestBody())
 		{

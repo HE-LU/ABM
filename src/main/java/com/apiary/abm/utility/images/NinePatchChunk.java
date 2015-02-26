@@ -69,7 +69,7 @@ public class NinePatchChunk implements Serializable
 
 	public void draw(BufferedImage image, Graphics2D graphics2D, int x, int y, int scaledWidth, int scaledHeight, int destDensity, int srcDensity)
 	{
-		boolean scaling = destDensity!=srcDensity && destDensity!=0 && srcDensity!=0;
+		boolean scaling = destDensity != srcDensity && destDensity != 0 && srcDensity != 0;
 		if(scaling)
 		{
 			try
@@ -102,7 +102,7 @@ public class NinePatchChunk implements Serializable
 
 	private void draw(BufferedImage image, Graphics2D graphics2D, int x, int y, int scaledWidth, int scaledHeight)
 	{
-		if(scaledWidth<=1 || scaledHeight<=1)
+		if(scaledWidth <= 1 || scaledHeight <= 1)
 		{
 			return;
 		}
@@ -110,7 +110,7 @@ public class NinePatchChunk implements Serializable
 		g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 		try
 		{
-			if(mPatches.size()==0)
+			if(mPatches.size() == 0)
 			{
 				g.drawImage(image, x, y, scaledWidth, scaledHeight, null);
 				return;
@@ -127,14 +127,14 @@ public class NinePatchChunk implements Serializable
 			float vWeightSum = 1.0f;
 			float vRemainder = data.mRemainderVertical;
 			vStretch = mVerticalStartWithPatch;
-			while(y<scaledHeight - 1)
+			while(y < scaledHeight - 1)
 			{
 				hStretch = mHorizontalStartWithPatch;
 				int height = 0;
 				float vExtra = 0.0f;
 				float hWeightSum = 1.0f;
 				float hRemainder = data.mRemainderHorizontal;
-				while(x<scaledWidth - 1)
+				while(x < scaledWidth - 1)
 				{
 					Rectangle r;
 					if(!vStretch)
@@ -235,12 +235,12 @@ public class NinePatchChunk implements Serializable
 		boolean endRow = true;
 		int remainderHorizontal = 0;
 		int remainderVertical = 0;
-		if(mFixed.size()>0)
+		if(mFixed.size() > 0)
 		{
 			int start = mFixed.get(0).y;
 			for(Rectangle rect : mFixed)
 			{
-				if(rect.y>start)
+				if(rect.y > start)
 				{
 					endRow = true;
 					measuredWidth = true;
@@ -260,12 +260,12 @@ public class NinePatchChunk implements Serializable
 		data.mRemainderHorizontal = scaledWidth - remainderHorizontal;
 		data.mRemainderVertical = scaledHeight - remainderVertical;
 		data.mHorizontalPatchesSum = 0;
-		if(mHorizontalPatches.size()>0)
+		if(mHorizontalPatches.size() > 0)
 		{
 			int start = -1;
 			for(Rectangle rect : mHorizontalPatches)
 			{
-				if(rect.x>start)
+				if(rect.x > start)
 				{
 					data.mHorizontalPatchesSum += rect.width;
 					start = rect.x;
@@ -277,7 +277,7 @@ public class NinePatchChunk implements Serializable
 			int start = -1;
 			for(Rectangle rect : mPatches)
 			{
-				if(rect.x>start)
+				if(rect.x > start)
 				{
 					data.mHorizontalPatchesSum += rect.width;
 					start = rect.x;
@@ -285,12 +285,12 @@ public class NinePatchChunk implements Serializable
 			}
 		}
 		data.mVerticalPatchesSum = 0;
-		if(mVerticalPatches.size()>0)
+		if(mVerticalPatches.size() > 0)
 		{
 			int start = -1;
 			for(Rectangle rect : mVerticalPatches)
 			{
-				if(rect.y>start)
+				if(rect.y > start)
 				{
 					data.mVerticalPatchesSum += rect.height;
 					start = rect.y;
@@ -302,7 +302,7 @@ public class NinePatchChunk implements Serializable
 			int start = -1;
 			for(Rectangle rect : mPatches)
 			{
-				if(rect.y>start)
+				if(rect.y > start)
 				{
 					data.mVerticalPatchesSum += rect.height;
 					start = rect.y;
@@ -336,19 +336,19 @@ public class NinePatchChunk implements Serializable
 		mHorizontalStartWithPatch = result[0];
 		mFixed = getRectangles(left.mFirst, top.mFirst);
 		mPatches = getRectangles(left.mSecond, top.mSecond);
-		if(mFixed.size()>0)
+		if(mFixed.size() > 0)
 		{
 			mHorizontalPatches = getRectangles(left.mFirst, top.mSecond);
 			mVerticalPatches = getRectangles(left.mSecond, top.mFirst);
 		}
 		else
 		{
-			if(top.mFirst.size()>0)
+			if(top.mFirst.size() > 0)
 			{
 				mHorizontalPatches = new ArrayList<Rectangle>(0);
 				mVerticalPatches = getVerticalRectangles(height, top.mFirst);
 			}
-			else if(left.mFirst.size()>0)
+			else if(left.mFirst.size() > 0)
 			{
 				mHorizontalPatches = getHorizontalRectangles(width, left.mFirst);
 				mVerticalPatches = new ArrayList<Rectangle>(0);
@@ -397,13 +397,13 @@ public class NinePatchChunk implements Serializable
 
 	private Pair<Integer> getPadding(List<Pair<Integer>> pairs)
 	{
-		if(pairs.size()==0)
+		if(pairs.size() == 0)
 		{
 			return new Pair<Integer>(0, 0);
 		}
-		else if(pairs.size()==1)
+		else if(pairs.size() == 1)
 		{
-			if(pairs.get(0).mFirst==0)
+			if(pairs.get(0).mFirst == 0)
 			{
 				return new Pair<Integer>(pairs.get(0).mSecond - pairs.get(0).mFirst, 0);
 			}
@@ -462,12 +462,12 @@ public class NinePatchChunk implements Serializable
 		boolean first = true;
 		List<Pair<Integer>> fixed = new ArrayList<Pair<Integer>>();
 		List<Pair<Integer>> patches = new ArrayList<Pair<Integer>>();
-		for(int i = 0; i<pixels.length; i++)
+		for(int i = 0; i < pixels.length; i++)
 		{
 			int pixel = pixels[i];
-			if(pixel!=lastPixel)
+			if(pixel != lastPixel)
 			{
-				if(lastPixel==0xFF000000)
+				if(lastPixel == 0xFF000000)
 				{
 					if(first) startWithPatch[0] = true;
 					patches.add(new Pair<Integer>(lastIndex, i));
@@ -481,7 +481,7 @@ public class NinePatchChunk implements Serializable
 				lastPixel = pixel;
 			}
 		}
-		if(lastPixel==0xFF000000)
+		if(lastPixel == 0xFF000000)
 		{
 			if(first) startWithPatch[0] = true;
 			patches.add(new Pair<Integer>(lastIndex, pixels.length));
@@ -490,7 +490,7 @@ public class NinePatchChunk implements Serializable
 		{
 			fixed.add(new Pair<Integer>(lastIndex, pixels.length));
 		}
-		if(patches.size()==0)
+		if(patches.size() == 0)
 		{
 			patches.add(new Pair<Integer>(1, pixels.length));
 			startWithPatch[0] = true;
