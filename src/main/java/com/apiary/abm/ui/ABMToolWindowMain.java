@@ -354,16 +354,8 @@ public class ABMToolWindowMain extends JFrame
 		{
 			public void mousePressed(MouseEvent e)
 			{
-				TreePath path = tree.getSelectionPath();
-				if(e.getClickCount() == 2)
-					//					try
-					//				{
-					onTreeNodeDoubleClick((TreeNodeEntity) ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject());
-				//				}
-				//				catch(Exception e1)
-				//				{
-				//					Log.d("Exception on TreeNode doubleClick!");
-				//				}
+				if(e.getClickCount() == 2 && tree.getSelectionPath() != null)
+					onTreeNodeDoubleClick((TreeNodeEntity) ((DefaultMutableTreeNode) tree.getSelectionPath().getLastPathComponent()).getUserObject());
 			}
 		});
 	}
