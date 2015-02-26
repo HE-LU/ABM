@@ -14,7 +14,7 @@ public class ConfigClassInfoEntity
 	String mUri;
 	String mMethod;
 	String mMethodName;
-	Boolean mHidden;
+	Integer mHidden;
 	Boolean mAsync;
 	List<ConfigEntityNameEntity> mRequests = new ArrayList<ConfigEntityNameEntity>();
 	List<ConfigEntityNameEntity> mResponses = new ArrayList<ConfigEntityNameEntity>();
@@ -72,14 +72,14 @@ public class ConfigClassInfoEntity
 	}
 
 
-	public Boolean isHidden()
+	public Integer getHidden()
 	{
 		return mHidden;
 	}
 
 
 	@XmlElement(name = "Hidden")
-	public void setHidden(Boolean mHidden)
+	public void setHidden(Integer mHidden)
 	{
 		this.mHidden = mHidden;
 	}

@@ -9,10 +9,14 @@ import java.util.List;
 
 public class TreeNodeEntity
 {
+	public static Integer STATE_VISIBLE = 0;
+	public static Integer STATE_HIDDEN = 1;
+	public static Integer STATE_REMOVED = 2;
+
 	private TreeNodeTypeEnum mTreeNodeType;
 	private String mText; // some text
 	private Integer mValue; // like number for tree (5)
-	private boolean mHidden;
+	private Integer mHidden = 0;
 	private boolean mAsync;
 
 	private String mUri; // /ping
@@ -52,7 +56,7 @@ public class TreeNodeEntity
 		this.mTreeNodeType = entity.getTreeNodeType();
 		this.mText = entity.getText();
 		this.mValue = entity.getValue();
-		this.mHidden = entity.isHidden();
+		this.mHidden = entity.getHidden();
 		this.mAsync = entity.isAsync();
 
 		this.mUri = entity.getUri();
@@ -107,13 +111,13 @@ public class TreeNodeEntity
 	}
 
 
-	public boolean isHidden()
+	public Integer getHidden()
 	{
 		return mHidden;
 	}
 
 
-	public void setHidden(boolean mHidden)
+	public void setHidden(Integer mHidden)
 	{
 		this.mHidden = mHidden;
 	}

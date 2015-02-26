@@ -98,7 +98,7 @@ public class ConfigPreferences
 	}
 
 
-	public void saveTreeNodeEntity(TreeNodeEntity entity)
+	public void saveTreeNodeEntity(TreeNodeEntity entity, String oldUri, String oldMethod)
 	{
 		ConfigClassInfoEntity classInfoEntity = new ConfigClassInfoEntity();
 		List<ConfigEntityNameEntity> requests = new ArrayList<ConfigEntityNameEntity>();
@@ -113,20 +113,21 @@ public class ConfigPreferences
 		classInfoEntity.setUri(entity.getUri());
 		classInfoEntity.setMethod(entity.getMethod());
 		classInfoEntity.setMethodName(entity.getMethodName());
-		classInfoEntity.setHidden(entity.isHidden());
+		classInfoEntity.setHidden(entity.getHidden());
 		classInfoEntity.setAsync(entity.isAsync());
 		classInfoEntity.setRequests(requests);
 		classInfoEntity.setResponses(responses);
 
-		for(ConfigClassInfoEntity item : mConfig.getClassInfoList())
-			if(item.getUri().equals(classInfoEntity.getUri()) && item.getMethod().equals(classInfoEntity.getMethod()))
-			{
-				mConfig.getClassInfoList().remove(item);
-				break;
-			}
+		if(!mConfig.setClassInfoItem(classInfoEntity, oldUri, oldMethod))
+			mConfig.addClassInfoItem(classInfoEntity);
 
-		mConfig.addClassInfoItem(classInfoEntity);
 		saveConfig();
+	}
+
+
+	public void saveTreeNodeEntity(TreeNodeEntity entity)
+	{
+		saveTreeNodeEntity(entity, null, null);
 	}
 
 
@@ -156,11 +157,51 @@ public class ConfigPreferences
 						}
 
 				entity.setMethodName(item.getMethodName());
-				entity.setHidden(item.isHidden());
+				entity.setHidden(item.getHidden());
 				entity.setAsync(item.isAsync());
 				entity.setRequestBody(requests);
 				entity.setResponseBody(responses);
 			}
 		}
+	}
+
+	public List<TreeNodeEntity> getAllConfigEntities()
+	{
+		List<TreeNodeEntity> list = new ArrayList<TreeNodeEntity>();
+
+		for(ConfigClassInfoEntity item : mConfig.getClassInfoList())
+		{
+			TreeNodeEntity entity = new TreeNodeEntity();
+			entity.setMethodName(item.getMethodName());
+			entity.setMethod(item.getMethod());
+			entity.setUri(item.getUri());
+			entity.setHidden(item.getHidden());
+			entity.setAsync(item.isAsync());
+
+			if( item.getRequests() != null)
+			{
+				List<BodyObjectEntity> requestList = new ArrayList<BodyObjectEntity>();
+				for(ConfigEntityNameEntity nameItem : item.getRequests())
+				{
+					BodyObjectEntity bodyEntity = new BodyObjectEntity(nameItem.getSerializableName(),nameItem.getEntityName(),null);
+					requestList.add(bodyEntity);
+				}
+				entity.setRequestBody(requestList);
+			}
+
+			if( item.getResponses() != null)
+			{
+				List<BodyObjectEntity> responsesList = new ArrayList<BodyObjectEntity>();
+				for(ConfigEntityNameEntity nameItem : item.getResponses())
+				{
+					BodyObjectEntity bodyEntity = new BodyObjectEntity(nameItem.getSerializableName(),nameItem.getEntityName(),null);
+					responsesList.add(bodyEntity);
+				}
+				entity.setResponseBody(responsesList);
+			}
+			list.add(entity);
+		}
+
+		return list;
 	}
 }

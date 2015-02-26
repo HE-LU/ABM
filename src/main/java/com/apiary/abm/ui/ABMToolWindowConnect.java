@@ -178,7 +178,8 @@ public class ABMToolWindowConnect extends JFrame
 		labelDocumentationUrl.setHorizontalAlignment(SwingConstants.CENTER);
 
 		final JTextField textFieldDocumentationUrl = new JTextField();
-		textFieldDocumentationUrl.setText("tuxilero"); // FIXME
+		if(ABMConfig.DEBUG)
+			textFieldDocumentationUrl.setText("tuxilero");
 
 		final JLabel labelDocumentationToken = new JLabel("<html><center>" + mMessages.getString("connect_message_documentation_token") + "</center></html>");
 		labelDocumentationToken.setForeground(Color.WHITE);
@@ -186,7 +187,8 @@ public class ABMToolWindowConnect extends JFrame
 		labelDocumentationToken.setHorizontalAlignment(SwingConstants.CENTER);
 
 		final JTextField textFieldDocumentationToken = new JTextField();
-		textFieldDocumentationToken.setText("824b074bb727d3242fd960f8c5c4cfa9"); // FIXME
+		if(ABMConfig.DEBUG)
+			textFieldDocumentationToken.setText("824b074bb727d3242fd960f8c5c4cfa9");
 
 		cardDocumentation.add(labelDocumentationUrl);
 		cardDocumentation.add(textFieldDocumentationUrl);

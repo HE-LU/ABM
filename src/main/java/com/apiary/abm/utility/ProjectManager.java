@@ -286,4 +286,23 @@ public class ProjectManager
 
 		return problems;
 	}
+
+
+	public static boolean checkMethodUsage(TreeNodeEntity entity, List<TreeNodeEntity> list)
+	{
+		for(TreeNodeEntity item : list)
+		{
+			if(entity.getMethod().equals(item.getMethod()) && entity.getUri().equals(item.getUri()))
+				return true;
+		}
+		return false;
+	}
+
+
+	public static boolean checkEntityUsage(BodyObjectEntity entity)
+	{
+		// todo
+		return false;
+	}
+
 }

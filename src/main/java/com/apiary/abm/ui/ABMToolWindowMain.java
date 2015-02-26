@@ -16,6 +16,7 @@ import com.apiary.abm.enums.TreeNodeTypeEnum;
 import com.apiary.abm.enums.VariableEnum;
 import com.apiary.abm.renderer.ABMTreeCellRenderer;
 import com.apiary.abm.utility.ConfigPreferences;
+import com.apiary.abm.utility.Log;
 import com.apiary.abm.utility.Network;
 import com.apiary.abm.utility.Preferences;
 import com.apiary.abm.utility.ProjectManager;
@@ -241,19 +242,16 @@ public class ABMToolWindowMain extends JFrame
 									{
 										public void mousePressed(MouseEvent e)
 										{
-											//											int row = tree.getRowForLocation(e.getX(), e.getY());
-											//											TreePath path = tree.getPathForLocation(e.getX(), e.getY());
-											//											if(row!=-1 && e.getClickCount()==2)
-											//												onTreeNodeDoubleClick((TreeNodeEntity) ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject());
 											TreePath path = tree.getSelectionPath();
-											if(e.getClickCount()==2) try
-											{
+											if(e.getClickCount()==2)
+//												try
+//											{
 												onTreeNodeDoubleClick((TreeNodeEntity) ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject());
-											}
-											catch(Exception ex)
-											{
-												// nothing
-											}
+//											}
+//											catch(Exception ex)
+//											{
+//												nothing
+//											}
 										}
 									});
 
@@ -357,12 +355,16 @@ public class ABMToolWindowMain extends JFrame
 		{
 			public void mousePressed(MouseEvent e)
 			{
-				//				int row = tree.getRowForLocation(e.getX(), e.getY());
-				//				TreePath path = tree.getPathForLocation(e.getX(), e.getY());
-				//				if(row!=-1 && e.getClickCount()==2 && path != null)
 				TreePath path = tree.getSelectionPath();
 				if(e.getClickCount()==2)
+//					try
+//				{
 					onTreeNodeDoubleClick((TreeNodeEntity) ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject());
+//				}
+//				catch(Exception e1)
+//				{
+//					Log.d("Exception on TreeNode doubleClick!");
+//				}
 			}
 		});
 	}
@@ -370,11 +372,10 @@ public class ABMToolWindowMain extends JFrame
 
 	private void onTreeNodeDoubleClick(TreeNodeEntity entity)
 	{
-		// TODO call toolWindows onClick
 		if(entity.getTreeNodeType()==TreeNodeTypeEnum.CONFIGURATION_PROBLEM) new ABMToolWindowConfiguration(mToolWindow);
 		else if(entity.getTreeNodeType()==TreeNodeTypeEnum.NOT_IMPLEMENTED) new ABMToolWindowImplementationFirst(mToolWindow, entity);
 		else if(entity.getTreeNodeType()==TreeNodeTypeEnum.MODIFIED) new ABMToolWindowImplementationFirst(mToolWindow, entity);
-			//		else if(entity.getTreeNodeType()==TreeNodeTypeEnum.REMOVED) new ABMToolWindowNotImplementedFirst(mToolWindow, entity);
+		else if(entity.getTreeNodeType()==TreeNodeTypeEnum.REMOVED) new ABMToolWindowRemoved(mToolWindow, entity);
 		else if(entity.getTreeNodeType()==TreeNodeTypeEnum.HIDDEN)
 		{
 			JOptionPane pane = new JOptionPane(mMessages.getString("main_dialog_message_remove_hidden"));
@@ -388,7 +389,7 @@ public class ABMToolWindowMain extends JFrame
 				if(options[k].equals(obj)) result = k;
 			if(result==0)
 			{
-				entity.setHidden(false);
+				entity.setHidden(TreeNodeEntity.STATE_VISIBLE);
 				ConfigPreferences configPreferences = new ConfigPreferences();
 				configPreferences.saveTreeNodeEntity(entity);
 				new ABMToolWindowMain(mToolWindow);
@@ -495,21 +496,7 @@ public class ABMToolWindowMain extends JFrame
 			List<BodyObjectEntity> requests = parseBodyJson(item.getRequestBodyJson());
 			List<BodyObjectEntity> responses = parseBodyJson(item.getResponseBodyJson());
 
-			// remove duplicates
-			//			if(requests!=null)
-			//			{
-			//				Set<BodyObjectEntity> deDupleRequests = new LinkedHashSet<BodyObjectEntity>(requests);
-			//				requests.clear();
-			//				requests.addAll(deDupleRequests);
-			//			}
-			//			if(responses!=null)
-			//			{
-			//				Set<BodyObjectEntity> deDupleResponses = new LinkedHashSet<BodyObjectEntity>(responses);
-			//				responses.clear();
-			//				responses.addAll(deDupleResponses);
-			//			}
 
-			// todo join requests of same name
 			if(requests!=null)
 			{
 				for(BodyObjectEntity entity1 : requests)
@@ -610,23 +597,6 @@ public class ABMToolWindowMain extends JFrame
 						else entVar.setTypeName("ERROR");
 				}
 			}
-
-			//			if(requests!=null)
-			//			{
-			//				for(BodyObjectEntity ent : requests)
-			//				{
-			//					for(BodyVariableEntity entVar : ent.getVariables())
-			//						Log.d("ent: " + ent.getSerializableName() + "\tVar: " + entVar.getName() + "\tType: " + entVar.getTypeName());
-			//				}
-			//			}
-			//			if(responses!=null)
-			//			{
-			//				for(BodyObjectEntity ent : responses)
-			//				{
-			//					for(BodyVariableEntity entVar : ent.getVariables())
-			//						Log.d("ent: " + ent.getSerializableName() + "\tVar: " + entVar.getName() + "\tType: " + entVar.getTypeName());
-			//				}
-			//			}
 		}
 
 		return outputList;
@@ -739,12 +709,12 @@ public class ABMToolWindowMain extends JFrame
 			return outputTreeNodeList;
 		}
 
-		// TODO check status of each entity
 		for(TreeNodeEntity entity : inputTreeNodeList)
 		{
 			if(entity.getTreeNodeType()!=null) continue;
 
-			if(entity.isHidden()) entity.setTreeNodeType(TreeNodeTypeEnum.HIDDEN);
+			if(entity.getHidden().equals(TreeNodeEntity.STATE_HIDDEN)) entity.setTreeNodeType(TreeNodeTypeEnum.HIDDEN);
+			else if(entity.getHidden().equals(TreeNodeEntity.STATE_REMOVED)) entity.setTreeNodeType(TreeNodeTypeEnum.NONE);
 			else
 			{
 				if(entity.getMethodName().equals("") || interfaceClass.findMethodsByName(entity.getMethodName(), true)==null)
@@ -776,6 +746,16 @@ public class ABMToolWindowMain extends JFrame
 					if(ok) outputTreeNodeList.remove(entity);
 					else entity.setTreeNodeType(TreeNodeTypeEnum.MODIFIED);
 				}
+			}
+		}
+
+		ConfigPreferences configPreferences = new ConfigPreferences();
+		for(TreeNodeEntity entity : configPreferences.getAllConfigEntities())
+		{
+			if(!ProjectManager.checkMethodUsage(entity, inputTreeNodeList))
+			{
+				entity.setTreeNodeType(TreeNodeTypeEnum.REMOVED);
+				outputTreeNodeList.add(entity);
 			}
 		}
 
@@ -838,6 +818,8 @@ public class ABMToolWindowMain extends JFrame
 				case HIDDEN:
 					categoryHidden.add(item);
 					categoryHiddenValue++;
+					break;
+				case NONE:
 					break;
 			}
 		}

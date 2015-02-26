@@ -687,7 +687,7 @@ public class ABMToolWindowImplementationFirst extends JFrame
 					if(options[k].equals(obj)) result = k;
 				if(result==0)
 				{
-					mEntity.setHidden(true);
+					mEntity.setHidden(TreeNodeEntity.STATE_HIDDEN);
 					ConfigPreferences configPreferences = new ConfigPreferences();
 					configPreferences.saveTreeNodeEntity(mEntity);
 					new ABMToolWindowMain(mToolWindow);

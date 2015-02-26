@@ -1,5 +1,7 @@
 package com.apiary.abm.entity.config;
 
+import com.apiary.abm.utility.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,5 +61,31 @@ public class ConfigRootEntity
 	public void addClassInfoItem(ConfigClassInfoEntity mClassInfoItem)
 	{
 		this.mClassInfoList.add(mClassInfoItem);
+	}
+
+
+	public boolean setClassInfoItem(ConfigClassInfoEntity mClassInfoItem, String oldUri, String oldMethod)
+	{
+		if(oldUri!=null && oldMethod!=null)
+			for(ConfigClassInfoEntity item : this.mClassInfoList)
+			{
+				if(item.getUri().equals(oldUri) && item.getMethod().equals(oldMethod))
+				{
+					this.mClassInfoList.remove(item);
+					this.mClassInfoList.add(mClassInfoItem);
+					return true;
+				}
+			}
+		else
+			for(ConfigClassInfoEntity item : this.mClassInfoList)
+			{
+				if(item.getUri().equals(mClassInfoItem.getUri()) && item.getMethod().equals(mClassInfoItem.getMethod()))
+				{
+					this.mClassInfoList.remove(item);
+					this.mClassInfoList.add(mClassInfoItem);
+					return true;
+				}
+			}
+		return false;
 	}
 }

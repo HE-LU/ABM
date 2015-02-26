@@ -29,7 +29,8 @@ public enum TreeNodeTypeEnum
 	REMOVED_ROOT("removed_root"),
 	REMOVED("removed"),
 	HIDDEN_ROOT("hidden_root"),
-	HIDDEN("hidden");
+	HIDDEN("hidden"),
+	NONE("none");
 
 	private final String value;
 
