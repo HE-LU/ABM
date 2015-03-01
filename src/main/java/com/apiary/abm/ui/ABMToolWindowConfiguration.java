@@ -21,6 +21,8 @@ import net.miginfocom.swing.MigLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -35,9 +37,12 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 
 public class ABMToolWindowConfiguration extends JFrame
@@ -46,7 +51,7 @@ public class ABMToolWindowConfiguration extends JFrame
 	private ConfigPreferences mConfigPreferences = new ConfigPreferences();
 	private ConfigConfigurationEntity mConfigurationEntity = mConfigPreferences.getConfigurationEntity();
 	private List<String> mModuleList = new ArrayList<String>();
-	private ProjectManager mProjectManager = new ProjectManager();
+	private JTextArea mMethodTextArea = null;
 
 
 	public ABMToolWindowConfiguration(ToolWindow toolWindow)
@@ -88,7 +93,7 @@ public class ABMToolWindowConfiguration extends JFrame
 		// add elements
 		topPanel.setLayout(new MigLayout("insets 0 " + Utils.reDimension(20) + " " + Utils.reDimension(20) + " " + Utils.reDimension(20) + ", flowy, fillx, filly", "[fill, grow]", "[fill]"));
 		middlePanel.setLayout(new MigLayout("insets 0 " + Utils.reDimension(15) + " 0 " + Utils.reDimension(15) + ", flowy, fillx, filly", "[fill, grow]", "[]" + Utils.reDimension(20) + "[]" + Utils.reDimension(20) + "[]" + Utils.reDimension(20) + "[]" + Utils.reDimension(20) + "[]"));
-		bottomPanel.setLayout(new MigLayout("insets " + Utils.reDimension(18) + " 0 0 0, flowx, fillx, filly", "[grow, center]", "[center, top]"));
+		bottomPanel.setLayout(new MigLayout("insets " + Utils.reDimension(18) + " 0 0 0, flowx, fillx, filly", "[grow][grow]", "[center, top]"));
 
 		topPanel.setOpaque(false);
 		middlePanel.setOpaque(false);
@@ -169,7 +174,7 @@ public class ABMToolWindowConfiguration extends JFrame
 		interfaceClassLabel.setForeground(Color.WHITE);
 		interfaceClassLabel.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM)));
 		interfaceClassLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		List<PsiClass> psiClassInterface = mProjectManager.getClasses(mConfigurationEntity.getModule(), mConfigurationEntity.getInterfaceClass());
+		List<PsiClass> psiClassInterface = ProjectManager.getClasses(mConfigurationEntity.getModule(), mConfigurationEntity.getInterfaceClass());
 		if(psiClassInterface != null && psiClassInterface.size() > 0)
 			interfaceClassLabel.setText("<html><center>" + messages.getString("configuration_message_api_interface_green") + "</center></html>");
 		interfaceClassPanel.add(interfaceClassLabel);
@@ -178,6 +183,43 @@ public class ABMToolWindowConfiguration extends JFrame
 		final JTextField interfaceClassTextField = new JTextField();
 		interfaceClassTextField.setMinimumSize(new Dimension(Utils.reDimension(160), 0));
 		interfaceClassTextField.setText(mConfigurationEntity.getInterfaceClass());
+		interfaceClassTextField.addKeyListener(new KeyAdapter()
+		{
+			public void keyTyped(KeyEvent e)
+			{
+				char ch = e.getKeyChar();
+				if(!Character.isAlphabetic(ch)) e.consume();
+			}
+		});
+		interfaceClassTextField.getDocument().addDocumentListener(new DocumentListener()
+		{
+			public void changedUpdate(DocumentEvent e)
+			{
+				check();
+			}
+
+
+			public void removeUpdate(DocumentEvent e)
+			{
+				check();
+			}
+
+
+			public void insertUpdate(DocumentEvent e)
+			{
+				check();
+			}
+
+
+			public void check()
+			{
+				String exampleText = messages.getString("configuration_message_api_manager_note_example");
+				exampleText = exampleText.replaceAll("<API_URL_HERE>", mConfigurationEntity.getHost());
+				exampleText = exampleText.replaceAll("<INTERFACE_CLASS>", interfaceClassTextField.getText());
+				exampleText = exampleText.replaceAll("<INTERFACE_CLASS_SMALL>", "instance");
+				if(mMethodTextArea != null) mMethodTextArea.setText(exampleText);
+			}
+		});
 		interfaceClassPanel.add(interfaceClassTextField);
 
 		// Button Interface file
@@ -202,30 +244,6 @@ public class ABMToolWindowConfiguration extends JFrame
 		managerClassPanel.setOpaque(false);
 		middlePanel.add(managerClassPanel);
 
-		// Label Manager file
-		final JLabel managerClassLabel = new JLabel("<html><center>" + messages.getString("configuration_message_api_manager_red") + "</center></html>");
-		managerClassLabel.setForeground(Color.WHITE);
-		managerClassLabel.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM)));
-		managerClassLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		List<PsiClass> psiClassManager = mProjectManager.getClasses(mConfigurationEntity.getModule(), mConfigurationEntity.getManagerClass());
-		if(psiClassManager != null && psiClassManager.size() > 0)
-			managerClassLabel.setText("<html><center>" + messages.getString("configuration_message_api_manager_green") + "</center></html>");
-		managerClassPanel.add(managerClassLabel);
-
-		// TextField Manager file
-		final JTextField managerClassTextField = new JTextField();
-		managerClassTextField.setMinimumSize(new Dimension(Utils.reDimension(160), 0));
-		managerClassTextField.setText(mConfigurationEntity.getManagerClass());
-		managerClassPanel.add(managerClassTextField);
-
-		// Button Manager file
-		final JButton managerClassButton = new JButton("<html><center>" + messages.getString("configuration_button_check") + "</center></html>");
-		managerClassButton.setOpaque(false);
-		managerClassButton.setForeground(Color.WHITE);
-		managerClassButton.setFont(new Font("Ariel", Font.PLAIN, Utils.fontSize(Utils.FONT_SMALL)));
-		managerClassButton.setHorizontalAlignment(SwingConstants.CENTER);
-		managerClassPanel.add(managerClassButton, "wrap");
-
 		// Label Manager file note
 		final JLabel managerClassNoteLabel = new JLabel("<html><center>" + messages.getString("configuration_message_api_manager_note") + "</center></html>");
 		managerClassNoteLabel.setForeground(Color.WHITE);
@@ -233,6 +251,63 @@ public class ABMToolWindowConfiguration extends JFrame
 		managerClassNoteLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		managerClassPanel.add(managerClassNoteLabel, "span, grow");
 
+		String exampleText = messages.getString("configuration_message_api_manager_note_example");
+		exampleText = exampleText.replaceAll("<API_URL_HERE>", mConfigurationEntity.getHost());
+		exampleText = exampleText.replaceAll("<INTERFACE_CLASS>", mConfigurationEntity.getInterfaceClass());
+		exampleText = exampleText.replaceAll("<INTERFACE_CLASS_SMALL>", "instance");
+
+		mMethodTextArea = new JTextArea(exampleText);
+		mMethodTextArea.setForeground(Color.WHITE);
+		mMethodTextArea.setFont(new Font("Ariel", Font.PLAIN, Utils.fontSize(Utils.FONT_SMALL)));
+		mMethodTextArea.setOpaque(false);
+		mMethodTextArea.setEditable(false);
+		mMethodTextArea.setTabSize(4);
+
+		final JBScrollPane methodScrollPanel = new JBScrollPane(mMethodTextArea, JBScrollPane.VERTICAL_SCROLLBAR_NEVER, JBScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		methodScrollPanel.setOpaque(false);
+		methodScrollPanel.getViewport().setOpaque(false);
+		methodScrollPanel.setBorder(BorderFactory.createEmptyBorder());
+		methodScrollPanel.getVerticalScrollBar().setUnitIncrement(15);
+		methodScrollPanel.removeMouseWheelListener(methodScrollPanel.getMouseWheelListeners()[0]);
+
+		managerClassPanel.add(methodScrollPanel);
+
+		// Back button
+		final ImageButton buttonBack = new ImageButton();
+		buttonBack.setImage("drawable/img_button_back.png");
+		buttonBack.setSize(Utils.reDimension(70), Utils.reDimension(70));
+
+		buttonBack.addMouseListener(new MouseAdapter()
+		{
+			private boolean progress;
+
+
+			public void mouseClicked(MouseEvent e)
+			{
+				if(progress) return;
+				buttonBack.setImage("drawable/img_button_back_pressed.png");
+				buttonBack.setSize(Utils.reDimension(70), Utils.reDimension(70));
+				progress = true;
+
+				new ABMToolWindowMain(mToolWindow);
+			}
+
+
+			public void mousePressed(MouseEvent e)
+			{
+				if(progress) return;
+				buttonBack.setImage("drawable/img_button_back_pressed.png");
+				buttonBack.setSize(Utils.reDimension(70), Utils.reDimension(70));
+			}
+
+
+			public void mouseReleased(MouseEvent e)
+			{
+				if(progress) return;
+				buttonBack.setImage("drawable/img_button_back.png");
+				buttonBack.setSize(Utils.reDimension(70), Utils.reDimension(70));
+			}
+		});
 
 		// Save button
 		final ImageButton buttonSave = new ImageButton();
@@ -255,7 +330,6 @@ public class ABMToolWindowConfiguration extends JFrame
 				{
 					public void run()
 					{
-						mConfigurationEntity.setManagerClass(managerClassTextField.getText());
 						mConfigurationEntity.setModule((String) moduleComboBox.getSelectedItem());
 						mConfigurationEntity.setHost(hostTextField.getText());
 						mConfigurationEntity.setInterfaceClass(interfaceClassTextField.getText());
@@ -289,14 +363,16 @@ public class ABMToolWindowConfiguration extends JFrame
 				buttonSave.setSize(Utils.reDimension(70), Utils.reDimension(70));
 			}
 		});
-		bottomPanel.add(buttonSave);
+
+		bottomPanel.add(buttonBack, "right");
+		bottomPanel.add(buttonSave, "left");
 
 
 		interfaceClassButton.addMouseListener(new MouseAdapter()
 		{
 			public void mouseClicked(MouseEvent e)
 			{
-				List<PsiClass> cl = mProjectManager.getClasses((String) moduleComboBox.getSelectedItem(), interfaceClassTextField.getText());
+				List<PsiClass> cl = ProjectManager.getClasses((String) moduleComboBox.getSelectedItem(), interfaceClassTextField.getText());
 
 				if(cl != null && cl.size() > 0)
 					interfaceClassLabel.setText("<html><center>" + messages.getString("configuration_message_api_interface_green") + "</center></html>");
@@ -304,30 +380,11 @@ public class ABMToolWindowConfiguration extends JFrame
 					interfaceClassLabel.setText("<html><center>" + messages.getString("configuration_message_api_interface_red") + "</center></html>");
 			}
 		});
-
-		managerClassButton.addMouseListener(new MouseAdapter()
-		{
-			public void mouseClicked(MouseEvent e)
-			{
-				List<PsiClass> cl = mProjectManager.getClasses((String) moduleComboBox.getSelectedItem(), managerClassTextField.getText());
-
-				if(cl != null && cl.size() > 0)
-
-					managerClassLabel.setText("<html><center>" + messages.getString("configuration_message_api_manager_green") + "</center></html>");
-
-				else
-
-					managerClassLabel.setText("<html><center>" + messages.getString("configuration_message_api_manager_red") + "</center></html>");
-
-			}
-		});
 	}
 
 
 	private void checkValues()
 	{
-		ProjectManager manager = new ProjectManager();
-
 		if(mConfigurationEntity.getHost().equals(""))
 		{
 			try
@@ -350,7 +407,7 @@ public class ABMToolWindowConfiguration extends JFrame
 			}
 		}
 
-		for(Module module : manager.getAllModules())
+		for(Module module : ProjectManager.getAllModules())
 		{
 			mModuleList.add(module.getName());
 		}

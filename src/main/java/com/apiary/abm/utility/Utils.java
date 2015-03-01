@@ -164,7 +164,7 @@ public class Utils
 
 	public static String firstLetterUpperCase(String string)
 	{
-		if(string == null) return string;
+		if(string == null || string.length() == 0) return string;
 		if(string.length() == 1) return string.toUpperCase();
 		return string.substring(0, 1).toUpperCase() + string.substring(1, string.length());
 	}
@@ -172,7 +172,7 @@ public class Utils
 
 	public static String firstLetterLowerCase(String string)
 	{
-		if(string == null) return string;
+		if(string == null || string.length() == 0) return string;
 		if(string.length() == 1) return string.toLowerCase();
 		return string.substring(0, 1).toLowerCase() + string.substring(1, string.length());
 	}

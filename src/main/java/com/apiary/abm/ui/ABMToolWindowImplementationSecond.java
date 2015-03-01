@@ -386,7 +386,7 @@ public class ABMToolWindowImplementationSecond extends JFrame
 
 		// Next button
 		final ImageButton buttonNext = new ImageButton();
-		buttonNext.setImage("drawable/img_button_next.png");
+		buttonNext.setImage("drawable/img_button_save.png");
 		buttonNext.setSize(Utils.reDimension(70), Utils.reDimension(70));
 
 		buttonNext.addMouseListener(new MouseAdapter()
@@ -397,7 +397,7 @@ public class ABMToolWindowImplementationSecond extends JFrame
 			public void mouseClicked(MouseEvent e)
 			{
 				if(progress) return;
-				buttonNext.setImage("drawable/img_button_next_pressed.png");
+				buttonNext.setImage("drawable/img_button_save_pressed.png");
 				buttonNext.setSize(Utils.reDimension(70), Utils.reDimension(70));
 				progress = true;
 
@@ -419,7 +419,7 @@ public class ABMToolWindowImplementationSecond extends JFrame
 							{
 								public void run()
 								{
-									buttonNext.setImage("drawable/img_button_next.png");
+									buttonNext.setImage("drawable/img_button_save.png");
 								}
 							});
 						}
@@ -442,7 +442,7 @@ public class ABMToolWindowImplementationSecond extends JFrame
 			public void mousePressed(MouseEvent e)
 			{
 				if(progress) return;
-				buttonNext.setImage("drawable/img_button_next_pressed.png");
+				buttonNext.setImage("drawable/img_button_save_pressed.png");
 				buttonNext.setSize(Utils.reDimension(70), Utils.reDimension(70));
 			}
 
@@ -450,7 +450,7 @@ public class ABMToolWindowImplementationSecond extends JFrame
 			public void mouseReleased(MouseEvent e)
 			{
 				if(progress) return;
-				buttonNext.setImage("drawable/img_button_next.png");
+				buttonNext.setImage("drawable/img_button_save.png");
 				buttonNext.setSize(Utils.reDimension(70), Utils.reDimension(70));
 			}
 		});

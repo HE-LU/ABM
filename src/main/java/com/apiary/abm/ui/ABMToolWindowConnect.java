@@ -207,7 +207,7 @@ public class ABMToolWindowConnect extends JFrame
 		labelWebUrlMessage.setHorizontalAlignment(SwingConstants.CENTER);
 
 		final JTextField textFieldWebUrl = new JTextField();
-		textFieldWebUrl.setText("http://127.0.0.1:8080/share/my.blueprint"); // FIXME
+		if(ABMConfig.DEBUG) textFieldWebUrl.setText("http://127.0.0.1:8080/share/my.blueprint");
 
 		cardWebUrl.add(labelWebUrlMessage);
 		cardWebUrl.add(textFieldWebUrl);

@@ -201,7 +201,6 @@ public class ABMToolWindowMain extends JFrame
 						}
 						catch(IOException e)
 						{
-							// todo error
 							e.printStackTrace();
 						}
 						object = Utils.parseJsonBlueprint(json);
@@ -675,28 +674,17 @@ public class ABMToolWindowMain extends JFrame
 	private List<TreeNodeEntity> analyzeTreeNodeList(List<TreeNodeEntity> inputTreeNodeList)
 	{
 		PsiClass interfaceClass = ProjectManager.getInterfaceClass();
-		PsiClass managerClass = ProjectManager.getManagerClass();
 		List<TreeNodeEntity> outputTreeNodeList = new ArrayList<TreeNodeEntity>(inputTreeNodeList);
 
-		if(!(interfaceClass != null && managerClass != null))
+		if(interfaceClass == null)
 		{
 			outputTreeNodeList.clear();
 
-			if(interfaceClass == null)
-			{
-				TreeNodeEntity entity = new TreeNodeEntity();
-				entity.setText("Interface class is not configured properly");
-				entity.setTreeNodeType(TreeNodeTypeEnum.CONFIGURATION_PROBLEM);
-				outputTreeNodeList.add(entity);
-			}
+			TreeNodeEntity entity = new TreeNodeEntity();
+			entity.setText("Interface class is not configured properly");
+			entity.setTreeNodeType(TreeNodeTypeEnum.CONFIGURATION_PROBLEM);
+			outputTreeNodeList.add(entity);
 
-			if(managerClass == null)
-			{
-				TreeNodeEntity entity = new TreeNodeEntity();
-				entity.setText("Manager class is not configured properly");
-				entity.setTreeNodeType(TreeNodeTypeEnum.CONFIGURATION_PROBLEM);
-				outputTreeNodeList.add(entity);
-			}
 			return outputTreeNodeList;
 		}
 
