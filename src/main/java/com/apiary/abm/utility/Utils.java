@@ -2,7 +2,6 @@ package com.apiary.abm.utility;
 
 import com.apiary.abm.entity.BodyObjectEntity;
 import com.apiary.abm.entity.DocResponseEntity;
-import com.apiary.abm.entity.TreeNodeEntity;
 import com.apiary.abm.entity.blueprint.ABMEntity;
 import com.apiary.abm.ui.ABMToolWindow;
 import com.google.gson.Gson;
@@ -170,14 +169,6 @@ public class Utils
 	}
 
 
-	public static String firstLetterLowerCase(String string)
-	{
-		if(string == null || string.length() == 0) return string;
-		if(string.length() == 1) return string.toLowerCase();
-		return string.substring(0, 1).toLowerCase() + string.substring(1, string.length());
-	}
-
-
 	public static String cleanUpString(String string)
 	{
 		return string.replaceAll("[^a-zA-Z]", "");
@@ -189,20 +180,5 @@ public class Utils
 		for(BodyObjectEntity ent : list)
 			if(ent.getSerializableName().equals(serializableName)) return ent.getEntityName();
 		return null;
-	}
-
-
-	public static boolean entityContainParameter(TreeNodeEntity entity, String parameterName)
-	{
-		if(entity.getRequestBody() == null) return false;
-
-		for(BodyObjectEntity ent : entity.getRequestBody())
-		{
-			if(ent.getEntityName().equals(parameterName))
-			{
-				return true;
-			}
-		}
-		return false;
 	}
 }

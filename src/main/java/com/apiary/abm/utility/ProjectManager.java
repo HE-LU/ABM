@@ -282,12 +282,4 @@ public class ProjectManager
 		}
 		return false;
 	}
-
-
-	public static boolean checkEntityUsage(BodyObjectEntity entity)
-	{
-		// todo
-		return false;
-	}
-
 }

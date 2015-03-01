@@ -11,17 +11,23 @@ import com.intellij.ui.content.ContentFactory;
 import net.miginfocom.swing.MigLayout;
 
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ResourceBundle;
 
 import javax.swing.BorderFactory;
+import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 
 
 public class ABMToolWindowWelcome extends JFrame
@@ -82,18 +88,37 @@ public class ABMToolWindowWelcome extends JFrame
 		myToolWindowContent.add(bottomPanel);
 
 		// name
-		final JLabel infoText = new JLabel("<html><center>" + messages.getString("welcome_name") + "</center></html>");
-		infoText.setForeground(Color.WHITE);
-		infoText.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_LARGE)));
-		infoText.setHorizontalAlignment(SwingConstants.CENTER);
-		topPanel.add(infoText);
-
-		// welcome information
-		final JLabel nameText = new JLabel("<html><center>" + messages.getString("welcome_information") + "</center></html>");
+		final JLabel nameText = new JLabel("<html><center>" + messages.getString("welcome_name") + "</center></html>");
 		nameText.setForeground(Color.WHITE);
-		nameText.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM)));
+		nameText.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_LARGE)));
 		nameText.setHorizontalAlignment(SwingConstants.CENTER);
-		middlePanel.add(nameText);
+		topPanel.add(nameText);
+
+
+		final JEditorPane infoText = new JEditorPane("text/html", "<html><body style=\"font-family: Ariel; font-weight: bold; color: white; font-size:" + Utils.fontSize(Utils.FONT_MEDIUM) + "pt; \"><center>" + messages.getString("welcome_information") + "</center></body></html>");
+		infoText.setOpaque(false);
+		infoText.setHighlighter(null);
+		infoText.setEditable(false);
+		infoText.addHyperlinkListener(new HyperlinkListener()
+		{
+			@Override
+			public void hyperlinkUpdate(HyperlinkEvent e)
+			{
+				if(e.getEventType().equals(HyperlinkEvent.EventType.ACTIVATED)) try
+				{
+					Desktop.getDesktop().browse(e.getURL().toURI());
+				}
+				catch(IOException e1)
+				{
+					e1.printStackTrace();
+				}
+				catch(URISyntaxException e1)
+				{
+					e1.printStackTrace();
+				}
+			}
+		});
+		middlePanel.add(infoText);
 
 		// version
 		final JLabel versionText = new JLabel("<html><center>" + messages.getString("welcome_version") + "</center></html>");

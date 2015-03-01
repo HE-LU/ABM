@@ -7,7 +7,6 @@ import com.apiary.abm.ui.ABMToolWindow;
 
 public class Preferences
 {
-	public static final String PREF_PLUGIN_INITIALIZED = "pref_plugin_initialized";
 	public static final String PREF_BLUEPRINT_CONNECTION_TYPE = "pref_blueprint_connection_type";
 	public static final String PREF_BLUEPRINT_CONNECTION_PATH = "pref_blueprint_connection_path";
 	public static final String PREF_BLUEPRINT_CONNECTION_DOC_KEY = "pref_blueprint_connection_doc_key";
@@ -23,12 +22,6 @@ public class Preferences
 
 
 	// GETTERS
-	public boolean getPluginInitialized()
-	{
-		return mPreferences.getBoolean(PREF_PLUGIN_INITIALIZED, false);
-	}
-
-
 	public ConnectionTypeEnum getBlueprintConnectionType()
 	{
 		return ConnectionTypeEnum.toConnectionType(mPreferences.getInt(PREF_BLUEPRINT_CONNECTION_TYPE, -1));
@@ -60,12 +53,6 @@ public class Preferences
 
 
 	// SETTERS
-	public void setPluginInitialized(boolean value)
-	{
-		mPreferences.putBoolean(PREF_PLUGIN_INITIALIZED, value);
-	}
-
-
 	public void setBlueprintConnectionType(ConnectionTypeEnum value)
 	{
 		mPreferences.putInt(PREF_BLUEPRINT_CONNECTION_TYPE, value.toInteger());

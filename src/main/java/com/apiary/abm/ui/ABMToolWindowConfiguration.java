@@ -117,30 +117,16 @@ public class ABMToolWindowConfiguration extends JFrame
 
 		// Panel host
 		final JBackgroundPanel hostPanel = new JBackgroundPanel("drawable/img_background_panel.9.png", JBackgroundPanel.JBackgroundPanelType.NINE_PATCH);
-		hostPanel.setLayout(new MigLayout("insets " + Utils.reDimension(12) + " " + Utils.reDimension(12) + " " + Utils.reDimension(18) + " " + Utils.reDimension(19) + ", flowx, fillx, filly", "[][fill,grow][]", "[]"));
+		hostPanel.setLayout(new MigLayout("insets " + Utils.reDimension(12) + " " + Utils.reDimension(12) + " " + Utils.reDimension(18) + " " + Utils.reDimension(19) + ", flowx, fillx, filly", "[fill,grow]", "[]"));
 		hostPanel.setOpaque(false);
 		middlePanel.add(hostPanel);
 
 		// Label host
-		final JLabel hostLabel = new JLabel("<html><center>" + messages.getString("configuration_message_host") + "</center></html>");
+		final JLabel hostLabel = new JLabel("<html><center>" + messages.getString("configuration_message_host") + " " + mConfigurationEntity.getHost() + "</center></html>");
 		hostLabel.setForeground(Color.WHITE);
 		hostLabel.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM)));
 		hostLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		hostPanel.add(hostLabel);
-
-		// TextField host
-		final JTextField hostTextField = new JTextField();
-		hostTextField.setMinimumSize(new Dimension(Utils.reDimension(160), 0));
-		hostTextField.setText(mConfigurationEntity.getHost());
-		hostPanel.add(hostTextField, "wrap");
-
-		// Label host example
-		final JLabel hostExampleLabel = new JLabel("<html><center>" + messages.getString("configuration_message_host_example") + "</center></html>");
-		hostExampleLabel.setForeground(Color.WHITE);
-		hostExampleLabel.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_SMALL)));
-		hostExampleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		hostPanel.add(hostExampleLabel, "span, grow");
-
 
 		// Panel module
 		final JBackgroundPanel modulePanel = new JBackgroundPanel("drawable/img_background_panel.9.png", JBackgroundPanel.JBackgroundPanelType.NINE_PATCH);
@@ -238,18 +224,18 @@ public class ABMToolWindowConfiguration extends JFrame
 		interfaceClassPanel.add(interfaceClassNoteLabel, "span, grow");
 
 
-		// Panel Manager file
+		// Panel Manager
 		final JBackgroundPanel managerClassPanel = new JBackgroundPanel("drawable/img_background_panel.9.png", JBackgroundPanel.JBackgroundPanelType.NINE_PATCH);
-		managerClassPanel.setLayout(new MigLayout("insets " + Utils.reDimension(12) + " " + Utils.reDimension(12) + " " + Utils.reDimension(18) + " " + Utils.reDimension(19) + ", flowx, fillx, filly", "[][fill,grow][][]", "[]"));
+		managerClassPanel.setLayout(new MigLayout("insets " + Utils.reDimension(12) + " " + Utils.reDimension(12) + " " + Utils.reDimension(18) + " " + Utils.reDimension(19) + ", flowy, fillx, filly", "[fill,grow,center]", "[]" + Utils.reDimension(20) + "[]"));
 		managerClassPanel.setOpaque(false);
 		middlePanel.add(managerClassPanel);
 
-		// Label Manager file note
+		// Label Manager note
 		final JLabel managerClassNoteLabel = new JLabel("<html><center>" + messages.getString("configuration_message_api_manager_note") + "</center></html>");
 		managerClassNoteLabel.setForeground(Color.WHITE);
-		managerClassNoteLabel.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_SMALL)));
+		managerClassNoteLabel.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM)));
 		managerClassNoteLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		managerClassPanel.add(managerClassNoteLabel, "span, grow");
+		managerClassPanel.add(managerClassNoteLabel);
 
 		String exampleText = messages.getString("configuration_message_api_manager_note_example");
 		exampleText = exampleText.replaceAll("<API_URL_HERE>", mConfigurationEntity.getHost());
@@ -276,7 +262,6 @@ public class ABMToolWindowConfiguration extends JFrame
 		final ImageButton buttonBack = new ImageButton();
 		buttonBack.setImage("drawable/img_button_back.png");
 		buttonBack.setSize(Utils.reDimension(70), Utils.reDimension(70));
-
 		buttonBack.addMouseListener(new MouseAdapter()
 		{
 			private boolean progress;
@@ -331,7 +316,7 @@ public class ABMToolWindowConfiguration extends JFrame
 					public void run()
 					{
 						mConfigurationEntity.setModule((String) moduleComboBox.getSelectedItem());
-						mConfigurationEntity.setHost(hostTextField.getText());
+						mConfigurationEntity.setHost(mConfigurationEntity.getHost());
 						mConfigurationEntity.setInterfaceClass(interfaceClassTextField.getText());
 						mConfigPreferences.saveConfigurationEntity(mConfigurationEntity);
 
