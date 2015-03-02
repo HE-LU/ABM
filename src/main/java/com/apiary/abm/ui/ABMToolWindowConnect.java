@@ -18,6 +18,7 @@ import net.miginfocom.swing.MigLayout;
 
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Insets;
@@ -26,12 +27,15 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.ResourceBundle;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -41,6 +45,8 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 
 
 public class ABMToolWindowConnect extends JFrame
@@ -188,10 +194,35 @@ public class ABMToolWindowConnect extends JFrame
 		final JTextField textFieldDocumentationToken = new JTextField();
 		if(ABMConfig.DEBUG) textFieldDocumentationToken.setText("824b074bb727d3242fd960f8c5c4cfa9");
 
+		final JEditorPane labelDocumentationTokenExample = new JEditorPane("text/html", "<html><body style=\"font-family: Ariel; font-weight: bold; color: white; font-size:" + Utils.fontSize(Utils.FONT_SMALL) + "pt; \"><center>" + mMessages.getString("connect_message_documentation_token_example") + "</center></body></html>");
+		labelDocumentationTokenExample.setOpaque(false);
+		labelDocumentationTokenExample.setHighlighter(null);
+		labelDocumentationTokenExample.setEditable(false);
+		labelDocumentationTokenExample.addHyperlinkListener(new HyperlinkListener()
+		{
+			@Override
+			public void hyperlinkUpdate(HyperlinkEvent e)
+			{
+				if(e.getEventType().equals(HyperlinkEvent.EventType.ACTIVATED)) try
+				{
+					Desktop.getDesktop().browse(e.getURL().toURI());
+				}
+				catch(IOException e1)
+				{
+					e1.printStackTrace();
+				}
+				catch(URISyntaxException e1)
+				{
+					e1.printStackTrace();
+				}
+			}
+		});
+
 		cardDocumentation.add(labelDocumentationUrl);
 		cardDocumentation.add(textFieldDocumentationUrl);
 		cardDocumentation.add(labelDocumentationToken, "gap 0 0 " + Utils.reDimension(5) + " 0");
 		cardDocumentation.add(textFieldDocumentationToken);
+		cardDocumentation.add(labelDocumentationTokenExample);
 		cards.add(cardDocumentation, CARD_DOCUMENTATION);
 
 
@@ -209,8 +240,14 @@ public class ABMToolWindowConnect extends JFrame
 		final JTextField textFieldWebUrl = new JTextField();
 		if(ABMConfig.DEBUG) textFieldWebUrl.setText("http://127.0.0.1:8080/share/my.blueprint");
 
+		final JLabel labelWebUrlMessageExample = new JLabel("<html><center>" + mMessages.getString("connect_message_web_url_example") + "</center></html>");
+		labelWebUrlMessageExample.setForeground(Color.WHITE);
+		labelWebUrlMessageExample.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_SMALL)));
+		labelWebUrlMessageExample.setHorizontalAlignment(SwingConstants.CENTER);
+
 		cardWebUrl.add(labelWebUrlMessage);
 		cardWebUrl.add(textFieldWebUrl);
+		cardWebUrl.add(labelWebUrlMessageExample);
 		cards.add(cardWebUrl, CARD_WEB_URL);
 
 
@@ -226,7 +263,6 @@ public class ABMToolWindowConnect extends JFrame
 		labelLocalMessage.setHorizontalAlignment(SwingConstants.CENTER);
 
 		final JTextField textFieldLocalPath = new JTextField();
-		textFieldLocalPath.setText("/home/tuxilero/input.abm");
 
 		final JButton buttonLocalBrowse = new JButton("Browse...");
 		buttonLocalBrowse.setOpaque(false);
@@ -315,6 +351,9 @@ public class ABMToolWindowConnect extends JFrame
 						{
 							try
 							{
+								if(textFieldDocumentationUrl.getText().equals("") || textFieldDocumentationToken.getText().equals(""))
+									throw new Exception(mMessages.getString("connect_message_error_no_data"));
+
 								String output = Network.requestBlueprintFromApiary(textFieldDocumentationUrl.getText(), textFieldDocumentationToken.getText());
 								DocResponseEntity response = Utils.parseJsonDoc(output);
 
@@ -344,6 +383,9 @@ public class ABMToolWindowConnect extends JFrame
 						{
 							try
 							{
+								if(textFieldWebUrl.getText().equals(""))
+									throw new Exception(mMessages.getString("connect_message_error_no_data"));
+
 								String output = Network.requestBlueprintFromURL(textFieldWebUrl.getText());
 
 								if(output == null) throw new Exception(mMessages.getString("connect_message_error_web"));
@@ -369,6 +411,9 @@ public class ABMToolWindowConnect extends JFrame
 						{
 							try
 							{
+								if(textFieldLocalPath.getText().equals(""))
+									throw new Exception(mMessages.getString("connect_message_error_no_data"));
+
 								String output = Utils.readFileAsString(textFieldLocalPath.getText(), Charset.forName("UTF-8"));
 
 								if(output == null) throw new Exception(mMessages.getString("connect_message_error_file"));
