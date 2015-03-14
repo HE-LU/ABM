@@ -176,7 +176,7 @@ public class ProjectManager
 				if(parameterList.getParameters()[i].getName().equals("param" + Utils.firstLetterUpperCase(bodyEntity.getEntityName())))
 				{
 					if(!parameterList.getParameters()[i].getType().getPresentableText().equals(bodyEntity.getEntityName()))
-						problems.add(new ProblemEntity("Method body request", "Method body request: " + bodyEntity.getSerializableName() + " have bad type."));
+						problems.add(new ProblemEntity("Method body request", "Method body request: " + bodyEntity.getSerializableName() + " has bad type."));
 					requestsList.remove(bodyEntity);
 					break;
 				}
@@ -190,10 +190,10 @@ public class ProjectManager
 					if(entity.getUri().contains(paramEntity.getName()))
 					{
 						if(!parameterList.getParameters()[i].getType().getPresentableText().equals(Utils.firstLetterUpperCase(paramEntity.getType())))
-							problems.add(new ProblemEntity("Method parameters", "Method parameter: " + paramEntity.getName() + " have bad type."));
+							problems.add(new ProblemEntity("Method parameters", "Method parameter: " + paramEntity.getName() + " has bad type."));
 
 						if(!parameterList.getParameters()[i].getModifierList().getAnnotations()[0].getQualifiedName().equals(paramEntity.getTypeOfParam()))
-							problems.add(new ProblemEntity("Method parameters", "Method parameter: " + paramEntity.getName() + " have bad annotation"));
+							problems.add(new ProblemEntity("Method parameters", "Method parameter: " + paramEntity.getName() + " has bad annotation"));
 					}
 					else
 						problems.add(new ProblemEntity("Method parameters", "URI does not contain this parameter: " + paramEntity.getName() + "."));
@@ -244,7 +244,7 @@ public class ProjectManager
 				{
 					// check type
 					if(!field.getType().getPresentableText().equals(variable.getTypeName()))
-						problems.add(new ProblemEntity("Entity variable bad type", "Variable: " + variable.getName() + " have bad type."));
+						problems.add(new ProblemEntity("Entity variable bad type", "Variable: " + variable.getName() + " has bad type."));
 
 					// check annotation
 					PsiAnnotation[] annotations = field.getModifierList().getAnnotations();
@@ -259,7 +259,7 @@ public class ProjectManager
 							headersString = annotation.getParameterList().getAttributes()[0].getValue().getText();
 					}
 					if(!headersString.equals("\"" + variable.getName() + "\""))
-						problems.add(new ProblemEntity("Entity variable bad type", "Variable: " + variable.getName() + " have bad serialized name."));
+						problems.add(new ProblemEntity("Entity variable bad type", "Variable: " + variable.getName() + " has bad serialized name."));
 
 					variablesList.remove(variable);
 					break;
