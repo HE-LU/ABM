@@ -52,6 +52,8 @@ public class ABMToolWindowRemoved extends JFrame
 		mEntity = new TreeNodeEntity(entity);
 		mToolWindow.getContentManager().removeAllContents(true);
 
+		Utils.trackPage("Removed screen");
+
 		initLayout();
 	}
 
@@ -307,7 +309,7 @@ public class ABMToolWindowRemoved extends JFrame
 						if(error)
 						{
 							progress = false;
-							JOptionPane.showMessageDialog(null, errorText, mMessages.getString("global_error_title"), JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(null, Utils.generateMessage(errorText), mMessages.getString("global_error_title"), JOptionPane.ERROR_MESSAGE);
 							SwingUtilities.invokeLater(new Runnable()
 							{
 								public void run()
@@ -364,7 +366,7 @@ public class ABMToolWindowRemoved extends JFrame
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				JOptionPane pane = new JOptionPane(mMessages.getString("removed_dialog_message_add_hidden"));
+				JOptionPane pane = new JOptionPane(Utils.generateMessage(mMessages.getString("removed_dialog_message_add_hidden")));
 				Object[] options = new String[]{mMessages.getString("global_yes"), mMessages.getString("global_no")};
 				pane.setOptions(options);
 				JDialog dialog = pane.createDialog(new JFrame(), mMessages.getString("removed_dialog_message_add_hidden_header"));

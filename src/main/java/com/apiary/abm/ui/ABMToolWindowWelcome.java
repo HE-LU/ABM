@@ -40,6 +40,8 @@ public class ABMToolWindowWelcome extends JFrame
 		mToolWindow = toolWindow;
 		mToolWindow.getContentManager().removeAllContents(true);
 
+		Utils.trackPage("Welcome screen");
+
 		initLayout();
 	}
 

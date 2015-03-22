@@ -54,6 +54,8 @@ public class ABMToolWindowImplementationSecond extends JFrame
 		mEntity = entity;
 		mToolWindow.getContentManager().removeAllContents(true);
 
+		Utils.trackPage("Implementation second screen");
+
 		initLayout();
 	}
 
@@ -171,7 +173,7 @@ public class ABMToolWindowImplementationSecond extends JFrame
 						problemList += problemEntity.getText() + "\n\n";
 					//						problemList += problemEntity.getName() + " \n\t" + problemEntity.getText()+"\n";
 
-					JOptionPane pane = new JOptionPane(problemList);
+					JOptionPane pane = new JOptionPane(Utils.generateMessage(problemList));
 					Object[] options = new String[]{mMessages.getString("global_ok")};
 					pane.setOptions(options);
 					JDialog dialog = pane.createDialog(new JFrame(), mMessages.getString("implementation_dialog_check_header"));
@@ -250,7 +252,7 @@ public class ABMToolWindowImplementationSecond extends JFrame
 								problemList += problemEntity.getText() + "\n\n";
 							//								problemList += problemEntity.getName() + " \n\t" + problemEntity.getText()+"\n";
 
-							JOptionPane pane = new JOptionPane(problemList);
+							JOptionPane pane = new JOptionPane(Utils.generateMessage(problemList));
 							Object[] options = new String[]{mMessages.getString("global_ok")};
 							pane.setOptions(options);
 							JDialog dialog = pane.createDialog(new JFrame(), mMessages.getString("implementation_dialog_check_header"));
@@ -333,7 +335,7 @@ public class ABMToolWindowImplementationSecond extends JFrame
 								problemList += problemEntity.getText() + "\n\n";
 							//								problemList += problemEntity.getName() + " \n\t" + problemEntity.getText()+"\n";
 
-							JOptionPane pane = new JOptionPane(problemList);
+							JOptionPane pane = new JOptionPane(Utils.generateMessage(problemList));
 							Object[] options = new String[]{mMessages.getString("global_ok")};
 							pane.setOptions(options);
 							JDialog dialog = pane.createDialog(new JFrame(), mMessages.getString("implementation_dialog_check_header"));
@@ -414,7 +416,7 @@ public class ABMToolWindowImplementationSecond extends JFrame
 						if(error)
 						{
 							progress = false;
-							JOptionPane.showMessageDialog(null, errorText, mMessages.getString("global_error_title"), JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(null, Utils.generateMessage(errorText), mMessages.getString("global_error_title"), JOptionPane.ERROR_MESSAGE);
 							SwingUtilities.invokeLater(new Runnable()
 							{
 								public void run()

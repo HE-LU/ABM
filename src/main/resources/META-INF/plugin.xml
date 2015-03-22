@@ -1,17 +1,38 @@
 <idea-plugin version="2">
 	<id>com.apiary.abm</id>
 	<name>Apiary Blueprint Manager</name>
-	<version>2.0.0</version>
+	<version>2.0.1</version>
 	<vendor email="tuxilero@gmail.com" url="http://tuxilero.blogspot.com">Lukáš Hermann a.k.a "Tuxilero"</vendor>
 
 	<description>
 		<![CDATA[
-            Management of classes from Apiary Blueprint
+            Apiary Blueprint Manager is a plugin for Android studio or any other IntelliJ IDEA based IDE. It helps keep the code up-to-date with Apiary documentation, by notifying about changes and helps by generating code based on Apiary documentation.<br /><br />
+
+			Plugin can analyze Apiary blueprint and tell you:
+			<ul>
+			<li>Which methods need to be implemented</li>
+			<li>Which methods have changed in your code, or at Apiary documentation</li>
+			<li>Which methods are implemented, but no longer supported by API</li>
+			</ul>
+			<br />
+			Plugin can also:
+			<ul>
+			<li>Give you detailed information about requests</li>
+			<li>Generate example code for request's methods</li>
+			<li>Generate example code for entities</li>
+			</ul>
+			<br />
+			Plugin limitations:
+			<ul>
+			<li>Plugin currently works only with retrofit library</li>
+			<li>Plugin currently works only with JSON body in requests</li>
+			</ul>
         ]]>
 	</description>
 
 	<change-notes><![CDATA[
-      No changes.<br>
+      2.0.1 - Google Analytics<br />
+      2.0.0 - First public release<br />
     ]]>
 	</change-notes>
 

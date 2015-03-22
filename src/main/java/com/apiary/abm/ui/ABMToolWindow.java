@@ -1,6 +1,7 @@
 package com.apiary.abm.ui;
 
 import com.apiary.abm.utility.ConfigPreferences;
+import com.apiary.abm.utility.Utils;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
@@ -17,6 +18,7 @@ public class ABMToolWindow extends JFrame implements ToolWindowFactory
 
 	public ABMToolWindow()
 	{
+		Utils.initAnalytics();
 	}
 
 

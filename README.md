@@ -3,7 +3,7 @@ Apiary Blueprint Manager
 
 Apiary Blueprint Manager is a plugin for Android studio, or any other 
 IntelliJ IDEA based IDE. This plugin was created as my bachelor thesis. 
-It helps keep code up-to-date with Apiary documentation, by notifying 
+It helps keep the code up-to-date with Apiary documentation, by notifying 
 about changes and helps by generating code based on Apiary documentation.
 
 Usage

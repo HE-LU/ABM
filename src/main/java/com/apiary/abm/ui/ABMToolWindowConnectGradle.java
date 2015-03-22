@@ -44,6 +44,8 @@ public class ABMToolWindowConnectGradle extends JFrame
 		mToolWindow = toolWindow;
 		mToolWindow.getContentManager().removeAllContents(true);
 
+		Utils.trackPage("Connect gradle screen");
+
 		initLayout();
 	}
 
@@ -183,7 +185,7 @@ public class ABMToolWindowConnectGradle extends JFrame
 						if(error)
 						{
 							connecting = false;
-							JOptionPane.showMessageDialog(null, errorText, mMessages.getString("global_error_title"), JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(null, Utils.generateMessage(errorText), mMessages.getString("global_error_title"), JOptionPane.ERROR_MESSAGE);
 							SwingUtilities.invokeLater(new Runnable()
 							{
 								public void run()

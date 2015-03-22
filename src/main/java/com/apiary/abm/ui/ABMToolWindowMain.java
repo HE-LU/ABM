@@ -77,6 +77,8 @@ public class ABMToolWindowMain extends JFrame
 		mToolWindow = toolWindow;
 		mToolWindow.getContentManager().removeAllContents(true);
 
+		Utils.trackPage("Main screen");
+
 		initLayout();
 	}
 
@@ -108,7 +110,7 @@ public class ABMToolWindowMain extends JFrame
 		bottomPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, Utils.reDimension(90)));
 
 		// add elements
-		topPanel.setLayout(new MigLayout("insets 0 " + Utils.reDimension(20) + " " + Utils.reDimension(20) + " 0, flowx, fillx, filly", "[grow, center][]", "[center, top]"));
+		topPanel.setLayout(new MigLayout("insets 0 " + Utils.reDimension(5) + " " + Utils.reDimension(5) + " 0, flowx, fillx, filly", "[][grow, center][]", "[center, top]"));
 		middlePanel.setLayout(new MigLayout("insets 0 " + Utils.reDimension(15) + " 0 " + Utils.reDimension(15) + ", flowy, fillx, filly", "[fill, grow]", "[fill, grow]"));
 		bottomPanel.setLayout(new MigLayout("insets " + Utils.reDimension(18) + " 0 0 0, flowy, fillx, filly", "[grow, center]", "[center, top]"));
 
@@ -144,11 +146,46 @@ public class ABMToolWindowMain extends JFrame
 			e.printStackTrace();
 		}
 
+		// info button
+		final ImageButton buttonInfo = new ImageButton();
+		buttonInfo.setImage("drawable/img_button_info.png");
+		buttonInfo.setSize(Utils.reDimension(42), Utils.reDimension(42));
+
+		buttonInfo.addMouseListener(new MouseAdapter()
+		{
+			public void mouseClicked(MouseEvent e)
+			{
+				buttonInfo.setImage("drawable/img_button_info.png");
+				buttonInfo.setSize(Utils.reDimension(42), Utils.reDimension(42));
+
+				JOptionPane pane = new JOptionPane(Utils.generateMessage(mMessages.getString("main_dialog_message_information")));
+				Object[] options = new String[]{mMessages.getString("global_ok")};
+				pane.setOptions(options);
+				JDialog dialog = pane.createDialog(new JFrame(), mMessages.getString("main_dialog_message_information_header"));
+				dialog.setVisible(true);
+			}
+
+
+			public void mousePressed(MouseEvent e)
+			{
+				buttonInfo.setImage("drawable/img_button_info_pressed.png");
+				buttonInfo.setSize(Utils.reDimension(42), Utils.reDimension(42));
+			}
+
+
+			public void mouseReleased(MouseEvent e)
+			{
+				buttonInfo.setImage("drawable/img_button_info.png");
+				buttonInfo.setSize(Utils.reDimension(42), Utils.reDimension(42));
+			}
+		});
+		topPanel.add(buttonInfo, "left, gap 0px 0px " + Utils.reDimension(5) + "px 0px ");
+
 		// information icon
 		mInformationIcon = new JLabel();
 		mInformationIcon.setOpaque(false);
 		mInformationIcon.setHorizontalAlignment(SwingConstants.CENTER);
-		topPanel.add(mInformationIcon, "gap " + Utils.reDimension(27) + "px"); // config button gaps (10 + 10) + size (35) = 55 / 2 = 27
+		topPanel.add(mInformationIcon);
 
 
 		// tree structure
@@ -291,19 +328,14 @@ public class ABMToolWindowMain extends JFrame
 		// config button
 		final ImageButton buttonConfig = new ImageButton();
 		buttonConfig.setImage("drawable/img_button_config.png");
-		buttonConfig.setSize(Utils.reDimension(35), Utils.reDimension(35));
+		buttonConfig.setSize(Utils.reDimension(42), Utils.reDimension(42));
 
 		buttonConfig.addMouseListener(new MouseAdapter()
 		{
-			private boolean progress;
-
-
 			public void mouseClicked(MouseEvent e)
 			{
-				if(progress) return;
 				buttonConfig.setImage("drawable/img_button_config_pressed.png");
-				buttonConfig.setSize(Utils.reDimension(35), Utils.reDimension(35));
-				progress = true;
+				buttonConfig.setSize(Utils.reDimension(42), Utils.reDimension(42));
 
 				new ABMToolWindowConfiguration(mToolWindow);
 			}
@@ -311,20 +343,18 @@ public class ABMToolWindowMain extends JFrame
 
 			public void mousePressed(MouseEvent e)
 			{
-				if(progress) return;
 				buttonConfig.setImage("drawable/img_button_config_pressed.png");
-				buttonConfig.setSize(Utils.reDimension(35), Utils.reDimension(35));
+				buttonConfig.setSize(Utils.reDimension(42), Utils.reDimension(42));
 			}
 
 
 			public void mouseReleased(MouseEvent e)
 			{
-				if(progress) return;
 				buttonConfig.setImage("drawable/img_button_config.png");
-				buttonConfig.setSize(Utils.reDimension(35), Utils.reDimension(35));
+				buttonConfig.setSize(Utils.reDimension(42), Utils.reDimension(42));
 			}
 		});
-		topPanel.add(buttonConfig, "right, gap 0px " + Utils.reDimension(10) + "px " + Utils.reDimension(10) + "px 0px ");
+		topPanel.add(buttonConfig, "right, gap 0px " + Utils.reDimension(5) + "px " + Utils.reDimension(5) + "px 0px ");
 
 
 		tree.addKeyListener(new java.awt.event.KeyAdapter()
@@ -368,7 +398,8 @@ public class ABMToolWindowMain extends JFrame
 		else if(entity.getTreeNodeType() == TreeNodeTypeEnum.REMOVED) new ABMToolWindowRemoved(mToolWindow, entity);
 		else if(entity.getTreeNodeType() == TreeNodeTypeEnum.HIDDEN)
 		{
-			JOptionPane pane = new JOptionPane(mMessages.getString("main_dialog_message_remove_hidden"));
+
+			JOptionPane pane = new JOptionPane(Utils.generateMessage(mMessages.getString("main_dialog_message_remove_hidden")));
 			Object[] options = new String[]{mMessages.getString("global_yes"), mMessages.getString("global_no")};
 			pane.setOptions(options);
 			JDialog dialog = pane.createDialog(new JFrame(), mMessages.getString("main_dialog_message_remove_hidden_header"));

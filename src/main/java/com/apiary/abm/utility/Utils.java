@@ -1,20 +1,25 @@
 package com.apiary.abm.utility;
 
+import com.apiary.abm.ABMConfig;
 import com.apiary.abm.entity.BodyObjectEntity;
 import com.apiary.abm.entity.DocResponseEntity;
 import com.apiary.abm.entity.blueprint.ABMEntity;
 import com.apiary.abm.ui.ABMToolWindow;
+import com.brsanthu.googleanalytics.AppViewHit;
+import com.brsanthu.googleanalytics.GoogleAnalytics;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.intellij.openapi.project.Project;
 
 import org.apache.commons.io.FileUtils;
 
+import java.awt.Desktop;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -22,6 +27,9 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.imageio.ImageIO;
+import javax.swing.JEditorPane;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 
 
 public class Utils
@@ -31,6 +39,8 @@ public class Utils
 	final public static int FONT_MEDIUM_LARGE = 20;
 	final public static int FONT_LARGE = 24;
 	final public static int FONT_XLARGE = 30;
+
+	private static GoogleAnalytics sGoogleAnalytics = null;
 
 
 	// DIMENSION UTILS
@@ -180,5 +190,48 @@ public class Utils
 		for(BodyObjectEntity ent : list)
 			if(ent.getSerializableName().equals(serializableName)) return ent.getEntityName();
 		return null;
+	}
+
+
+	public static void initAnalytics()
+	{
+		if(sGoogleAnalytics == null) sGoogleAnalytics = new GoogleAnalytics(ABMConfig.GA_ID, ABMConfig.GA_APP_NAME, ABMConfig.VERSION);
+	}
+
+
+	public static void trackPage(String page)
+	{
+		if(sGoogleAnalytics == null || ABMConfig.DEBUG) return;
+
+		sGoogleAnalytics.post(new AppViewHit(ABMConfig.GA_ID, ABMConfig.VERSION, page));
+	}
+
+
+	public static JEditorPane generateMessage(String message)
+	{
+		final JEditorPane editorPane = new JEditorPane("text/html", "<html><body style=\"font-family: Ariel; font-weight: bold; color: white; font-size:" + Utils.fontSize(Utils.FONT_SMALL) + "pt; \"><center>" + message + "</center></body></html>");
+		editorPane.setOpaque(false);
+		editorPane.setHighlighter(null);
+		editorPane.setEditable(false);
+		editorPane.addHyperlinkListener(new HyperlinkListener()
+		{
+			@Override
+			public void hyperlinkUpdate(HyperlinkEvent e)
+			{
+				if(e.getEventType().equals(HyperlinkEvent.EventType.ACTIVATED)) try
+				{
+					Desktop.getDesktop().browse(e.getURL().toURI());
+				}
+				catch(IOException e1)
+				{
+					e1.printStackTrace();
+				}
+				catch(URISyntaxException e1)
+				{
+					e1.printStackTrace();
+				}
+			}
+		});
+		return editorPane;
 	}
 }

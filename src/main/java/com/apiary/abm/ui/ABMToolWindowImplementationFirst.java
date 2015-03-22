@@ -64,6 +64,8 @@ public class ABMToolWindowImplementationFirst extends JFrame
 		mEntity = new TreeNodeEntity(entity);
 		mToolWindow.getContentManager().removeAllContents(true);
 
+		Utils.trackPage("Implementation first screen");
+
 		initLayout();
 	}
 
@@ -563,7 +565,7 @@ public class ABMToolWindowImplementationFirst extends JFrame
 						if(error)
 						{
 							progress = false;
-							JOptionPane.showMessageDialog(null, errorText, mMessages.getString("global_error_title"), JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(null, Utils.generateMessage(errorText), mMessages.getString("global_error_title"), JOptionPane.ERROR_MESSAGE);
 							SwingUtilities.invokeLater(new Runnable()
 							{
 								public void run()
@@ -676,7 +678,7 @@ public class ABMToolWindowImplementationFirst extends JFrame
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				JOptionPane pane = new JOptionPane(mMessages.getString("implementation_dialog_message_add_hidden"));
+				JOptionPane pane = new JOptionPane(Utils.generateMessage(mMessages.getString("implementation_dialog_message_add_hidden")));
 				Object[] options = new String[]{mMessages.getString("global_yes"), mMessages.getString("global_no")};
 				pane.setOptions(options);
 				JDialog dialog = pane.createDialog(new JFrame(), mMessages.getString("implementation_dialog_message_add_hidden_header"));

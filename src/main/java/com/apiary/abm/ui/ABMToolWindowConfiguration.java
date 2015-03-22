@@ -59,6 +59,8 @@ public class ABMToolWindowConfiguration extends JFrame
 		mToolWindow = toolWindow;
 		mToolWindow.getContentManager().removeAllContents(true);
 
+		Utils.trackPage("Configuration screen");
+
 		checkValues();
 		initLayout();
 	}
