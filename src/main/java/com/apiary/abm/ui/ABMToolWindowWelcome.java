@@ -1,5 +1,6 @@
 package com.apiary.abm.ui;
 
+import com.apiary.abm.ABMConfig;
 import com.apiary.abm.utility.Utils;
 import com.apiary.abm.view.ImageButton;
 import com.apiary.abm.view.JBackgroundPanel;
@@ -123,7 +124,7 @@ public class ABMToolWindowWelcome extends JFrame
 		middlePanel.add(infoText);
 
 		// version
-		final JLabel versionText = new JLabel("<html><center>" + messages.getString("welcome_version") + "</center></html>");
+		final JLabel versionText = new JLabel("<html><center>v "+ ABMConfig.VERSION+ "</center></html>");
 		versionText.setForeground(Color.WHITE);
 		versionText.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_SMALL)));
 		versionText.setHorizontalAlignment(SwingConstants.CENTER);

@@ -7,6 +7,7 @@ import com.apiary.abm.entity.blueprint.ABMEntity;
 import com.apiary.abm.ui.ABMToolWindow;
 import com.brsanthu.googleanalytics.AppViewHit;
 import com.brsanthu.googleanalytics.GoogleAnalytics;
+import com.brsanthu.googleanalytics.GoogleAnalyticsResponse;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.intellij.openapi.project.Project;
@@ -203,7 +204,8 @@ public class Utils
 	{
 		if(sGoogleAnalytics == null || ABMConfig.DEBUG) return;
 
-		sGoogleAnalytics.post(new AppViewHit(ABMConfig.GA_ID, ABMConfig.VERSION, page));
+		GoogleAnalyticsResponse result = sGoogleAnalytics.post(new AppViewHit(ABMConfig.GA_ID, ABMConfig.VERSION, page));
+		Log.d("GA Tracking page: " + page + " Response: " + result.getStatusCode() + " Data: " + result.getPostedParms());
 	}
 
 
