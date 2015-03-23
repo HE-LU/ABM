@@ -1,6 +1,6 @@
 package com.apiary.abm.ui;
 
-import com.apiary.abm.ABMConfig;
+import com.apiary.abm.utility.Network;
 import com.apiary.abm.utility.Utils;
 import com.apiary.abm.view.ImageButton;
 import com.apiary.abm.view.JBackgroundPanel;
@@ -27,20 +27,22 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
 
-public class ABMToolWindowWelcome extends JFrame
+public class ABMToolWindowOffline extends JFrame
 {
 	private ToolWindow mToolWindow;
+	private Content mContent;
 
 
-	public ABMToolWindowWelcome(ToolWindow toolWindow)
+	public ABMToolWindowOffline(ToolWindow toolWindow)
 	{
 		mToolWindow = toolWindow;
 
-		Utils.trackPage("Welcome screen");
+		Utils.trackPage("Offline screen");
 
 		initLayout();
 	}
@@ -53,9 +55,9 @@ public class ABMToolWindowWelcome extends JFrame
 		// create UI
 		final JBackgroundPanel myToolWindowContent = new JBackgroundPanel("drawable/img_background.png", JBackgroundPanel.JBackgroundPanelType.BACKGROUND_REPEAT);
 		final ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
-		final Content content = contentFactory.createContent(myToolWindowContent, "", false);
-		mToolWindow.getContentManager().removeAllContents(true);
-		mToolWindow.getContentManager().addContent(content);
+		mContent = contentFactory.createContent(myToolWindowContent, "", false);
+		mToolWindow.getContentManager().addContent(mContent);
+		mToolWindow.getContentManager().setSelectedContent(mContent);
 
 		// MIGLAYOUT ( params, columns, rows)
 		// insets TOP LEFT BOTTOM RIGHT
@@ -74,7 +76,7 @@ public class ABMToolWindowWelcome extends JFrame
 
 		// add elements
 		topPanel.setLayout(new MigLayout("insets 0 " + Utils.reDimension(20) + " " + Utils.reDimension(20) + " " + Utils.reDimension(20) + ", flowy, fillx, filly", "[fill, grow]", "[fill]"));
-		middlePanel.setLayout(new MigLayout("insets 0 " + Utils.reDimension(15) + " 0 " + Utils.reDimension(15) + ", flowy, fillx, filly", "[grow, center]", "[][]"));
+		middlePanel.setLayout(new MigLayout("insets 0 " + Utils.reDimension(15) + " 0 " + Utils.reDimension(15) + ", flowy, fillx, filly", "[grow, center]", "[bottom][top]"));
 		bottomPanel.setLayout(new MigLayout("insets " + Utils.reDimension(18) + " 0 0 0, flowy, fillx, filly", "[grow, center]", "[center, top]"));
 
 		topPanel.setOpaque(false);
@@ -90,14 +92,14 @@ public class ABMToolWindowWelcome extends JFrame
 		myToolWindowContent.add(bottomPanel);
 
 		// name
-		final JLabel nameText = new JLabel("<html><center>" + messages.getString("welcome_name") + "</center></html>");
+		final JLabel nameText = new JLabel("<html><center>" + messages.getString("offline_name") + "</center></html>");
 		nameText.setForeground(Color.WHITE);
 		nameText.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_LARGE)));
 		nameText.setHorizontalAlignment(SwingConstants.CENTER);
 		topPanel.add(nameText);
 
 
-		final JEditorPane infoText = new JEditorPane("text/html", "<html><body style=\"font-family: Ariel; font-weight: bold; color: white; font-size:" + Utils.fontSize(Utils.FONT_MEDIUM) + "pt; \"><center>" + messages.getString("welcome_information") + "</center></body></html>");
+		final JEditorPane infoText = new JEditorPane("text/html", "<html><body style=\"font-family: Ariel; font-weight: bold; color: white; font-size:" + Utils.fontSize(Utils.FONT_XLARGE) + "pt; \"><center>" + messages.getString("offline_information") + "</center></body></html>");
 		infoText.setOpaque(false);
 		infoText.setHighlighter(null);
 		infoText.setEditable(false);
@@ -122,40 +124,88 @@ public class ABMToolWindowWelcome extends JFrame
 		});
 		middlePanel.add(infoText);
 
-		// version
-		final JLabel versionText = new JLabel("<html><center>v " + ABMConfig.VERSION + "</center></html>");
-		versionText.setForeground(Color.WHITE);
-		versionText.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_SMALL)));
-		versionText.setHorizontalAlignment(SwingConstants.CENTER);
-		middlePanel.add(versionText);
+		final JEditorPane infoTextSecond = new JEditorPane("text/html", "<html><body style=\"font-family: Ariel; font-weight: bold; color: white; font-size:" + Utils.fontSize(Utils.FONT_MEDIUM_LARGE) + "pt; \"><center>" + messages.getString("offline_information_second") + "</center></body></html>");
+		infoTextSecond.setOpaque(false);
+		infoTextSecond.setHighlighter(null);
+		infoTextSecond.setEditable(false);
+		infoTextSecond.addHyperlinkListener(new HyperlinkListener()
+		{
+			@Override
+			public void hyperlinkUpdate(HyperlinkEvent e)
+			{
+				if(e.getEventType().equals(HyperlinkEvent.EventType.ACTIVATED)) try
+				{
+					Desktop.getDesktop().browse(e.getURL().toURI());
+				}
+				catch(IOException e1)
+				{
+					e1.printStackTrace();
+				}
+				catch(URISyntaxException e1)
+				{
+					e1.printStackTrace();
+				}
+			}
+		});
+		middlePanel.add(infoTextSecond);
 
-		// connect button
+		// refresh button
 		final ImageButton button = new ImageButton();
-		button.setImage("drawable/img_button_start.png");
+		button.setImage("drawable/img_button_refresh.png");
 		button.setSize(Utils.reDimension(70), Utils.reDimension(70));
 
 		button.addMouseListener(new MouseAdapter()
 		{
+			private boolean progress;
+
+
 			public void mouseClicked(MouseEvent e)
 			{
-				new ABMToolWindowConnect(mToolWindow);
+				if(progress) return;
+				progress = true;
+
+				button.setImage("drawable/animation_refresh.gif");
+				button.setSize(Utils.reDimension(70), Utils.reDimension(70));
+
+				Thread t = new Thread(new Runnable()
+				{
+					public void run()
+					{
+						SwingUtilities.invokeLater(new Runnable()
+						{
+							public void run()
+							{
+								if(Network.isInternetReachable()) mToolWindow.getContentManager().removeContent(mContent, true);
+								else
+								{
+									button.setImage("drawable/img_button_refresh.png");
+									button.setSize(Utils.reDimension(70), Utils.reDimension(70));
+
+									progress = false;
+								}
+							}
+						});
+					}
+				});
+				t.start();
 			}
 
 
 			public void mousePressed(MouseEvent e)
 			{
-				button.setImage("drawable/img_button_start_pressed.png");
+				if(progress) return;
+				button.setImage("drawable/img_button_refresh_pressed.png");
 				button.setSize(Utils.reDimension(70), Utils.reDimension(70));
 			}
 
 
 			public void mouseReleased(MouseEvent e)
 			{
-				button.setImage("drawable/img_button_start.png");
+				if(progress) return;
+				button.setImage("drawable/img_button_refresh.png");
 				button.setSize(Utils.reDimension(70), Utils.reDimension(70));
 			}
 		});
-
 		bottomPanel.add(button);
 	}
 }

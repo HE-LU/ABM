@@ -75,7 +75,6 @@ public class ABMToolWindowMain extends JFrame
 	public ABMToolWindowMain(ToolWindow toolWindow)
 	{
 		mToolWindow = toolWindow;
-		mToolWindow.getContentManager().removeAllContents(true);
 
 		Utils.trackPage("Main screen");
 
@@ -86,6 +85,36 @@ public class ABMToolWindowMain extends JFrame
 	private void initLayout()
 	{
 		Preferences prefs = new Preferences();
+
+		// Validate preferences
+		switch(prefs.getBlueprintConnectionType())
+		{
+			case CONNECTION_TYPE_NONE:
+				new ABMToolWindowWelcome(mToolWindow);
+				return;
+			case CONNECTION_TYPE_DOC:
+				if(prefs.getBlueprintConnectionPath() == null || prefs.getBlueprintConnectionDocKey() == null)
+				{
+					new ABMToolWindowWelcome(mToolWindow);
+					return;
+				}
+				break;
+			case CONNECTION_TYPE_WEB_URL:
+				if(prefs.getBlueprintConnectionPath() == null)
+				{
+					new ABMToolWindowWelcome(mToolWindow);
+					return;
+				}
+				break;
+			case CONNECTION_TYPE_FILE:
+				if(prefs.getBlueprintConnectionPath() == null)
+				{
+					new ABMToolWindowWelcome(mToolWindow);
+					return;
+				}
+				break;
+		}
+
 
 		// create UI
 		final JBackgroundPanel myToolWindowContent = new JBackgroundPanel("drawable/img_background.png", JBackgroundPanel.JBackgroundPanelType.BACKGROUND_REPEAT);
@@ -134,11 +163,24 @@ public class ABMToolWindowMain extends JFrame
 			String json = Utils.readFileAsString(prefs.getBlueprintJsonTmpFileLocation(), Charset.forName("UTF-8"));
 			if(json == null)
 			{
+				if(!Network.isInternetReachable())
+				{
+					SwingUtilities.invokeLater(new Runnable()
+					{
+						public void run()
+						{
+							new ABMToolWindowOffline(mToolWindow);
+						}
+					});
+					return;
+				}
+
 				String blueprint = Utils.readFileAsString(Network.refreshBlueprint(), Charset.forName("UTF-8"));
 				json = Network.requestJSONFromBlueprint(blueprint);
 			}
 			object = Utils.parseJsonBlueprint(json);
-			if(object.getError() == null) treeNodeList = analyzeBlueprint(object);
+			if(object == null) treeNodeList = null;
+			else if(object.getError() == null) treeNodeList = analyzeBlueprint(object);
 			treeNodeList = analyzeTreeNodeList(treeNodeList);
 		}
 		catch(IOException e)
@@ -155,6 +197,8 @@ public class ABMToolWindowMain extends JFrame
 		{
 			public void mouseClicked(MouseEvent e)
 			{
+				Utils.trackEvent("Usage", "Information dialog displayed");
+
 				buttonInfo.setImage("drawable/img_button_info.png");
 				buttonInfo.setSize(Utils.reDimension(42), Utils.reDimension(42));
 
@@ -224,6 +268,23 @@ public class ABMToolWindowMain extends JFrame
 				{
 					public void run()
 					{
+						Utils.trackEvent("Usage", "Refresh blueprint");
+						if(!Network.isInternetReachable())
+						{
+							SwingUtilities.invokeLater(new Runnable()
+							{
+								public void run()
+								{
+									new ABMToolWindowOffline(mToolWindow);
+									button.setImage("drawable/img_button_refresh.png");
+									button.setSize(Utils.reDimension(70), Utils.reDimension(70));
+
+									progress = false;
+								}
+							});
+							return;
+						}
+
 						ABMEntity object;
 						Preferences prefs = new Preferences();
 						String blueprint;
@@ -279,14 +340,7 @@ public class ABMToolWindowMain extends JFrame
 										{
 											TreePath path = tree.getSelectionPath();
 											if(e.getClickCount() == 2)
-												//												try
-												//											{
 												onTreeNodeDoubleClick((TreeNodeEntity) ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject());
-											//											}
-											//											catch(Exception ex)
-											//											{
-											//												nothing
-											//											}
 										}
 									});
 
@@ -410,6 +464,7 @@ public class ABMToolWindowMain extends JFrame
 				if(options[k].equals(obj)) result = k;
 			if(result == 0)
 			{
+				Utils.trackEvent("Usage", "Request unhide");
 				entity.setHidden(TreeNodeEntity.STATE_VISIBLE);
 				ConfigPreferences configPreferences = new ConfigPreferences();
 				configPreferences.saveTreeNodeEntity(entity);
@@ -704,6 +759,8 @@ public class ABMToolWindowMain extends JFrame
 
 	private List<TreeNodeEntity> analyzeTreeNodeList(List<TreeNodeEntity> inputTreeNodeList)
 	{
+		if(inputTreeNodeList == null) return null;
+
 		PsiClass interfaceClass = ProjectManager.getInterfaceClass();
 		List<TreeNodeEntity> outputTreeNodeList = new ArrayList<TreeNodeEntity>(inputTreeNodeList);
 
@@ -782,6 +839,8 @@ public class ABMToolWindowMain extends JFrame
 
 	private DefaultMutableTreeNode initTreeStructure(List<TreeNodeEntity> nodeList)
 	{
+		if(nodeList == null) return null;
+
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode(new TreeNodeEntity(TreeNodeTypeEnum.ROOT, "Root object"));
 
 		DefaultMutableTreeNode categoryConfiguration = new DefaultMutableTreeNode(new TreeNodeEntity(TreeNodeTypeEnum.CONFIGURATION_PROBLEM_ROOT, "Configuration problem"));

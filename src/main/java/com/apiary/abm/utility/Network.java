@@ -14,6 +14,9 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
@@ -24,6 +27,8 @@ public class Network
 {
 	public static String requestBlueprintFromApiary(String location, String key)
 	{
+		if(!isInternetReachable()) return null;
+
 		try
 		{
 			HttpResponse<String> request = Unirest.get("https://api.apiary.io/blueprint/get/" + location).header("authentication", "Token " + key).asString();
@@ -39,6 +44,8 @@ public class Network
 
 	public static String requestBlueprintFromURL(String url)
 	{
+		if(!isInternetReachable()) return null;
+
 		try
 		{
 			HttpResponse<String> request = Unirest.get(url).asString();
@@ -55,6 +62,8 @@ public class Network
 
 	public static String requestJSONFromBlueprint(String blueprint)
 	{
+		if(!isInternetReachable()) return null;
+
 		Preferences prefs = new Preferences();
 		String json = "";
 
@@ -90,8 +99,10 @@ public class Network
 	}
 
 
-	public static boolean isBlueprintValid(String blueprint)
+	public static Boolean isBlueprintValid(String blueprint)
 	{
+		if(!isInternetReachable()) return null;
+
 		try
 		{
 			String url = "https://api.apiblueprint.org/parser";
@@ -115,6 +126,8 @@ public class Network
 
 	public static String refreshBlueprint()
 	{
+		if(!isInternetReachable()) return null;
+
 		Preferences preferences = new Preferences();
 		String tmpFilePath = preferences.getBlueprintTmpFileLocation();
 		switch(preferences.getBlueprintConnectionType())
@@ -123,6 +136,7 @@ public class Network
 				try
 				{
 					String output = Network.requestBlueprintFromApiary(preferences.getBlueprintConnectionPath(), preferences.getBlueprintConnectionDocKey());
+					Log.d("RequestBlueprintFromApiary: " + output);
 					DocResponseEntity response = Utils.parseJsonDoc(output);
 
 					if(response == null) throw new Exception("Gson parsing problem!");
@@ -207,5 +221,26 @@ public class Network
 			e.printStackTrace();
 		}
 		return httpclient;
+	}
+
+
+	public static boolean isInternetReachable()
+	{
+		try
+		{
+			URL url = new URL("http://www.google.com");
+
+			HttpURLConnection urlConnect = (HttpURLConnection) url.openConnection();
+			Object objData = urlConnect.getContent();
+		}
+		catch(UnknownHostException e)
+		{
+			return false;
+		}
+		catch(IOException e)
+		{
+			return false;
+		}
+		return true;
 	}
 }

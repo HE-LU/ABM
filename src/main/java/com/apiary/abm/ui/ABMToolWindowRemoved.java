@@ -50,7 +50,6 @@ public class ABMToolWindowRemoved extends JFrame
 	{
 		mToolWindow = toolWindow;
 		mEntity = new TreeNodeEntity(entity);
-		mToolWindow.getContentManager().removeAllContents(true);
 
 		Utils.trackPage("Removed screen");
 

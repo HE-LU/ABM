@@ -62,7 +62,6 @@ public class ABMToolWindowConnect extends JFrame
 	public ABMToolWindowConnect(ToolWindow toolWindow)
 	{
 		mToolWindow = toolWindow;
-		mToolWindow.getContentManager().removeAllContents(true);
 
 		Utils.trackPage("Connect screen");
 
@@ -353,6 +352,9 @@ public class ABMToolWindowConnect extends JFrame
 						{
 							try
 							{
+								if(!Network.isInternetReachable())
+									throw new Exception(mMessages.getString("connect_message_error_offline"));
+
 								if(textFieldDocumentationUrl.getText().equals("") || textFieldDocumentationToken.getText().equals(""))
 									throw new Exception(mMessages.getString("connect_message_error_no_data"));
 
@@ -385,6 +387,9 @@ public class ABMToolWindowConnect extends JFrame
 						{
 							try
 							{
+								if(!Network.isInternetReachable())
+									throw new Exception(mMessages.getString("connect_message_error_offline"));
+
 								if(textFieldWebUrl.getText().equals(""))
 									throw new Exception(mMessages.getString("connect_message_error_no_data"));
 
@@ -413,6 +418,9 @@ public class ABMToolWindowConnect extends JFrame
 						{
 							try
 							{
+								if(!Network.isInternetReachable())
+									throw new Exception(mMessages.getString("connect_message_error_offline"));
+
 								if(textFieldLocalPath.getText().equals(""))
 									throw new Exception(mMessages.getString("connect_message_error_no_data"));
 

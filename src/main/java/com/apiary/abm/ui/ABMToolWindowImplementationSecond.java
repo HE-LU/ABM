@@ -52,7 +52,6 @@ public class ABMToolWindowImplementationSecond extends JFrame
 	{
 		mToolWindow = toolWindow;
 		mEntity = entity;
-		mToolWindow.getContentManager().removeAllContents(true);
 
 		Utils.trackPage("Implementation second screen");
 
@@ -427,6 +426,7 @@ public class ABMToolWindowImplementationSecond extends JFrame
 						}
 						else
 						{
+							Utils.trackEvent("Usage", "Request implemented");
 							SwingUtilities.invokeLater(new Runnable()
 							{
 								public void run()

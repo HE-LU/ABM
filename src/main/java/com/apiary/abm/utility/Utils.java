@@ -6,6 +6,8 @@ import com.apiary.abm.entity.DocResponseEntity;
 import com.apiary.abm.entity.blueprint.ABMEntity;
 import com.apiary.abm.ui.ABMToolWindow;
 import com.brsanthu.googleanalytics.AppViewHit;
+import com.brsanthu.googleanalytics.DefaultRequest;
+import com.brsanthu.googleanalytics.EventHit;
 import com.brsanthu.googleanalytics.GoogleAnalytics;
 import com.brsanthu.googleanalytics.GoogleAnalyticsResponse;
 import com.google.gson.Gson;
@@ -91,30 +93,58 @@ public class Utils
 
 	public static String saveStringToFile(String path, String input) throws IOException
 	{
-		File file = new File(path);
-		FileUtils.writeStringToFile(file, input);
-		return file.getAbsolutePath();
+		try
+		{
+			File file = new File(path);
+			FileUtils.writeStringToFile(file, input);
+			return file.getAbsolutePath();
+		}
+		catch(Exception e)
+		{
+			return null;
+		}
 	}
 
 
 	public static String saveStringToFile(File file, String input) throws IOException
 	{
-		FileUtils.writeStringToFile(file, input);
-		return file.getAbsolutePath();
+		try
+		{
+			FileUtils.writeStringToFile(file, input);
+			return file.getAbsolutePath();
+		}
+		catch(Exception e)
+		{
+			return null;
+		}
 	}
 
 
 	public static String readFileAsString(String path, Charset encoding) throws IOException
 	{
-		byte[] encoded = Files.readAllBytes(Paths.get(path));
-		return new String(encoded, encoding);
+		try
+		{
+			byte[] encoded = Files.readAllBytes(Paths.get(path));
+			return new String(encoded, encoding);
+		}
+		catch(Exception e)
+		{
+			return null;
+		}
 	}
 
 
 	public static String readFileAsString(File file, Charset encoding) throws IOException
 	{
-		byte[] encoded = Files.readAllBytes(file.toPath());
-		return new String(encoded, encoding);
+		try
+		{
+			byte[] encoded = Files.readAllBytes(file.toPath());
+			return new String(encoded, encoding);
+		}
+		catch(Exception e)
+		{
+			return null;
+		}
 	}
 
 
@@ -197,15 +227,40 @@ public class Utils
 	public static void initAnalytics()
 	{
 		if(sGoogleAnalytics == null) sGoogleAnalytics = new GoogleAnalytics(ABMConfig.GA_ID, ABMConfig.GA_APP_NAME, ABMConfig.VERSION);
+
+		DefaultRequest request = sGoogleAnalytics.getDefaultRequest();
+
+		Preferences prefs = new Preferences();
+		if(prefs.getGACid() == null)
+		{
+			prefs.setGACid(request.clientId());
+			Log.d("GA CID not set! Setting new: " + request.clientId());
+		}
+		else
+		{
+			request.clientId(prefs.getGACid());
+			Log.d("GA CID set from preferences to: " + request.clientId());
+		}
+
+		sGoogleAnalytics.setDefaultRequest(request);
 	}
 
 
 	public static void trackPage(String page)
 	{
-		if(sGoogleAnalytics == null || ABMConfig.DEBUG) return;
+		if(sGoogleAnalytics == null || ABMConfig.DEBUG || !Network.isInternetReachable()) return;
 
-		GoogleAnalyticsResponse result = sGoogleAnalytics.post(new AppViewHit(ABMConfig.GA_ID, ABMConfig.VERSION, page));
+		GoogleAnalyticsResponse result = sGoogleAnalytics.post(new AppViewHit(ABMConfig.GA_APP_NAME, ABMConfig.VERSION, page));
 		Log.d("GA Tracking page: " + page + " Response: " + result.getStatusCode() + " Data: " + result.getPostedParms());
+	}
+
+
+	public static void trackEvent(String category, String action)
+	{
+		if(sGoogleAnalytics == null || ABMConfig.DEBUG || !Network.isInternetReachable()) return;
+
+		GoogleAnalyticsResponse result = sGoogleAnalytics.post(new EventHit(category, action));
+		Log.d("GA Tracking event: " + category + "/" + action + " Response: " + result.getStatusCode() + " Data: " + result.getPostedParms());
 	}
 
 

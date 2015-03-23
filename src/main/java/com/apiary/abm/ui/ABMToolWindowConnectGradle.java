@@ -42,7 +42,6 @@ public class ABMToolWindowConnectGradle extends JFrame
 	public ABMToolWindowConnectGradle(ToolWindow toolWindow)
 	{
 		mToolWindow = toolWindow;
-		mToolWindow.getContentManager().removeAllContents(true);
 
 		Utils.trackPage("Connect gradle screen");
 

@@ -57,7 +57,6 @@ public class ABMToolWindowConfiguration extends JFrame
 	public ABMToolWindowConfiguration(ToolWindow toolWindow)
 	{
 		mToolWindow = toolWindow;
-		mToolWindow.getContentManager().removeAllContents(true);
 
 		Utils.trackPage("Configuration screen");
 
@@ -317,6 +316,8 @@ public class ABMToolWindowConfiguration extends JFrame
 				{
 					public void run()
 					{
+						Utils.trackEvent("Usage", "Configuration saved");
+
 						mConfigurationEntity.setModule((String) moduleComboBox.getSelectedItem());
 						mConfigurationEntity.setHost(mConfigurationEntity.getHost());
 						mConfigurationEntity.setInterfaceClass(interfaceClassTextField.getText());

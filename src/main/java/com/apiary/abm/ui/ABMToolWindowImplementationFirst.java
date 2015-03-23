@@ -62,7 +62,6 @@ public class ABMToolWindowImplementationFirst extends JFrame
 	{
 		mToolWindow = toolWindow;
 		mEntity = new TreeNodeEntity(entity);
-		mToolWindow.getContentManager().removeAllContents(true);
 
 		Utils.trackPage("Implementation first screen");
 
@@ -689,6 +688,8 @@ public class ABMToolWindowImplementationFirst extends JFrame
 					if(options[k].equals(obj)) result = k;
 				if(result == 0)
 				{
+					Utils.trackEvent("Usage", "Request hide");
+
 					mEntity.setHidden(TreeNodeEntity.STATE_HIDDEN);
 					ConfigPreferences configPreferences = new ConfigPreferences();
 					configPreferences.saveTreeNodeEntity(mEntity);
