@@ -10,6 +10,7 @@ public class ConfigConfigurationEntity
 	String mHost;
 	String mModule;
 	String mInterfaceClass;
+	String mEntityPackage;
 
 
 	public ConfigConfigurationEntity()
@@ -17,6 +18,7 @@ public class ConfigConfigurationEntity
 		mHost = "";
 		mModule = "";
 		mInterfaceClass = "APIRequest";
+		mEntityPackage = "com.example.app.entity";
 	}
 
 
@@ -56,5 +58,18 @@ public class ConfigConfigurationEntity
 	public void setInterfaceClass(String mInterfaceFile)
 	{
 		this.mInterfaceClass = mInterfaceFile;
+	}
+
+
+	public String getEntityPackage()
+	{
+		return mEntityPackage;
+	}
+
+
+	@XmlElement(name = "EntityPackage")
+	public void setEntityPackage(String mEntityPackage)
+	{
+		this.mEntityPackage = mEntityPackage;
 	}
 }

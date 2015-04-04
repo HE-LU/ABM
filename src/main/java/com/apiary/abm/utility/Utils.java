@@ -230,9 +230,11 @@ public class Utils
 
 		DefaultRequest request = sGoogleAnalytics.getDefaultRequest();
 
+		boolean installation = false;
 		Preferences prefs = new Preferences();
 		if(prefs.getGACid() == null)
 		{
+			installation = true;
 			prefs.setGACid(request.clientId());
 			Log.d("GA CID not set! Setting new: " + request.clientId());
 		}
@@ -243,6 +245,9 @@ public class Utils
 		}
 
 		sGoogleAnalytics.setDefaultRequest(request);
+
+		if(installation) Utils.trackEvent("Plugin", "Plugin Installed");
+		else Utils.trackEvent("Plugin", "Plugin Loaded");
 	}
 
 

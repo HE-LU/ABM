@@ -12,7 +12,9 @@ import com.apiary.abm.utility.ProjectManager;
 import com.apiary.abm.utility.Utils;
 import com.apiary.abm.view.ImageButton;
 import com.apiary.abm.view.JBackgroundPanel;
+import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.psi.PsiDirectory;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
@@ -22,10 +24,14 @@ import net.miginfocom.swing.MigLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -46,6 +52,7 @@ public class ABMToolWindowImplementationSecond extends JFrame
 	private ToolWindow mToolWindow;
 	private TreeNodeEntity mEntity;
 	private final ResourceBundle mMessages = ResourceBundle.getBundle("values/strings");
+	private List<Pair<JLabel, BodyObjectEntity>> mAllEntityList = new ArrayList<Pair<JLabel, BodyObjectEntity>>();
 
 
 	public ABMToolWindowImplementationSecond(ToolWindow toolWindow, TreeNodeEntity entity)
@@ -85,7 +92,7 @@ public class ABMToolWindowImplementationSecond extends JFrame
 
 		// add elements
 		topPanel.setLayout(new MigLayout("insets 0 " + Utils.reDimension(20) + " " + Utils.reDimension(20) + " " + Utils.reDimension(20) + ", flowy, fillx, filly", "[fill, grow]", "[fill]"));
-		middlePanel.setLayout(new MigLayout("insets 0 " + Utils.reDimension(15) + " 0 " + Utils.reDimension(15) + ", flowy, fillx, filly", "[grow, center]", "[][][]"));
+		middlePanel.setLayout(new MigLayout("insets 0 " + Utils.reDimension(15) + " 0 " + Utils.reDimension(15) + ", flowy, fillx, filly", "[grow, center]", "[][]" + Utils.reDimension(30) + "[][]"));
 		bottomPanel.setLayout(new MigLayout("insets " + Utils.reDimension(18) + " 0 0 0, flowx, fillx, filly", "[grow][grow]", "[center, top]"));
 
 		topPanel.setOpaque(false);
@@ -115,9 +122,10 @@ public class ABMToolWindowImplementationSecond extends JFrame
 		methodImplementationHeaderText.setHorizontalAlignment(SwingConstants.CENTER);
 		middlePanel.add(methodImplementationHeaderText);
 
+
 		// Panel method
 		final JBackgroundPanel methodPanel = new JBackgroundPanel("drawable/img_background_panel.9.png", JBackgroundPanel.JBackgroundPanelType.NINE_PATCH);
-		methodPanel.setLayout(new MigLayout("insets " + Utils.reDimension(12) + " " + Utils.reDimension(12) + " " + Utils.reDimension(18) + " " + Utils.reDimension(19) + ", flowy, fillx, filly", "[center]", "[]"));
+		methodPanel.setLayout(new MigLayout("insets " + Utils.reDimension(12) + " " + Utils.reDimension(12) + " " + Utils.reDimension(18) + " " + Utils.reDimension(19) + ", flowx, fillx, filly", "[center]", "[]"));
 		methodPanel.setOpaque(false);
 		methodPanel.setMaximumSize(new Dimension(Utils.reDimension(600), Integer.MAX_VALUE));
 		middlePanel.add(methodPanel);
@@ -127,7 +135,7 @@ public class ABMToolWindowImplementationSecond extends JFrame
 		methodHeaderText.setForeground(Color.WHITE);
 		methodHeaderText.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM)));
 		methodHeaderText.setHorizontalAlignment(SwingConstants.CENTER);
-		methodPanel.add(methodHeaderText);
+		methodPanel.add(methodHeaderText, "span 2, wrap");
 
 		List<ProblemEntity> methodProblems = ProjectManager.checkMethodForProblems(mEntity);
 		if(!methodProblems.isEmpty())
@@ -135,7 +143,8 @@ public class ABMToolWindowImplementationSecond extends JFrame
 		else methodHeaderText.setText("<html><center><a style=\"color: green\">" + mEntity.getMethodName() + "</a></center></html>");
 
 		// TextArea method
-		final JTextArea methodTextArea = new JTextArea(generateMethodExample());
+		final String methodExampleString = generateMethodExample();
+		final JTextArea methodTextArea = new JTextArea(methodExampleString);
 		methodTextArea.setForeground(Color.WHITE);
 		methodTextArea.setFont(new Font("Ariel", Font.PLAIN, Utils.fontSize(Utils.FONT_SMALL)));
 		methodTextArea.setOpaque(false);
@@ -148,14 +157,13 @@ public class ABMToolWindowImplementationSecond extends JFrame
 		methodScrollPanel.setBorder(BorderFactory.createEmptyBorder());
 		methodScrollPanel.getVerticalScrollBar().setUnitIncrement(15);
 		methodScrollPanel.removeMouseWheelListener(methodScrollPanel.getMouseWheelListeners()[0]);
-
-		methodPanel.add(methodScrollPanel);
+		methodPanel.add(methodScrollPanel, "span 2, wrap");
 
 		final JButton methodCheckButton = new JButton(mMessages.getString("implementation_second_button_check"));
 		methodCheckButton.setMaximumSize(new Dimension(Utils.reDimension(120), Integer.MAX_VALUE));
 		methodCheckButton.setMinimumSize(new Dimension(Utils.reDimension(120), 0));
 		methodCheckButton.setOpaque(false);
-		methodPanel.add(methodCheckButton);
+		methodPanel.add(methodCheckButton, "left");
 
 		methodCheckButton.addActionListener(new ActionListener()
 		{
@@ -170,7 +178,6 @@ public class ABMToolWindowImplementationSecond extends JFrame
 					String problemList = "";
 					for(ProblemEntity problemEntity : methodProblems)
 						problemList += problemEntity.getText() + "\n\n";
-					//						problemList += problemEntity.getName() + " \n\t" + problemEntity.getText()+"\n";
 
 					JOptionPane pane = new JOptionPane(Utils.generateMessage(problemList));
 					Object[] options = new String[]{mMessages.getString("global_ok")};
@@ -182,6 +189,76 @@ public class ABMToolWindowImplementationSecond extends JFrame
 					methodHeaderText.setText("<html><center><a style=\"color: green\">" + mEntity.getMethodName() + "</a></center></html>");
 			}
 		});
+
+		final JButton methodCopyButton = new JButton(mMessages.getString("implementation_second_button_copy"));
+		methodCopyButton.setMaximumSize(new Dimension(Utils.reDimension(120), Integer.MAX_VALUE));
+		methodCopyButton.setMinimumSize(new Dimension(Utils.reDimension(120), 0));
+		methodCopyButton.setOpaque(false);
+		methodPanel.add(methodCopyButton, "right");
+
+		methodCopyButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				StringSelection stringSelection = new StringSelection(methodExampleString);
+				Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+				clipboard.setContents(stringSelection, null);
+			}
+		});
+
+
+		// Panel generate all
+		final JBackgroundPanel generateAllPanel = new JBackgroundPanel("drawable/img_background_panel.9.png", JBackgroundPanel.JBackgroundPanelType.NINE_PATCH);
+		generateAllPanel.setLayout(new MigLayout("insets " + Utils.reDimension(12) + " " + Utils.reDimension(12) + " " + Utils.reDimension(18) + " " + Utils.reDimension(19) + ", flowy, fillx, filly", "[center]", "[]"));
+		generateAllPanel.setOpaque(false);
+		generateAllPanel.setMaximumSize(new Dimension(Utils.reDimension(600), Integer.MAX_VALUE));
+		middlePanel.add(generateAllPanel);
+
+		// Label generate all header
+		final JLabel generateAllHeaderText = new JLabel("<html><center>" + mMessages.getString("implementation_second_message_generate_all") + "</center></html>");
+		generateAllHeaderText.setForeground(Color.WHITE);
+		generateAllHeaderText.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM)));
+		generateAllHeaderText.setHorizontalAlignment(SwingConstants.CENTER);
+		generateAllPanel.add(generateAllHeaderText);
+
+		final JButton entityGenerateAllButton = new JButton(mMessages.getString("implementation_second_button_generate"));
+		entityGenerateAllButton.setMaximumSize(new Dimension(Utils.reDimension(180), Integer.MAX_VALUE));
+		entityGenerateAllButton.setMinimumSize(new Dimension(Utils.reDimension(180), 0));
+		entityGenerateAllButton.setOpaque(false);
+		generateAllPanel.add(entityGenerateAllButton);
+
+		entityGenerateAllButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				Utils.trackEvent("Usage", "Generate all entities button");
+
+				for(Pair<JLabel, BodyObjectEntity> pair : mAllEntityList)
+				{
+					generateEntityFile(pair.second.getEntityName(), generateEntityExample(pair.second));
+
+					List<ProblemEntity> entityProblems = ProjectManager.checkEntityForProblems(pair.second);
+
+					if(!entityProblems.isEmpty())
+					{
+						pair.first.setText("<html><center><a style=\"color: red\">" + pair.second.getEntityName() + "</a></center></html>");
+
+						String problemList = "";
+						for(ProblemEntity problemEntity : entityProblems)
+							problemList += problemEntity.getText() + "\n\n";
+
+						JOptionPane pane = new JOptionPane(Utils.generateMessage(problemList));
+						Object[] options = new String[]{mMessages.getString("global_ok")};
+						pane.setOptions(options);
+						JDialog dialog = pane.createDialog(new JFrame(), mMessages.getString("implementation_dialog_check_header"));
+						dialog.setVisible(true);
+					}
+					else
+						pair.first.setText("<html><center><a style=\"color: green\">" + pair.second.getEntityName() + "</a></center></html>");
+				}
+			}
+		});
+
 
 		if(mEntity.getRequestBody() != null)
 		{
@@ -196,7 +273,7 @@ public class ABMToolWindowImplementationSecond extends JFrame
 			{
 				// Panel method
 				final JBackgroundPanel entityPanel = new JBackgroundPanel("drawable/img_background_panel.9.png", JBackgroundPanel.JBackgroundPanelType.NINE_PATCH);
-				entityPanel.setLayout(new MigLayout("insets " + Utils.reDimension(12) + " " + Utils.reDimension(12) + " " + Utils.reDimension(18) + " " + Utils.reDimension(19) + ", flowy, fillx, filly", "[center]", "[]"));
+				entityPanel.setLayout(new MigLayout("insets " + Utils.reDimension(12) + " " + Utils.reDimension(12) + " " + Utils.reDimension(18) + " " + Utils.reDimension(19) + ", flowx, fillx, filly", "[center]", "[]"));
 				entityPanel.setOpaque(false);
 				entityPanel.setMaximumSize(new Dimension(Utils.reDimension(600), Integer.MAX_VALUE));
 				middlePanel.add(entityPanel);
@@ -206,7 +283,7 @@ public class ABMToolWindowImplementationSecond extends JFrame
 				entityHeaderText.setForeground(Color.WHITE);
 				entityHeaderText.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM)));
 				entityHeaderText.setHorizontalAlignment(SwingConstants.CENTER);
-				entityPanel.add(entityHeaderText);
+				entityPanel.add(entityHeaderText, "span 2, wrap");
 
 				List<ProblemEntity> entityProblem = ProjectManager.checkEntityForProblems(entity);
 				if(!entityProblem.isEmpty())
@@ -214,7 +291,8 @@ public class ABMToolWindowImplementationSecond extends JFrame
 				else entityHeaderText.setText("<html><center><a style=\"color: green\">" + entity.getEntityName() + "</a></center></html>");
 
 				// TextArea method
-				final JTextArea entityTextArea = new JTextArea(generateEntityExample(entity));
+				final String entityExampleText = generateEntityExample(entity);
+				final JTextArea entityTextArea = new JTextArea(entityExampleText);
 				entityTextArea.setForeground(Color.WHITE);
 				entityTextArea.setFont(new Font("Ariel", Font.PLAIN, Utils.fontSize(Utils.FONT_SMALL)));
 				entityTextArea.setOpaque(false);
@@ -228,13 +306,13 @@ public class ABMToolWindowImplementationSecond extends JFrame
 				scrollPanel.getVerticalScrollBar().setUnitIncrement(15);
 				scrollPanel.removeMouseWheelListener(scrollPanel.getMouseWheelListeners()[0]);
 
-				entityPanel.add(scrollPanel);
+				entityPanel.add(scrollPanel, "span 2, wrap");
 
 				final JButton entityCheckButton = new JButton(mMessages.getString("implementation_second_button_check"));
 				entityCheckButton.setMaximumSize(new Dimension(Utils.reDimension(120), Integer.MAX_VALUE));
 				entityCheckButton.setMinimumSize(new Dimension(Utils.reDimension(120), 0));
 				entityCheckButton.setOpaque(false);
-				entityPanel.add(entityCheckButton);
+				entityPanel.add(entityCheckButton, "left");
 
 				entityCheckButton.addActionListener(new ActionListener()
 				{
@@ -249,7 +327,6 @@ public class ABMToolWindowImplementationSecond extends JFrame
 							String problemList = "";
 							for(ProblemEntity problemEntity : entityProblems)
 								problemList += problemEntity.getText() + "\n\n";
-							//								problemList += problemEntity.getName() + " \n\t" + problemEntity.getText()+"\n";
 
 							JOptionPane pane = new JOptionPane(Utils.generateMessage(problemList));
 							Object[] options = new String[]{mMessages.getString("global_ok")};
@@ -261,6 +338,43 @@ public class ABMToolWindowImplementationSecond extends JFrame
 							entityHeaderText.setText("<html><center><a style=\"color: green\">" + entity.getEntityName() + "</a></center></html>");
 					}
 				});
+
+				final JButton entityGenerateButton = new JButton(mMessages.getString("implementation_second_button_generate"));
+				entityGenerateButton.setMaximumSize(new Dimension(Utils.reDimension(120), Integer.MAX_VALUE));
+				entityGenerateButton.setMinimumSize(new Dimension(Utils.reDimension(120), 0));
+				entityGenerateButton.setOpaque(false);
+				entityPanel.add(entityGenerateButton, "right");
+
+				entityGenerateButton.addActionListener(new ActionListener()
+				{
+					public void actionPerformed(ActionEvent e)
+					{
+						Utils.trackEvent("Usage", "Generate entity button");
+
+						generateEntityFile(entity.getEntityName(), entityExampleText);
+
+						List<ProblemEntity> entityProblems = ProjectManager.checkEntityForProblems(entity);
+
+						if(!entityProblems.isEmpty())
+						{
+							entityHeaderText.setText("<html><center><a style=\"color: red\">" + entity.getEntityName() + "</a></center></html>");
+
+							String problemList = "";
+							for(ProblemEntity problemEntity : entityProblems)
+								problemList += problemEntity.getText() + "\n\n";
+
+							JOptionPane pane = new JOptionPane(Utils.generateMessage(problemList));
+							Object[] options = new String[]{mMessages.getString("global_ok")};
+							pane.setOptions(options);
+							JDialog dialog = pane.createDialog(new JFrame(), mMessages.getString("implementation_dialog_check_header"));
+							dialog.setVisible(true);
+						}
+						else
+							entityHeaderText.setText("<html><center><a style=\"color: green\">" + entity.getEntityName() + "</a></center></html>");
+					}
+				});
+
+				mAllEntityList.add(Pair.create(entityHeaderText, entity));
 			}
 		}
 
@@ -278,7 +392,7 @@ public class ABMToolWindowImplementationSecond extends JFrame
 			{
 				// Panel response
 				final JBackgroundPanel entityPanel = new JBackgroundPanel("drawable/img_background_panel.9.png", JBackgroundPanel.JBackgroundPanelType.NINE_PATCH);
-				entityPanel.setLayout(new MigLayout("insets " + Utils.reDimension(12) + " " + Utils.reDimension(12) + " " + Utils.reDimension(18) + " " + Utils.reDimension(19) + ", flowy, fillx, filly", "[center]", "[]"));
+				entityPanel.setLayout(new MigLayout("insets " + Utils.reDimension(12) + " " + Utils.reDimension(12) + " " + Utils.reDimension(18) + " " + Utils.reDimension(19) + ", flowx, fillx, filly", "[center]", "[]"));
 				entityPanel.setOpaque(false);
 				entityPanel.setMaximumSize(new Dimension(Utils.reDimension(600), Integer.MAX_VALUE));
 				middlePanel.add(entityPanel);
@@ -288,7 +402,7 @@ public class ABMToolWindowImplementationSecond extends JFrame
 				entityHeaderText.setForeground(Color.WHITE);
 				entityHeaderText.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM)));
 				entityHeaderText.setHorizontalAlignment(SwingConstants.CENTER);
-				entityPanel.add(entityHeaderText);
+				entityPanel.add(entityHeaderText, "span 2, wrap");
 
 				List<ProblemEntity> entityProblem = ProjectManager.checkEntityForProblems(entity);
 				if(!entityProblem.isEmpty())
@@ -296,7 +410,8 @@ public class ABMToolWindowImplementationSecond extends JFrame
 				else entityHeaderText.setText("<html><center><a style=\"color: green\">" + entity.getEntityName() + "</a></center></html>");
 
 				// TextArea response
-				final JTextArea entityTextArea = new JTextArea(generateEntityExample(entity));
+				final String entityExampleText = generateEntityExample(entity);
+				final JTextArea entityTextArea = new JTextArea(entityExampleText);
 				entityTextArea.setForeground(Color.WHITE);
 				entityTextArea.setFont(new Font("Ariel", Font.PLAIN, Utils.fontSize(Utils.FONT_SMALL)));
 				entityTextArea.setOpaque(false);
@@ -310,14 +425,14 @@ public class ABMToolWindowImplementationSecond extends JFrame
 				scrollPanel.getVerticalScrollBar().setUnitIncrement(15);
 				scrollPanel.removeMouseWheelListener(scrollPanel.getMouseWheelListeners()[0]);
 
-				entityPanel.add(scrollPanel);
+				entityPanel.add(scrollPanel, "span 2, wrap");
 
 
 				final JButton entityCheckButton = new JButton(mMessages.getString("implementation_second_button_check"));
 				entityCheckButton.setMaximumSize(new Dimension(Utils.reDimension(120), Integer.MAX_VALUE));
 				entityCheckButton.setMinimumSize(new Dimension(Utils.reDimension(120), 0));
 				entityCheckButton.setOpaque(false);
-				entityPanel.add(entityCheckButton);
+				entityPanel.add(entityCheckButton, "left");
 
 				entityCheckButton.addActionListener(new ActionListener()
 				{
@@ -332,7 +447,6 @@ public class ABMToolWindowImplementationSecond extends JFrame
 							String problemList = "";
 							for(ProblemEntity problemEntity : entityProblems)
 								problemList += problemEntity.getText() + "\n\n";
-							//								problemList += problemEntity.getName() + " \n\t" + problemEntity.getText()+"\n";
 
 							JOptionPane pane = new JOptionPane(Utils.generateMessage(problemList));
 							Object[] options = new String[]{mMessages.getString("global_ok")};
@@ -344,6 +458,43 @@ public class ABMToolWindowImplementationSecond extends JFrame
 							entityHeaderText.setText("<html><center><a style=\"color: green\">" + entity.getEntityName() + "</a></center></html>");
 					}
 				});
+
+				final JButton entityGenerateButton = new JButton(mMessages.getString("implementation_second_button_generate"));
+				entityGenerateButton.setMaximumSize(new Dimension(Utils.reDimension(120), Integer.MAX_VALUE));
+				entityGenerateButton.setMinimumSize(new Dimension(Utils.reDimension(120), 0));
+				entityGenerateButton.setOpaque(false);
+				entityPanel.add(entityGenerateButton, "right");
+
+				entityGenerateButton.addActionListener(new ActionListener()
+				{
+					public void actionPerformed(ActionEvent e)
+					{
+						Utils.trackEvent("Usage", "Generate entity button");
+
+						generateEntityFile(entity.getEntityName(), entityExampleText);
+
+						List<ProblemEntity> entityProblems = ProjectManager.checkEntityForProblems(entity);
+
+						if(!entityProblems.isEmpty())
+						{
+							entityHeaderText.setText("<html><center><a style=\"color: red\">" + entity.getEntityName() + "</a></center></html>");
+
+							String problemList = "";
+							for(ProblemEntity problemEntity : entityProblems)
+								problemList += problemEntity.getText() + "\n\n";
+
+							JOptionPane pane = new JOptionPane(Utils.generateMessage(problemList));
+							Object[] options = new String[]{mMessages.getString("global_ok")};
+							pane.setOptions(options);
+							JDialog dialog = pane.createDialog(new JFrame(), mMessages.getString("implementation_dialog_check_header"));
+							dialog.setVisible(true);
+						}
+						else
+							entityHeaderText.setText("<html><center><a style=\"color: green\">" + entity.getEntityName() + "</a></center></html>");
+					}
+				});
+
+				mAllEntityList.add(Pair.create(entityHeaderText, entity));
 			}
 		}
 
@@ -565,5 +716,23 @@ public class ABMToolWindowImplementationSecond extends JFrame
 
 		output += "}";
 		return output;
+	}
+
+
+	private void generateEntityFile(String name, String text)
+	{
+		ConfigPreferences prefs = new ConfigPreferences();
+		PsiDirectory dir = ProjectManager.getDirectory(prefs.getConfigurationEntity().getModule(), prefs.getConfigurationEntity().getEntityPackage());
+
+		if(dir != null)
+		{
+			text = "package " + prefs.getConfigurationEntity().getEntityPackage() + ";\n\n" +
+					"import java.util.*;\n" +
+					"import java.lang.*;\n" +
+					"import java.util.*;\n" +
+					"import com.google.gson.annotations.SerializedName;\n\n" + text;
+			ProjectManager.createFileWithContent(dir, name + ".java", text);
+		}
+
 	}
 }

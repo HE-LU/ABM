@@ -2,6 +2,7 @@ package com.apiary.abm.ui;
 
 import com.apiary.abm.entity.blueprint.MetadataEntity;
 import com.apiary.abm.entity.config.ConfigConfigurationEntity;
+import com.apiary.abm.enums.ConnectionTypeEnum;
 import com.apiary.abm.utility.ConfigPreferences;
 import com.apiary.abm.utility.Preferences;
 import com.apiary.abm.utility.ProjectManager;
@@ -12,6 +13,7 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiPackage;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
@@ -21,6 +23,8 @@ import net.miginfocom.swing.MigLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -34,8 +38,10 @@ import java.util.ResourceBundle;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -225,6 +231,80 @@ public class ABMToolWindowConfiguration extends JFrame
 		interfaceClassPanel.add(interfaceClassNoteLabel, "span, grow");
 
 
+		// Panel Entity package
+		final JBackgroundPanel entityPackagePanel = new JBackgroundPanel("drawable/img_background_panel.9.png", JBackgroundPanel.JBackgroundPanelType.NINE_PATCH);
+		entityPackagePanel.setLayout(new MigLayout("insets " + Utils.reDimension(12) + " " + Utils.reDimension(12) + " " + Utils.reDimension(18) + " " + Utils.reDimension(19) + ", flowx, fillx, filly", "[][fill,grow][][]", "[]"));
+		entityPackagePanel.setOpaque(false);
+		middlePanel.add(entityPackagePanel);
+
+		// Label Entity package
+		final JLabel entityPackageLabel = new JLabel("<html><center>" + messages.getString("configuration_message_api_entity_red") + "</center></html>");
+		entityPackageLabel.setForeground(Color.WHITE);
+		entityPackageLabel.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM)));
+		entityPackageLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		PsiPackage pack = ProjectManager.getPackages(mConfigurationEntity.getModule(), mConfigurationEntity.getEntityPackage());
+		if(pack != null)
+			entityPackageLabel.setText("<html><center>" + messages.getString("configuration_message_api_entity_green") + "</center></html>");
+		entityPackagePanel.add(entityPackageLabel);
+
+		// TextField Entity package
+		final JTextField entityPackageTextField = new JTextField();
+		entityPackageTextField.setMinimumSize(new Dimension(Utils.reDimension(160), 0));
+		entityPackageTextField.setText(mConfigurationEntity.getEntityPackage());
+		entityPackageTextField.addKeyListener(new KeyAdapter()
+		{
+			public void keyTyped(KeyEvent e)
+			{
+				char ch = e.getKeyChar();
+				if(ch != '.' && !Character.isAlphabetic(ch)) e.consume();
+			}
+		});
+		entityPackagePanel.add(entityPackageTextField);
+
+		// Button Entity package
+		final JButton entityPackageButton = new JButton("<html><center>" + messages.getString("configuration_button_check") + "</center></html>");
+		entityPackageButton.setOpaque(false);
+		entityPackageButton.setForeground(Color.WHITE);
+		entityPackageButton.setFont(new Font("Ariel", Font.PLAIN, Utils.fontSize(Utils.FONT_SMALL)));
+		entityPackageButton.setHorizontalAlignment(SwingConstants.CENTER);
+		entityPackagePanel.add(entityPackageButton, "wrap");
+
+		// Label Entity package
+		final JLabel packageEntityNoteLabel = new JLabel("<html><center>" + messages.getString("configuration_message_api_entity_note") + "</center></html>");
+		packageEntityNoteLabel.setForeground(Color.WHITE);
+		packageEntityNoteLabel.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_SMALL)));
+		packageEntityNoteLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		entityPackagePanel.add(packageEntityNoteLabel, "span, grow");
+
+
+		// Panel reset
+		final JBackgroundPanel resetPanel = new JBackgroundPanel("drawable/img_background_panel.9.png", JBackgroundPanel.JBackgroundPanelType.NINE_PATCH);
+		resetPanel.setLayout(new MigLayout("insets " + Utils.reDimension(12) + " " + Utils.reDimension(12) + " " + Utils.reDimension(18) + " " + Utils.reDimension(19) + ", flowx, fillx, filly", "[fill, grow][fill, grow]", "[]"));
+		resetPanel.setOpaque(false);
+		middlePanel.add(resetPanel);
+
+		// Label reset
+		final JLabel resetText = new JLabel("<html><center>" + messages.getString("configuration_message_reset") + "</center></html>");
+		resetText.setForeground(Color.WHITE);
+		resetText.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_MEDIUM)));
+		resetText.setHorizontalAlignment(SwingConstants.CENTER);
+		resetPanel.add(resetText);
+
+		// Button reset
+		final JButton resetButton = new JButton(messages.getString("configuration_button_reset"));
+		resetButton.setMaximumSize(new Dimension(Utils.reDimension(150), Integer.MAX_VALUE));
+		resetButton.setMinimumSize(new Dimension(Utils.reDimension(150), 0));
+		resetButton.setOpaque(false);
+		resetPanel.add(resetButton, "wrap");
+
+		// Label reset note
+		final JLabel resetNoteText = new JLabel("<html><center>" + messages.getString("configuration_message_reset_note") + "</center></html>");
+		resetNoteText.setForeground(Color.WHITE);
+		resetNoteText.setFont(new Font("Ariel", Font.PLAIN, Utils.fontSize(Utils.FONT_SMALL)));
+		resetNoteText.setHorizontalAlignment(SwingConstants.CENTER);
+		resetPanel.add(resetNoteText, "span 2");
+
+
 		// Panel Manager
 		final JBackgroundPanel managerClassPanel = new JBackgroundPanel("drawable/img_background_panel.9.png", JBackgroundPanel.JBackgroundPanelType.NINE_PATCH);
 		managerClassPanel.setLayout(new MigLayout("insets " + Utils.reDimension(12) + " " + Utils.reDimension(12) + " " + Utils.reDimension(18) + " " + Utils.reDimension(19) + ", flowy, fillx, filly", "[fill,grow,center]", "[]" + Utils.reDimension(20) + "[]"));
@@ -321,6 +401,7 @@ public class ABMToolWindowConfiguration extends JFrame
 						mConfigurationEntity.setModule((String) moduleComboBox.getSelectedItem());
 						mConfigurationEntity.setHost(mConfigurationEntity.getHost());
 						mConfigurationEntity.setInterfaceClass(interfaceClassTextField.getText());
+						mConfigurationEntity.setEntityPackage(entityPackageTextField.getText());
 						mConfigPreferences.saveConfigurationEntity(mConfigurationEntity);
 
 						SwingUtilities.invokeLater(new Runnable()
@@ -366,6 +447,54 @@ public class ABMToolWindowConfiguration extends JFrame
 					interfaceClassLabel.setText("<html><center>" + messages.getString("configuration_message_api_interface_green") + "</center></html>");
 				else
 					interfaceClassLabel.setText("<html><center>" + messages.getString("configuration_message_api_interface_red") + "</center></html>");
+			}
+		});
+
+		entityPackageButton.addMouseListener(new MouseAdapter()
+		{
+			public void mouseClicked(MouseEvent e)
+			{
+				PsiPackage pack = ProjectManager.getPackages((String) moduleComboBox.getSelectedItem(), entityPackageTextField.getText());
+				if(pack != null)
+					entityPackageLabel.setText("<html><center>" + messages.getString("configuration_message_api_entity_green") + "</center></html>");
+				else
+					entityPackageLabel.setText("<html><center>" + messages.getString("configuration_message_api_entity_red") + "</center></html>");
+			}
+		});
+
+		resetButton.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				JOptionPane pane = new JOptionPane(Utils.generateMessage(messages.getString("configuration_dialog_message_reset")));
+				Object[] options = new String[]{messages.getString("global_yes"), messages.getString("global_no")};
+				pane.setOptions(options);
+				JDialog dialog = pane.createDialog(new JFrame(), messages.getString("configuration_dialog_message_reset_header"));
+				dialog.setVisible(true);
+				Object obj = pane.getValue();
+				int result = -1;
+				for(int k = 0; k < options.length; k++)
+					if(options[k].equals(obj)) result = k;
+				if(result == 0)
+				{
+					Utils.trackEvent("Usage", "Reset plugin");
+
+					ConfigPreferences.removeConfigFile();
+					Preferences prefs = new Preferences();
+					prefs.setBlueprintConnectionDocKey("");
+					prefs.setBlueprintConnectionPath("");
+					prefs.setBlueprintTmpFileLocation("");
+					prefs.setBlueprintConnectionType(ConnectionTypeEnum.CONNECTION_TYPE_NONE);
+					prefs.setBlueprintJsonTmpFileLocation("");
+
+					SwingUtilities.invokeLater(new Runnable()
+					{
+						public void run()
+						{
+							new ABMToolWindowWelcome(mToolWindow);
+						}
+					});
+				}
 			}
 		});
 	}

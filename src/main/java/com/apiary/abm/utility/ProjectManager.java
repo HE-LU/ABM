@@ -8,20 +8,36 @@ import com.apiary.abm.entity.TreeNodeEntity;
 import com.apiary.abm.entity.blueprint.HeadersEntity;
 import com.apiary.abm.entity.blueprint.ParametersEntity;
 import com.apiary.abm.ui.ABMToolWindow;
+import com.intellij.ide.highlighter.JavaFileType;
+import com.intellij.ide.util.PackageUtil;
+import com.intellij.lang.ImportOptimizer;
+import com.intellij.lang.LanguageImportStatements;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.JavaDirectoryService;
 import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiField;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.PsiMethod;
+import com.intellij.psi.PsiPackage;
 import com.intellij.psi.PsiParameterList;
+import com.intellij.psi.codeStyle.CodeStyleManager;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.PsiShortNamesCache;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ResourceBundle;
+
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 
 public class ProjectManager
@@ -46,9 +62,77 @@ public class ProjectManager
 	}
 
 
+	public static PsiPackage getPackages(String module, String name)
+	{
+		return getPackages(getModuleByName(module), name);
+	}
+
+
+	public static PsiDirectory getDirectory(String module, String name)
+	{
+		return getDirectory(getModuleByName(module), name);
+	}
+
+
 	public static List<PsiClass> getClasses(String module, String name)
 	{
 		return getClasses(getModuleByName(module), name);
+	}
+
+
+	public static PsiPackage getPackages(Module module, String name)
+	{
+		if(module == null) return null;
+
+		PsiDirectory psiDir = PackageUtil.findPossiblePackageDirectoryInModule(module, name);
+		if(JavaDirectoryService.getInstance().getPackage(psiDir).getQualifiedName() != null && JavaDirectoryService.getInstance().getPackage(psiDir).getQualifiedName().equals(name))
+			return JavaDirectoryService.getInstance().getPackage(psiDir);
+		else return null;
+	}
+
+
+	public static PsiDirectory getDirectory(Module module, String name)
+	{
+		if(module == null) return null;
+
+		PsiDirectory psiDir = PackageUtil.findPossiblePackageDirectoryInModule(module, name);
+		if(JavaDirectoryService.getInstance().getPackage(psiDir).getQualifiedName() != null && JavaDirectoryService.getInstance().getPackage(psiDir).getQualifiedName().equals(name))
+			return psiDir;
+		else return null;
+	}
+
+
+	public static void createFileWithContent(final PsiDirectory dir, String name, String content)
+	{
+		final PsiFile element = PsiFileFactory.getInstance(ABMToolWindow.getProject()).createFileFromText(name, JavaFileType.INSTANCE, content);
+		ApplicationManager.getApplication().runWriteAction(new Runnable()
+		{
+			public void run()
+			{
+				// optimize imports
+				ImportOptimizer importOptimizer = (ImportOptimizer) LanguageImportStatements.INSTANCE.forFile(element).toArray()[0];
+				if(importOptimizer != null) importOptimizer.processFile(element).run();
+
+				// reformat file
+				CodeStyleManager codeStyleManager = CodeStyleManager.getInstance(ABMToolWindow.getProject());
+				if(codeStyleManager != null) codeStyleManager.reformat(element);
+
+				try
+				{
+					dir.add(element);
+				}
+				catch(Exception e)
+				{
+					ResourceBundle messages = ResourceBundle.getBundle("values/strings");
+					String path = dir.toString().substring(dir.toString().indexOf(":") + 1, dir.toString().length());
+					JOptionPane pane = new JOptionPane("Ouch! File " + element.getName() + " already exist in directory" + path + "! File won't be created!");
+					Object[] options = new String[]{messages.getString("global_ok")};
+					pane.setOptions(options);
+					JDialog dialog = pane.createDialog(new JFrame(), messages.getString("implementation_dialog_file_exist"));
+					dialog.setVisible(true);
+				}
+			}
+		});
 	}
 
 

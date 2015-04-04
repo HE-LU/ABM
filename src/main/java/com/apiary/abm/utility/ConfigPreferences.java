@@ -204,4 +204,12 @@ public class ConfigPreferences
 
 		return list;
 	}
+
+
+	public static boolean removeConfigFile()
+	{
+		Project myProject = ABMToolWindow.getProject();
+		File configFile = new File(myProject.getBaseDir().getPath() + "/abm_config.xml");
+		return configFile.delete();
+	}
 }

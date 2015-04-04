@@ -74,7 +74,7 @@ public class ABMToolWindowWelcome extends JFrame
 
 		// add elements
 		topPanel.setLayout(new MigLayout("insets 0 " + Utils.reDimension(20) + " " + Utils.reDimension(20) + " " + Utils.reDimension(20) + ", flowy, fillx, filly", "[fill, grow]", "[fill]"));
-		middlePanel.setLayout(new MigLayout("insets 0 " + Utils.reDimension(15) + " 0 " + Utils.reDimension(15) + ", flowy, fillx, filly", "[grow, center]", "[][]"));
+		middlePanel.setLayout(new MigLayout("insets 0 " + Utils.reDimension(15) + " 0 " + Utils.reDimension(15) + ", flowy, fillx, filly", "[grow, center]", "[][][]"));
 		bottomPanel.setLayout(new MigLayout("insets " + Utils.reDimension(18) + " 0 0 0, flowy, fillx, filly", "[grow, center]", "[center, top]"));
 
 		topPanel.setOpaque(false);
@@ -121,6 +121,13 @@ public class ABMToolWindowWelcome extends JFrame
 			}
 		});
 		middlePanel.add(infoText);
+
+		// changelog
+		final JLabel changelogText = new JLabel("<html><center>" + messages.getString("welcome_changelog") + "</center></html>");
+		changelogText.setForeground(Color.WHITE);
+		changelogText.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_SMALL)));
+		changelogText.setHorizontalAlignment(SwingConstants.CENTER);
+		middlePanel.add(changelogText);
 
 		// version
 		final JLabel versionText = new JLabel("<html><center>v " + ABMConfig.VERSION + "</center></html>");
