@@ -157,6 +157,20 @@ public class ProjectManager
 	}
 
 
+	public static PsiPackage getEntityPackage()
+	{
+		ConfigPreferences configPreferences = new ConfigPreferences();
+		try
+		{
+			return getPackages(configPreferences.getConfigurationEntity().getModule(), configPreferences.getConfigurationEntity().getEntityPackage());
+		}
+		catch(Exception e)
+		{
+			return null;
+		}
+	}
+
+
 	public static List<ProblemEntity> checkMethodForProblems(TreeNodeEntity entity)
 	{
 		PsiClass interfaceClass = ProjectManager.getInterfaceClass();

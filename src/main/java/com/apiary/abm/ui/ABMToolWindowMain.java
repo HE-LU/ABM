@@ -25,6 +25,7 @@ import com.apiary.abm.view.JBackgroundPanel;
 import com.google.gson.Gson;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.psi.PsiClass;
+import com.intellij.psi.PsiPackage;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
@@ -761,17 +762,28 @@ public class ABMToolWindowMain extends JFrame
 	{
 		if(inputTreeNodeList == null) return null;
 
+		PsiPackage entityPackage = ProjectManager.getEntityPackage();
 		PsiClass interfaceClass = ProjectManager.getInterfaceClass();
 		List<TreeNodeEntity> outputTreeNodeList = new ArrayList<TreeNodeEntity>(inputTreeNodeList);
 
-		if(interfaceClass == null)
+		if(interfaceClass == null || entityPackage == null)
 		{
 			outputTreeNodeList.clear();
 
-			TreeNodeEntity entity = new TreeNodeEntity();
-			entity.setText("Interface class is not configured properly");
-			entity.setTreeNodeType(TreeNodeTypeEnum.CONFIGURATION_PROBLEM);
-			outputTreeNodeList.add(entity);
+			if(interfaceClass == null)
+			{
+				TreeNodeEntity entity = new TreeNodeEntity();
+				entity.setText("Interface class is not configured properly");
+				entity.setTreeNodeType(TreeNodeTypeEnum.CONFIGURATION_PROBLEM);
+				outputTreeNodeList.add(entity);
+			}
+			if(entityPackage == null)
+			{
+				TreeNodeEntity entity = new TreeNodeEntity();
+				entity.setText("Entity package is not configured properly");
+				entity.setTreeNodeType(TreeNodeTypeEnum.CONFIGURATION_PROBLEM);
+				outputTreeNodeList.add(entity);
+			}
 
 			return outputTreeNodeList;
 		}
