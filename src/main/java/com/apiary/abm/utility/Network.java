@@ -31,6 +31,7 @@ public class Network
 
 		try
 		{
+			Unirest.setHttpClient(makeClient());
 			HttpResponse<String> request = Unirest.get("https://api.apiary.io/blueprint/get/" + location).header("authentication", "Token " + key).asString();
 			return request.getBody();
 		}
@@ -69,7 +70,8 @@ public class Network
 
 		try
 		{
-			String url = "https://api.apiblueprint.org/parser";
+			String url = "http://api.apiblueprint.org/parser";
+			Unirest.setHttpClient(makeClient());
 			HttpResponse<String> request = Unirest.post(url).body(blueprint).asString();
 			json = request.getBody();
 
@@ -107,7 +109,7 @@ public class Network
 
 		try
 		{
-			String url = "https://api.apiblueprint.org/parser";
+			String url = "http://api.apiblueprint.org/parser";
 			Unirest.setHttpClient(makeClient());
 			HttpResponse<String> request = Unirest.post(url).body(blueprint).asString();
 			Preferences prefs = new Preferences();
@@ -117,6 +119,7 @@ public class Network
 		catch(UnirestException e)
 		{
 			e.printStackTrace();
+			return true;
 		}
 		catch(IOException e)
 		{

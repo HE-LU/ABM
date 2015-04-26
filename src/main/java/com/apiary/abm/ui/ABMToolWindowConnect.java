@@ -193,7 +193,7 @@ public class ABMToolWindowConnect extends JFrame
 		labelDocumentationToken.setHorizontalAlignment(SwingConstants.CENTER);
 
 		final JTextField textFieldDocumentationToken = new JTextField();
-		if(ABMConfig.DEBUG) textFieldDocumentationToken.setText("824b074bb727d3242fd960f8c5c4cfa9");
+		if(ABMConfig.DEBUG) textFieldDocumentationToken.setText("7e655c5d510610d5d59abced639f7dfd");
 
 		final JEditorPane labelDocumentationTokenExample = new JEditorPane("text/html", "<html><body style=\"font-family: Ariel; font-weight: bold; color: white; font-size:" + Utils.fontSize(Utils.FONT_SMALL) + "pt; \"><center>" + mMessages.getString("connect_message_documentation_token_example") + "</center></body></html>");
 		labelDocumentationTokenExample.setOpaque(false);
