@@ -95,6 +95,8 @@ public class Network
 				e1.printStackTrace();
 			}
 		}
+
+		Log.d("JSON DATA: " + json);
 		return json;
 	}
 
@@ -231,7 +233,7 @@ public class Network
 			URL url = new URL("http://www.google.com");
 
 			HttpURLConnection urlConnect = (HttpURLConnection) url.openConnection();
-			Object objData = urlConnect.getContent();
+			urlConnect.getContent();
 		}
 		catch(UnknownHostException e)
 		{

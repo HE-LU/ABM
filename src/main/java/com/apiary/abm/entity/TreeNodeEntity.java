@@ -4,6 +4,7 @@ import com.apiary.abm.entity.blueprint.HeadersEntity;
 import com.apiary.abm.entity.blueprint.ParametersEntity;
 import com.apiary.abm.enums.TreeNodeTypeEnum;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -64,14 +65,45 @@ public class TreeNodeEntity
 
 		this.mMethodName = entity.getMethodName();
 		this.mResponseCode = entity.getResponseCode();
-		this.mParameters = entity.getParameters();
-		this.mRequestHeaders = entity.getRequestHeaders();
-		this.mResponseHeaders = entity.getResponseHeaders();
+
+		if(entity.getParameters() == null) this.mParameters = null;
+		else
+		{
+			this.mParameters = new ArrayList<ParametersEntity>();
+			this.mParameters.addAll(entity.getParameters());
+		}
+
+		if(entity.getRequestHeaders() == null) this.mRequestHeaders = null;
+		else
+		{
+			this.mRequestHeaders = new ArrayList<HeadersEntity>();
+			this.mRequestHeaders.addAll(entity.getRequestHeaders());
+		}
+
+		if(entity.getResponseHeaders() == null) this.mResponseHeaders = null;
+		else
+		{
+			this.mResponseHeaders = new ArrayList<HeadersEntity>();
+			this.mResponseHeaders.addAll(entity.getResponseHeaders());
+		}
+
 
 		this.mRequestBodyJson = entity.getRequestBodyJson();
 		this.mResponseBodyJson = entity.getResponseBodyJson();
-		this.mRequestBody = entity.getRequestBody();
-		this.mResponseBody = entity.getResponseBody();
+
+		if(entity.getRequestBody() == null) this.mRequestBody = null;
+		else
+		{
+			this.mRequestBody = new ArrayList<BodyObjectEntity>();
+			this.mRequestBody.addAll(entity.getRequestBody());
+		}
+
+		if(entity.getResponseBody() == null) this.mResponseBody = null;
+		else
+		{
+			this.mResponseBody = new ArrayList<BodyObjectEntity>();
+			this.mResponseBody.addAll(entity.getResponseBody());
+		}
 	}
 
 

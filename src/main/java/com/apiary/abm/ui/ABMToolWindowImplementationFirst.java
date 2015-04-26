@@ -277,7 +277,7 @@ public class ABMToolWindowImplementationFirst extends JFrame
 		}
 
 
-		if(mEntity.getRequestHeaders() != null)
+		if(mEntity.getRequestHeaders() != null && mEntity.getRequestHeaders().size() > 0)
 		{
 			// Panel request
 			final JBackgroundPanel requestHeadersPanel = new JBackgroundPanel("drawable/img_background_panel.9.png", JBackgroundPanel.JBackgroundPanelType.NINE_PATCH);
@@ -375,7 +375,7 @@ public class ABMToolWindowImplementationFirst extends JFrame
 			}
 		}
 
-		if(mEntity.getResponseHeaders() != null)
+		if(mEntity.getResponseHeaders() != null && mEntity.getResponseHeaders().size() > 0)
 		{
 			// Panel response
 			final JBackgroundPanel responseHeadersPanel = new JBackgroundPanel("drawable/img_background_panel.9.png", JBackgroundPanel.JBackgroundPanelType.NINE_PATCH);

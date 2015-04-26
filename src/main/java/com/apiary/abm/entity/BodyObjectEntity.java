@@ -1,5 +1,6 @@
 package com.apiary.abm.entity;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -17,6 +18,20 @@ public class BodyObjectEntity
 		this.mSerializableName = mSerializableName;
 		this.mEntityName = mEntityName;
 		this.mVariables = mVariables;
+	}
+
+
+	public BodyObjectEntity(BodyObjectEntity entity)
+	{
+		this.mSerializableName = entity.getSerializableName();
+		this.mEntityName = entity.getEntityName();
+
+		if(entity.getVariables() == null) this.mVariables = null;
+		else
+		{
+			this.mVariables = new ArrayList<BodyVariableEntity>();
+			this.mVariables.addAll(entity.getVariables());
+		}
 	}
 
 

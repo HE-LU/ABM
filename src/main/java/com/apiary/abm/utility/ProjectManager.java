@@ -171,8 +171,10 @@ public class ProjectManager
 	}
 
 
-	public static List<ProblemEntity> checkMethodForProblems(TreeNodeEntity entity)
+	public static List<ProblemEntity> checkMethodForProblems(TreeNodeEntity entityOriginal)
 	{
+		TreeNodeEntity entity = new TreeNodeEntity(entityOriginal);
+
 		PsiClass interfaceClass = ProjectManager.getInterfaceClass();
 		List<ProblemEntity> problems = new ArrayList<ProblemEntity>();
 		boolean callbackFound = false;
@@ -197,7 +199,7 @@ public class ProjectManager
 		String headersString = null;
 		for(PsiAnnotation annotation : annotations)
 		{
-			if(annotation.getQualifiedName().equals("Headers"))
+			if(annotation.getQualifiedName().contains("Headers"))
 				headersString = annotation.getParameterList().getAttributes()[0].getValue().getText();
 		}
 
@@ -287,10 +289,13 @@ public class ProjectManager
 				{
 					if(entity.getUri().contains(paramEntity.getName()))
 					{
+						String annotationName = parameterList.getParameters()[i].getModifierList().getAnnotations()[0].getQualifiedName();
+						annotationName = annotationName.substring(annotationName.lastIndexOf(".") + 1, annotationName.length());
+
 						if(!parameterList.getParameters()[i].getType().getPresentableText().equals(Utils.firstLetterUpperCase(paramEntity.getType())))
 							problems.add(new ProblemEntity("Method parameters", "Method parameter: " + paramEntity.getName() + " has bad type."));
 
-						if(!parameterList.getParameters()[i].getModifierList().getAnnotations()[0].getQualifiedName().equals(paramEntity.getTypeOfParam()))
+						if(!annotationName.equals(paramEntity.getTypeOfParam()))
 							problems.add(new ProblemEntity("Method parameters", "Method parameter: " + paramEntity.getName() + " has bad annotation"));
 					}
 					else
@@ -315,8 +320,10 @@ public class ProjectManager
 	}
 
 
-	public static List<ProblemEntity> checkEntityForProblems(BodyObjectEntity entity)
+	public static List<ProblemEntity> checkEntityForProblems(BodyObjectEntity entityOriginal)
 	{
+		BodyObjectEntity entity = new BodyObjectEntity(entityOriginal);
+
 		ConfigPreferences configPreferences = new ConfigPreferences();
 		List<ProblemEntity> problems = new ArrayList<ProblemEntity>();
 

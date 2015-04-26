@@ -16,6 +16,7 @@ import com.apiary.abm.enums.TreeNodeTypeEnum;
 import com.apiary.abm.enums.VariableEnum;
 import com.apiary.abm.renderer.ABMTreeCellRenderer;
 import com.apiary.abm.utility.ConfigPreferences;
+import com.apiary.abm.utility.Log;
 import com.apiary.abm.utility.Network;
 import com.apiary.abm.utility.Preferences;
 import com.apiary.abm.utility.ProjectManager;
@@ -331,7 +332,7 @@ public class ABMToolWindowMain extends JFrame
 												}
 											}
 											catch(NullPointerException ex)
-											{//exception}
+											{//exception
 											}
 										}
 									});
@@ -340,8 +341,13 @@ public class ABMToolWindowMain extends JFrame
 										public void mousePressed(MouseEvent e)
 										{
 											TreePath path = tree.getSelectionPath();
-											if(e.getClickCount() == 2)
+											if(e.getClickCount() == 2) try
+											{
 												onTreeNodeDoubleClick((TreeNodeEntity) ((DefaultMutableTreeNode) path.getLastPathComponent()).getUserObject());
+											}
+											catch(Exception ex)
+											{//exception
+											}
 										}
 									});
 
@@ -793,9 +799,15 @@ public class ABMToolWindowMain extends JFrame
 			if(entity.getTreeNodeType() != null) continue;
 
 			if(entity.getHidden().equals(TreeNodeEntity.STATE_HIDDEN)) entity.setTreeNodeType(TreeNodeTypeEnum.HIDDEN);
-			else if(entity.getHidden().equals(TreeNodeEntity.STATE_REMOVED)) entity.setTreeNodeType(TreeNodeTypeEnum.NONE);
 			else
 			{
+				if(entity.getHidden().equals(TreeNodeEntity.STATE_REMOVED))
+				{
+					entity.setHidden(TreeNodeEntity.STATE_VISIBLE);
+					ConfigPreferences configPreferences = new ConfigPreferences();
+					configPreferences.saveTreeNodeEntity(entity);
+				}
+
 				if(entity.getMethodName().equals("") || interfaceClass.findMethodsByName(entity.getMethodName(), true) == null)
 					entity.setTreeNodeType(TreeNodeTypeEnum.NOT_IMPLEMENTED);
 				else
@@ -806,6 +818,7 @@ public class ABMToolWindowMain extends JFrame
 					List<ProblemEntity> methodProblems = ProjectManager.checkMethodForProblems(entity);
 
 					if(!methodProblems.isEmpty()) ok = false;
+					if(!methodProblems.isEmpty()) Log.d("ERROR Method " + methodProblems.get(0).getText());
 
 					// check if all entities are ok
 					if(entity.getRequestBody() != null) for(BodyObjectEntity bodyEntity : entity.getRequestBody())
@@ -813,6 +826,7 @@ public class ABMToolWindowMain extends JFrame
 						List<ProblemEntity> entityProblems = ProjectManager.checkEntityForProblems(bodyEntity);
 
 						if(!entityProblems.isEmpty()) ok = false;
+						if(!methodProblems.isEmpty()) Log.d("ERROR Request " + methodProblems.get(0).getText());
 					}
 
 					if(entity.getResponseBody() != null) for(BodyObjectEntity bodyEntity : entity.getResponseBody())
@@ -820,6 +834,7 @@ public class ABMToolWindowMain extends JFrame
 						List<ProblemEntity> entityProblems = ProjectManager.checkEntityForProblems(bodyEntity);
 
 						if(!entityProblems.isEmpty()) ok = false;
+						if(!methodProblems.isEmpty()) Log.d("ERROR Response " + methodProblems.get(0).getText());
 					}
 
 					if(ok) outputTreeNodeList.remove(entity);
@@ -833,7 +848,8 @@ public class ABMToolWindowMain extends JFrame
 		{
 			if(!ProjectManager.checkMethodUsage(entity, inputTreeNodeList))
 			{
-				entity.setTreeNodeType(TreeNodeTypeEnum.REMOVED);
+				if(entity.getHidden().equals(TreeNodeEntity.STATE_REMOVED)) entity.setTreeNodeType(TreeNodeTypeEnum.NONE);
+				else entity.setTreeNodeType(TreeNodeTypeEnum.REMOVED);
 				outputTreeNodeList.add(entity);
 			}
 		}

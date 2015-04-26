@@ -151,8 +151,16 @@ public class Utils
 	// JSON
 	public static DocResponseEntity parseJsonDoc(String jsonDoc)
 	{
-		Gson gson = new GsonBuilder().create();
-		return gson.fromJson(jsonDoc, DocResponseEntity.class);
+		try
+		{
+			Log.d("parseJsonDoc: " + jsonDoc);
+			Gson gson = new GsonBuilder().create();
+			return gson.fromJson(jsonDoc, DocResponseEntity.class);
+		}
+		catch(Exception e)
+		{
+			return null;
+		}
 	}
 
 

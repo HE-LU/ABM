@@ -212,7 +212,9 @@ public class ABMToolWindowRemoved extends JFrame
 			public void keyTyped(KeyEvent e)
 			{
 				char ch = e.getKeyChar();
-				if(!Character.isAlphabetic(ch) && ch != '/') e.consume();
+				if(!Character.isAlphabetic(ch) && ch != '/' &&
+						ch != '{' && ch != '}' &&
+						ch != '?' && ch != ',') e.consume();
 			}
 		});
 

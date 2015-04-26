@@ -359,6 +359,8 @@ public class ABMToolWindowConnect extends JFrame
 									throw new Exception(mMessages.getString("connect_message_error_no_data"));
 
 								String output = Network.requestBlueprintFromApiary(textFieldDocumentationUrl.getText(), textFieldDocumentationToken.getText());
+								if(output.equals("This resource requires authenticated API call."))
+									throw new Exception(mMessages.getString("connect_message_error_token"));
 								DocResponseEntity response = Utils.parseJsonDoc(output);
 
 								if(response == null) throw new Exception(mMessages.getString("connect_message_error_gson"));
