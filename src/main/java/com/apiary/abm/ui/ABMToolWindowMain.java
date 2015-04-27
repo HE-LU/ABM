@@ -502,14 +502,23 @@ public class ABMToolWindowMain extends JFrame
 					// Check parameters
 					for(ParametersEntity entityParameter : actionsEntity.getParameters())
 					{
-						if(entity.getUri().matches("(?i)^.*[{, ]" + entityParameter.getName() + "[ ,}].*$"))
+						Log.d("URL: " + entity.getUri());
+						if(entity.getUri().matches("^.*([{][?])" + entityParameter.getName() + "[ ,}].*$"))
 						{
-							entityParameter.setTypeOfParam("Path");
+							Log.d(entityParameter.getName() + " IS QUERY");
+							entityParameter.setTypeOfParam("Query");
 							parametersList.add(entityParameter);
 						}
-						else if(entity.getUri().matches("(?i)^.*[{, ][?]" + entityParameter.getName() + "[ ,}].*$"))
+						else if(entity.getUri().matches("^.*([{][?])([^}]*)([, ])" + entityParameter.getName() + "[ ,}].*$"))
 						{
+							Log.d(entityParameter.getName() + " IS QUERY");
 							entityParameter.setTypeOfParam("Query");
+							parametersList.add(entityParameter);
+						}
+						else if(entity.getUri().matches("^.*([{])([^}]*)" + entityParameter.getName() + "[ ,}].*$"))
+						{
+							Log.d(entityParameter.getName() + " IS PATH");
+							entityParameter.setTypeOfParam("Path");
 							parametersList.add(entityParameter);
 						}
 					}

@@ -651,12 +651,6 @@ public class ABMToolWindowImplementationSecond extends JFrame
 
 		//		Log.d("\n1\n" + output + "\n");
 
-		if(mEntity.isAsync()) if(mEntity.getResponseBody() != null)
-			output += "\tCallback<" + BodyObjectEntity.findBySerializableName(mEntity.getResponseBody(), "ROOT").getEntityName() + "> " + mEntity.getMethodName() + "Callback, \n";
-		else output += "\tCallback<Response> " + mEntity.getMethodName() + "Callback, \n";
-
-		//		Log.d("\n2\n" + output + "\n");
-
 		// step 4) add path and query = parameters
 		// public String getWithPath(@Path("id") String id);
 		if(mEntity.getParameters() != null)
@@ -670,7 +664,7 @@ public class ABMToolWindowImplementationSecond extends JFrame
 			}
 		}
 
-		//		Log.d("\n3 - After Parameters\n" + output + "\n");
+		//		Log.d("\n2 - After Parameters\n" + output + "\n");
 
 		// add body
 		// public String getWithBody(@Body String id);
@@ -686,7 +680,13 @@ public class ABMToolWindowImplementationSecond extends JFrame
 			}
 		}
 
-		//		Log.d("\n4 - After Request\n" + output + "\n");
+		//		Log.d("\n3 - After Request\n" + output + "\n");
+
+		if(mEntity.isAsync()) if(mEntity.getResponseBody() != null)
+			output += "\tCallback<" + BodyObjectEntity.findBySerializableName(mEntity.getResponseBody(), "ROOT").getEntityName() + "> " + mEntity.getMethodName() + "Callback, \n";
+		else output += "\tCallback<Response> " + mEntity.getMethodName() + "Callback, \n";
+
+		//		Log.d("\n4 - After Callback\n" + output + "\n");
 
 		if(output.endsWith(", \n")) output = output.substring(0, output.length() - 3);
 		output += ");";
