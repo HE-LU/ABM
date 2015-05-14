@@ -6,6 +6,24 @@ IntelliJ IDEA based IDE. This plugin was created as my bachelor thesis.
 It helps keep the code up-to-date with Apiary documentation, by notifying 
 about changes and helps by generating code based on Apiary documentation.
 
+Build from source
+=================
+
+These steps were tested on:
+
+OS: Linux Mint 17.1 Cinnamon 64-bit
+Internal Java Platform: 1.8
+IntelliJ IDEA version: 14.0.4
+
+1) Open IntelliJ IDEA.
+2) Import Project -> Path to plugin source code.
+3) Choose "Create project from existing sources".
+4) On "select project SDK" window, add new "IntelliJ Platform Plugin SDK" with path set to IntelliJ IDEA.
+5) After completing project import, one should be able to compile the project by opening terminal at the bottom of IntelliJ IDEA. Make sure terminal path is set to project root folder.
+6) You can compile the output .jar file by: "./gradlew makeJar" command.
+
+In case of any problem, please feal free to contact me on [tuxilero@gmail.com](tuxilero@gmail.com)
+
 Usage
 =====
 
