@@ -1,7 +1,7 @@
 <idea-plugin version="2">
 	<id>com.apiary.abm</id>
 	<name>Apiary Blueprint Manager</name>
-	<version>2.1.0</version>
+	<version>2.1.1</version>
 	<vendor email="tuxilero@gmail.com" url="http://tuxilero.blogspot.com">Lukáš Hermann a.k.a "Tuxilero"</vendor>
 
 	<description>
@@ -31,7 +31,8 @@
 	</description>
 
 	<change-notes><![CDATA[
-		2.1.0 - Major Bugfixes<br />
+		2.1.1 - Java 1.7 crash fix. Theme update<br />
+		2.1.0 - Major bugfixes<br />
 		2.0.4 - Minor bugfixes<br />
 		2.0.3 - Generate entity button & plugin reset option<br />
 		2.0.2 - Bug & crash fixes<br />
