@@ -51,6 +51,8 @@ task setup {
 
 
 task makeJar(type: Jar, dependsOn: classes) {
+	sourceCompatibility = 1.7
+	targetCompatibility = 1.7
 	outputs.upToDateWhen {false}
 	dependsOn setup
 

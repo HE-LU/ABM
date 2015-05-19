@@ -133,6 +133,7 @@ public class ABMToolWindowConnect extends JFrame
 
 		// Create the radio buttons.
 		final JRadioButton radBtnApiaryDoc = new JRadioButton(mMessages.getString("connect_radio_documentation"));
+		radBtnApiaryDoc.setForeground(Color.WHITE);
 		radBtnApiaryDoc.setActionCommand(mMessages.getString("connect_radio_documentation"));
 		radBtnApiaryDoc.setMargin(new Insets(0, 0, 0, 0));
 		radBtnApiaryDoc.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_SMALL)));
@@ -140,12 +141,14 @@ public class ABMToolWindowConnect extends JFrame
 		radBtnApiaryDoc.setSelected(true);
 
 		final JRadioButton radBtnWebUrl = new JRadioButton(mMessages.getString("connect_radio_web_url"));
+		radBtnWebUrl.setForeground(Color.WHITE);
 		radBtnWebUrl.setActionCommand(mMessages.getString("connect_radio_web_url"));
 		radBtnWebUrl.setMargin(new Insets(0, 0, 0, 0));
 		radBtnWebUrl.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_SMALL)));
 		radBtnWebUrl.setOpaque(false);
 
 		final JRadioButton radBtnLocal = new JRadioButton(mMessages.getString("connect_radio_local_file"));
+		radBtnLocal.setForeground(Color.WHITE);
 		radBtnLocal.setActionCommand(mMessages.getString("connect_radio_local_file"));
 		radBtnLocal.setMargin(new Insets(0, 0, 0, 0));
 		radBtnLocal.setFont(new Font("Ariel", Font.BOLD, Utils.fontSize(Utils.FONT_SMALL)));
@@ -185,6 +188,9 @@ public class ABMToolWindowConnect extends JFrame
 		labelDocumentationUrl.setHorizontalAlignment(SwingConstants.CENTER);
 
 		final JTextField textFieldDocumentationUrl = new JTextField();
+		textFieldDocumentationUrl.setBackground(Color.darkGray);
+		textFieldDocumentationUrl.setForeground(Color.WHITE);
+		textFieldDocumentationUrl.setBorder(BorderFactory.createLineBorder(Color.gray));
 		if(ABMConfig.DEBUG) textFieldDocumentationUrl.setText("tuxilero");
 
 		final JLabel labelDocumentationToken = new JLabel("<html><center>" + mMessages.getString("connect_message_documentation_token") + "</center></html>");
@@ -193,6 +199,9 @@ public class ABMToolWindowConnect extends JFrame
 		labelDocumentationToken.setHorizontalAlignment(SwingConstants.CENTER);
 
 		final JTextField textFieldDocumentationToken = new JTextField();
+		textFieldDocumentationToken.setBackground(Color.darkGray);
+		textFieldDocumentationToken.setForeground(Color.WHITE);
+		textFieldDocumentationToken.setBorder(BorderFactory.createLineBorder(Color.gray));
 		if(ABMConfig.DEBUG) textFieldDocumentationToken.setText("7e655c5d510610d5d59abced639f7dfd");
 
 		final JEditorPane labelDocumentationTokenExample = new JEditorPane("text/html", "<html><body style=\"font-family: Ariel; font-weight: bold; color: white; font-size:" + Utils.fontSize(Utils.FONT_SMALL) + "pt; \"><center>" + mMessages.getString("connect_message_documentation_token_example") + "</center></body></html>");
@@ -239,6 +248,9 @@ public class ABMToolWindowConnect extends JFrame
 		labelWebUrlMessage.setHorizontalAlignment(SwingConstants.CENTER);
 
 		final JTextField textFieldWebUrl = new JTextField();
+		textFieldWebUrl.setBackground(Color.darkGray);
+		textFieldWebUrl.setForeground(Color.WHITE);
+		textFieldWebUrl.setBorder(BorderFactory.createLineBorder(Color.gray));
 		if(ABMConfig.DEBUG) textFieldWebUrl.setText("http://127.0.0.1:8080/share/my.blueprint");
 
 		final JLabel labelWebUrlMessageExample = new JLabel("<html><center>" + mMessages.getString("connect_message_web_url_example") + "</center></html>");
@@ -264,6 +276,9 @@ public class ABMToolWindowConnect extends JFrame
 		labelLocalMessage.setHorizontalAlignment(SwingConstants.CENTER);
 
 		final JTextField textFieldLocalPath = new JTextField();
+		textFieldLocalPath.setBackground(Color.darkGray);
+		textFieldLocalPath.setForeground(Color.WHITE);
+		textFieldLocalPath.setBorder(BorderFactory.createLineBorder(Color.gray));
 
 		final JButton buttonLocalBrowse = new JButton("Browse...");
 		buttonLocalBrowse.setOpaque(false);

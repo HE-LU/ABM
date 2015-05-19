@@ -24,6 +24,13 @@ IntelliJ IDEA version: 14.0.4
 
 In case of any problem, please feal free to contact me on [tuxilero@gmail.com](tuxilero@gmail.com)
 
+Dependencies
+============
+
+IntelliJ IDEA or Android Studio.
+Java 1.7 JRE or later.
+For best look and feel use with Dracula, or any other dark theme.
+
 Usage
 =====
 

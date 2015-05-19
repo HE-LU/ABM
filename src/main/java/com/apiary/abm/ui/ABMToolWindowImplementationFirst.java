@@ -187,6 +187,9 @@ public class ABMToolWindowImplementationFirst extends JFrame
 
 		// TextField method name
 		final JTextField methodNameTextField = new JTextField(mEntity.getMethodName());
+		methodNameTextField.setBackground(Color.darkGray);
+		methodNameTextField.setForeground(Color.WHITE);
+		methodNameTextField.setBorder(BorderFactory.createLineBorder(Color.gray));
 		methodNameTextField.setMaximumSize(new Dimension(Utils.reDimension(170), Integer.MAX_VALUE));
 		methodNameTextField.setMinimumSize(new Dimension(Utils.reDimension(170), 0));
 		methodNameTextField.setText(mEntity.getMethodName());
@@ -253,6 +256,8 @@ public class ABMToolWindowImplementationFirst extends JFrame
 
 			JTable table = new JBTable(model);
 			table.setForeground(Color.WHITE);
+			table.setBackground(Color.darkGray);
+			table.setBorder(BorderFactory.createLineBorder(Color.gray));
 			table.setFont(new Font("Ariel", Font.PLAIN, Utils.fontSize(Utils.FONT_SMALL)));
 			table.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
 			table.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
@@ -303,6 +308,8 @@ public class ABMToolWindowImplementationFirst extends JFrame
 
 			JTable table = new JBTable(model);
 			table.setForeground(Color.WHITE);
+			table.setBackground(Color.darkGray);
+			table.setBorder(BorderFactory.createLineBorder(Color.gray));
 			table.setFont(new Font("Ariel", Font.PLAIN, Utils.fontSize(Utils.FONT_SMALL)));
 			table.setEnabled(false);
 			requestHeadersPanel.add(table.getTableHeader());
@@ -358,6 +365,9 @@ public class ABMToolWindowImplementationFirst extends JFrame
 
 				// TextField method name
 				final JTextField rootEntityTextField = new JTextField(entity.getEntityName());
+				rootEntityTextField.setBackground(Color.darkGray);
+				rootEntityTextField.setForeground(Color.WHITE);
+				rootEntityTextField.setBorder(BorderFactory.createLineBorder(Color.gray));
 				rootEntityTextField.setMaximumSize(new Dimension(Utils.reDimension(170), Integer.MAX_VALUE));
 				rootEntityTextField.setMinimumSize(new Dimension(Utils.reDimension(170), 0));
 				requestPanel.add(rootEntityTextField, "wrap");
@@ -401,6 +411,8 @@ public class ABMToolWindowImplementationFirst extends JFrame
 
 			JTable table = new JBTable(model);
 			table.setForeground(Color.WHITE);
+			table.setBackground(Color.darkGray);
+			table.setBorder(BorderFactory.createLineBorder(Color.gray));
 			table.setFont(new Font("Ariel", Font.PLAIN, Utils.fontSize(Utils.FONT_SMALL)));
 			table.setEnabled(false);
 			responseHeadersPanel.add(table.getTableHeader());
@@ -454,6 +466,9 @@ public class ABMToolWindowImplementationFirst extends JFrame
 
 				// TextField method name
 				final JTextField rootEntityTextField = new JTextField(entity.getEntityName());
+				rootEntityTextField.setBackground(Color.darkGray);
+				rootEntityTextField.setForeground(Color.WHITE);
+				rootEntityTextField.setBorder(BorderFactory.createLineBorder(Color.gray));
 				rootEntityTextField.setMaximumSize(new Dimension(Utils.reDimension(170), Integer.MAX_VALUE));
 				rootEntityTextField.setMinimumSize(new Dimension(Utils.reDimension(170), 0));
 				responsePanel.add(rootEntityTextField, "wrap");

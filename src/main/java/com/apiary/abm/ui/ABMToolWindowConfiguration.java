@@ -47,6 +47,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -153,6 +154,11 @@ public class ABMToolWindowConfiguration extends JFrame
 		final JComboBox moduleComboBox = new ComboBox(mModuleList.toArray());
 		moduleComboBox.setMinimumSize(new Dimension(Utils.reDimension(160), 0));
 		moduleComboBox.setSelectedItem(mConfigurationEntity.getModule());
+		UIManager.put("ComboBox.selectionBackground", Color.darkGray);
+		UIManager.put("ComboBox.selectionForeground", Color.WHITE);
+		UIManager.put("ComboBox.background", Color.darkGray);
+		UIManager.put("ComboBox.foreground", Color.WHITE);
+		moduleComboBox.updateUI();
 		modulePanel.add(moduleComboBox);
 
 
@@ -174,6 +180,9 @@ public class ABMToolWindowConfiguration extends JFrame
 
 		// TextField Interface file
 		final JTextField interfaceClassTextField = new JTextField();
+		interfaceClassTextField.setBackground(Color.darkGray);
+		interfaceClassTextField.setForeground(Color.WHITE);
+		interfaceClassTextField.setBorder(BorderFactory.createLineBorder(Color.gray));
 		interfaceClassTextField.setMinimumSize(new Dimension(Utils.reDimension(160), 0));
 		interfaceClassTextField.setText(mConfigurationEntity.getInterfaceClass());
 		interfaceClassTextField.addKeyListener(new KeyAdapter()
@@ -218,7 +227,7 @@ public class ABMToolWindowConfiguration extends JFrame
 		// Button Interface file
 		final JButton interfaceClassButton = new JButton("<html><center>" + messages.getString("configuration_button_check") + "</center></html>");
 		interfaceClassButton.setOpaque(false);
-		interfaceClassButton.setForeground(Color.WHITE);
+		//		interfaceClassButton.setForeground(Color.WHITE);
 		interfaceClassButton.setFont(new Font("Ariel", Font.PLAIN, Utils.fontSize(Utils.FONT_SMALL)));
 		interfaceClassButton.setHorizontalAlignment(SwingConstants.CENTER);
 		interfaceClassPanel.add(interfaceClassButton, "wrap");
@@ -249,6 +258,9 @@ public class ABMToolWindowConfiguration extends JFrame
 
 		// TextField Entity package
 		final JTextField entityPackageTextField = new JTextField();
+		entityPackageTextField.setBackground(Color.darkGray);
+		entityPackageTextField.setForeground(Color.WHITE);
+		entityPackageTextField.setBorder(BorderFactory.createLineBorder(Color.gray));
 		entityPackageTextField.setMinimumSize(new Dimension(Utils.reDimension(160), 0));
 		entityPackageTextField.setText(mConfigurationEntity.getEntityPackage());
 		entityPackageTextField.addKeyListener(new KeyAdapter()
@@ -264,7 +276,7 @@ public class ABMToolWindowConfiguration extends JFrame
 		// Button Entity package
 		final JButton entityPackageButton = new JButton("<html><center>" + messages.getString("configuration_button_check") + "</center></html>");
 		entityPackageButton.setOpaque(false);
-		entityPackageButton.setForeground(Color.WHITE);
+		//		entityPackageButton.setForeground(Color.WHITE);
 		entityPackageButton.setFont(new Font("Ariel", Font.PLAIN, Utils.fontSize(Utils.FONT_SMALL)));
 		entityPackageButton.setHorizontalAlignment(SwingConstants.CENTER);
 		entityPackagePanel.add(entityPackageButton, "wrap");

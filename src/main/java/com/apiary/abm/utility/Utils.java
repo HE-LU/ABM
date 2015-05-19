@@ -279,7 +279,7 @@ public class Utils
 
 	public static JEditorPane generateMessage(String message)
 	{
-		final JEditorPane editorPane = new JEditorPane("text/html", "<html><body style=\"font-family: Ariel; font-weight: bold; color: white; font-size:" + Utils.fontSize(Utils.FONT_SMALL) + "pt; \"><center>" + message + "</center></body></html>");
+		final JEditorPane editorPane = new JEditorPane("text/html", "<html><body style=\"font-family: Ariel; font-weight: bold; font-size:" + Utils.fontSize(Utils.FONT_SMALL) + "pt; \"><center>" + message + "</center></body></html>");
 		editorPane.setOpaque(false);
 		editorPane.setHighlighter(null);
 		editorPane.setEditable(false);

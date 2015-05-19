@@ -195,6 +195,9 @@ public class ABMToolWindowRemoved extends JFrame
 
 		// TextField uri
 		final JTextField uriEditTextField = new JTextField(mEntity.getUri());
+		uriEditTextField.setBackground(Color.darkGray);
+		uriEditTextField.setForeground(Color.WHITE);
+		uriEditTextField.setBorder(BorderFactory.createLineBorder(Color.gray));
 		uriEditTextField.setMaximumSize(new Dimension(Utils.reDimension(170), Integer.MAX_VALUE));
 		uriEditTextField.setMinimumSize(new Dimension(Utils.reDimension(170), 0));
 		uriEditTextField.setText(mEntity.getUri());

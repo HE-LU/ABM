@@ -83,7 +83,8 @@ public class ImageButton extends JButton
 		try
 		{
 			mImage = image;
-			mAnimatedGif = Files.probeContentType(Paths.get(image)).equals("image/gif");
+			if(Files.probeContentType(Paths.get(image)) == null) mAnimatedGif = false;
+			else mAnimatedGif = Files.probeContentType(Paths.get(image)).equals("image/gif");
 			if(mAnimatedGif)
 			{
 				ImageReader is = ImageIO.getImageReadersBySuffix("GIF").next();
