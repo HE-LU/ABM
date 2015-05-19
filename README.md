@@ -27,21 +27,21 @@ In case of any problem, please feal free to contact me on [tuxilero@gmail.com](t
 Dependencies
 ============
 
-IntelliJ IDEA or Android Studio.
-Java 1.7 JRE or later.
-For best look and feel use with Dracula, or any other dark theme.
+IntelliJ IDEA or Android Studio.  
+Java 1.7 JRE or later.  
+For best look and feel use with Dracula, or any other dark theme.  
 
 Usage
 =====
 
-Usage is described detailed here:
-(http://tuxilero.blogspot.cz/p/abmdoc.html)
+Usage is described detailed here:  
+http://tuxilero.blogspot.cz/p/abmdoc.html
 
 Example
 =======
 
-Example video how to use this plugin can be found here:
-(https://www.youtube.com/watch?v=ZHRyQUN5bUc)
+Example video how to use this plugin can be found here:  
+https://www.youtube.com/watch?v=ZHRyQUN5bUc
 
 
 Developed by
